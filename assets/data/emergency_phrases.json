@@ -1,0 +1,135 @@
+{
+  "es": {
+    "languageCode": "es",
+    "languageName": "Spanish",
+    "isReviewed": true,
+    "phrases": [
+      {
+        "id": "need_doctor",
+        "labels": {
+          "en": "I need a doctor"
+        },
+        "targetText": "Necesito un médico",
+        "ttsLocale": "es-ES"
+      },
+      {
+        "id": "call_police",
+        "labels": {
+          "en": "Call the police"
+        },
+        "targetText": "Llame a la policía, por favor",
+        "ttsLocale": "es-ES"
+      },
+      {
+        "id": "lost",
+        "labels": {
+          "en": "I'm lost"
+        },
+        "targetText": "Estoy perdido",
+        "ttsLocale": "es-ES",
+        "genderNote": "Grammatically masculine (estoy perdido vs perdida)"
+      },
+      {
+        "id": "allergic",
+        "labels": {
+          "en": "I'm allergic to..."
+        },
+        "targetText": "Soy alérgico a esto",
+        "ttsLocale": "es-ES",
+        "genderNote": "Grammatically masculine (alérgico vs alérgica); phrasing assumes pointing at item"
+      },
+      {
+        "id": "dont_understand",
+        "labels": {
+          "en": "I don't understand"
+        },
+        "targetText": "No entiendo",
+        "ttsLocale": "es-ES"
+      },
+      {
+        "id": "where_hospital",
+        "labels": {
+          "en": "Where is the hospital?"
+        },
+        "targetText": "¿Dónde está el hospital?",
+        "ttsLocale": "es-ES"
+      },
+      {
+        "id": "speak_slowly",
+        "labels": {
+          "en": "Please speak slowly"
+        },
+        "targetText": "Hable más despacio, por favor",
+        "ttsLocale": "es-ES"
+      },
+      {
+        "id": "lost_passport",
+        "labels": {
+          "en": "I lost my passport"
+        },
+        "targetText": "Perdí mi pasaporte",
+        "ttsLocale": "es-ES"
+      }
+    ]
+  },
+  "fr": {
+    "languageCode": "fr",
+    "languageName": "French",
+    "isReviewed": false,
+    "phrases": [
+      { "id": "need_doctor", "labels": { "en": "I need a doctor" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "call_police", "labels": { "en": "Call the police" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "lost", "labels": { "en": "I'm lost" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "allergic", "labels": { "en": "I'm allergic to..." }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "dont_understand", "labels": { "en": "I don't understand" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "where_hospital", "labels": { "en": "Where is the hospital?" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "speak_slowly", "labels": { "en": "Please speak slowly" }, "targetText": "", "ttsLocale": "fr-FR" },
+      { "id": "lost_passport", "labels": { "en": "I lost my passport" }, "targetText": "", "ttsLocale": "fr-FR" }
+    ]
+  },
+  "de": {
+    "languageCode": "de",
+    "languageName": "German",
+    "isReviewed": false,
+    "phrases": [
+      { "id": "need_doctor", "labels": { "en": "I need a doctor" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "call_police", "labels": { "en": "Call the police" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "lost", "labels": { "en": "I'm lost" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "allergic", "labels": { "en": "I'm allergic to..." }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "dont_understand", "labels": { "en": "I don't understand" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "where_hospital", "labels": { "en": "Where is the hospital?" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "speak_slowly", "labels": { "en": "Please speak slowly" }, "targetText": "", "ttsLocale": "de-DE" },
+      { "id": "lost_passport", "labels": { "en": "I lost my passport" }, "targetText": "", "ttsLocale": "de-DE" }
+    ]
+  },
+  "ja": {
+    "languageCode": "ja",
+    "languageName": "Japanese",
+    "isReviewed": false,
+    "phrases": [
+      { "id": "need_doctor", "labels": { "en": "I need a doctor" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "call_police", "labels": { "en": "Call the police" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "lost", "labels": { "en": "I'm lost" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "allergic", "labels": { "en": "I'm allergic to..." }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "dont_understand", "labels": { "en": "I don't understand" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "where_hospital", "labels": { "en": "Where is the hospital?" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "speak_slowly", "labels": { "en": "Please speak slowly" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" },
+      { "id": "lost_passport", "labels": { "en": "I lost my passport" }, "targetText": "", "ttsLocale": "ja-JP", "helperLine": "" }
+    ]
+  },
+  "ar": {
+    "languageCode": "ar",
+    "languageName": "Arabic",
+    "isReviewed": false,
+    "phrases": [
+      { "id": "need_doctor", "labels": { "en": "I need a doctor" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "call_police", "labels": { "en": "Call the police" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "lost", "labels": { "en": "I'm lost" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "allergic", "labels": { "en": "I'm allergic to..." }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "dont_understand", "labels": { "en": "I don't understand" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "where_hospital", "labels": { "en": "Where is the hospital?" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "speak_slowly", "labels": { "en": "Please speak slowly" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" },
+      { "id": "lost_passport", "labels": { "en": "I lost my passport" }, "targetText": "", "ttsLocale": "ar-SA", "helperLine": "" }
+    ]
+  }
+}
