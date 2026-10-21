@@ -65,6 +65,25 @@ class Button3D extends StatefulWidget {
        textColor = AppColors.secondaryButtonText,
        isCircular = false;
 
+  /// Compact square 3D button for icon-only actions (e.g. "+" add phrase in ReviewHeader).
+  const Button3D.compactSquare({
+    super.key,
+    required this.label,
+    required Widget this.icon,
+    this.onPressed,
+    this.backgroundColor,
+    this.depthColor,
+    this.textColor,
+    this.depth = AppSpacing.depthSm,
+    double size = 44.0,
+    this.borderRadius = AppSpacing.radiusButton,
+  }) : trailingIcon = null,
+       minHeight = size,
+       width = size,
+       padding = EdgeInsets.zero,
+       isFullWidth = false,
+       isCircular = false;
+
   final String label;
   final VoidCallback? onPressed;
   final Widget? icon;

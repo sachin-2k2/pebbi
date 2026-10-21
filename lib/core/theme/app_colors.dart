@@ -29,12 +29,39 @@ abstract final class AppColors {
   // Emergency Phrasebook Tokens (WCAG AA & AAA compliant)
   static const Color emergencyCardBackground = Color(0xFFFFF1F2);
   static const Color emergencyCardBorder = Color(0xFFFDA4AF);
-  static const Color emergencyLabelRed = Color(0xFF991B1B); // 5.81:1 on rose fill
+  static const Color emergencyLabelRed = Color(
+    0xFF991B1B,
+  ); // 5.81:1 on rose fill
   static const Color emergencyNoteBackground = Color(0xFFF1F0F9);
-  static const Color emergencyNoteText = Color(0xFF1E1647); // 10.5:1 on lavender-grey note
+  static const Color emergencyNoteText = Color(
+    0xFF1E1647,
+  ); // 10.5:1 on lavender-grey note
   static const Color secondaryButtonBackground = Color(0xFFEDE9FF);
   static const Color secondaryButtonDepth = Color(0xFFD6CEFA);
-  static const Color secondaryButtonText = Color(0xFF4B33C4); // 7.42:1 on lavender
+  static const Color secondaryButtonText = Color(
+    0xFF4B33C4,
+  ); // 7.42:1 on lavender
+
+  // Free Talk & Correction Card Tokens (WCAG AA & AAA compliant)
+  static const Color correctionCardBackground = Color(0xFFF1F0F9);
+  static const Color correctionLabelMuted = Color(
+    0xFF595370,
+  ); // 5.2:1 on #F1F0F9 (WCAG AA)
+  static const Color correctionHelperText = Color(
+    0xFF2E2A40,
+  ); // 9.4:1 on #F1F0F9 (WCAG AAA)
+  static const Color correctionPillSelected = Color(
+    0xFF6542F1,
+  ); // 4.85:1 contrast
+  static const Color correctionPillUnselected = Color(0xFFFFFFFF);
+  static const Color correctionPillBorder = Color(0xFFD8D4E8);
+
+  // Dark Free Talk Tokens
+  static const Color darkCorrectionCardBackground = Color(0xFF231E33);
+  static const Color darkCorrectionLabelMuted = Color(0xFFAAA5C2);
+  static const Color darkCorrectionHelperText = Color(0xFFE8E5F4);
+  static const Color darkCorrectionPillUnselected = Color(0xFF2D2742);
+  static const Color darkCorrectionPillBorder = Color(0xFF3E365C);
 
   // Dark Emergency Tokens
   static const Color darkEmergencyCardBackground = Color(0xFF2D161C);
@@ -138,4 +165,105 @@ abstract final class AppColors {
   static const Color linkPurple = Color(0xFF5832E6);
   static const Color inputPlaceholder = Color(0xFF64748B);
   static const Color dividerText = Color(0xFF64748B);
+
+  // Review Tab Semantic Colors (WCAG AA compliant)
+  static const Color segmentedTrackBackground = Color(0xFFF1F0F9);
+  static const Color segmentedPillBackground = Color(0xFFFFFFFF);
+  static const Color segmentedTextSelected = Color(0xFF1E1647);
+  static const Color segmentedTextUnselected = Color(0xFF4A4460);
+  static const Color darkSegmentedTrackBackground = Color(0xFF28233C);
+  static const Color darkSegmentedPillBackground = Color(0xFF383152);
+  static const Color darkSegmentedTextSelected = Color(0xFFF5F3FA);
+  static const Color darkSegmentedTextUnselected = Color(0xFFAFA9C1);
+
+  static const Color inviteFieldBackground = Color(0xFFF1F0F9);
+  static const Color inviteFieldBorder = Color(0xFFE2E0F2);
+  static const Color inviteFieldText = Color(0xFF4A4460);
+  static const Color inviteCopyText = Color(0xFF6542F1);
+  static const Color darkInviteFieldBackground = Color(0xFF241F38);
+  static const Color darkInviteFieldBorder = Color(0xFF383152);
+  static const Color darkInviteFieldText = Color(0xFFAFA9C1);
+  static const Color darkInviteCopyText = Color(0xFF8B6EF8);
+
+  static const Color statusTagTrickyBackground = Color(0xFFFFECEB);
+  static const Color statusTagTrickyText = Color(0xFFD32F2F);
+  static const Color statusTagNewBackground = Color(0xFFE8F5E9);
+  static const Color statusTagNewText = Color(0xFF2E7D32);
+  static const Color phraseTileBookmarkActive = Color(0xFFF59E0B);
+  static const Color phraseTileStarActive = Color(0xFFF59E0B);
+  static const Color phraseTileStarInactive = Color(0xFFA5A0B8);
+  static const Color darkPhraseTileStarInactive = Color(0xFF6B6580);
+
+  // Practice Rooms Tokens (WCAG AA Compliant)
+  static const Color practiceLavenderBackground = Color(0xFFEDE9FF);
+  static const Color practiceLavenderIcon = Color(0xFF6C4DF6);
+  static const Color darkPracticeLavenderBackground = Color(0xFF2E2452);
+  static const Color darkPracticeLavenderIcon = Color(0xFFA78BFA);
+
+  static const Color practiceYellowBackground = Color(0xFFFEF3C7);
+  static const Color practiceYellowIcon = Color(
+    0xFF92400E,
+  ); // Passes 7:1 on #FEF3C7
+  static const Color darkPracticeYellowBackground = Color(0xFF382F19);
+  static const Color darkPracticeYellowIcon = Color(0xFFFDE68A);
+
+  static const Color practiceMintBackground = Color(0xFFE6FAF4);
+  static const Color practiceMintIcon = Color(
+    0xFF065F46,
+  ); // Passes >6:1 on mint
+  static const Color darkPracticeMintBackground = Color(0xFF1B352B);
+  static const Color darkPracticeMintIcon = Color(0xFF6EE7B7);
+
+  // Note Card Tokens (Grey-lavender Note Style)
+  static const Color noteCardBackground = Color(0xFFF4F3F8);
+  static const Color noteCardBorder = Color(0xFFE8E5F4);
+  static const Color noteCardText = Color(
+    0xFF524F6B,
+  ); // Passes 5.5:1 on background
+  static const Color darkNoteCardBackground = Color(0xFF252136);
+  static const Color darkNoteCardBorder = Color(0xFF383152);
+  static const Color darkNoteCardText = Color(0xFFD4D0E5);
+
+  static const Color noteDots = Color(0xFF9CA3AF);
+  static const Color darkNoteDots = Color(0xFF6B7280);
+  static const Color textMutedDarker = Color(0xFF52525B);
+
+  // Rewards Screen Tokens (WCAG AA Compliant)
+  static const Color levelBadgeBackground = Color(0xFFF59E0B);
+  static const Color levelBadgeText = Colors.white;
+  static const Color levelBadgeBorder = Color(0xFFD97706);
+  static const Color darkLevelBadgeBackground = Color(0xFFD97706);
+
+  static const Color rewardsPillMintBackground = Color(0xFFD1FAE5);
+  static const Color rewardsPillMintText = Color(0xFF065F46); // > 5.5:1
+  static const Color darkRewardsPillMintBackground = Color(0xFF064E3B);
+  static const Color darkRewardsPillMintText = Color(0xFFA7F3D0);
+
+  static const Color rewardsPillCoralBackground = Color(0xFFFFEDE8);
+  static const Color rewardsPillCoralText = Color(0xFFC2410C); // > 5.0:1
+  static const Color darkRewardsPillCoralBackground = Color(0xFF431407);
+  static const Color darkRewardsPillCoralText = Color(0xFFFDBA74);
+
+  static const Color calendarCellInactive = Color(0xFFF1F5F9);
+  static const Color calendarCellInactiveText = Color(0xFF334155); // > 7:1
+  static const Color darkCalendarCellInactive = Color(0xFF231E38);
+  static const Color darkCalendarCellInactiveText = Color(0xFF94A3B8);
+
+  static const Color calendarCellActive = Color(0xFFFFEDE8);
+  static const Color calendarCellActiveIcon = Color(0xFFEA580C);
+  static const Color darkCalendarCellActive = Color(0xFF3E1B10);
+  static const Color darkCalendarCellActiveIcon = Color(0xFFFB923C);
+
+  static const Color calendarCellFreeze = Color(0xFFE0F2FE);
+  static const Color calendarCellFreezeIcon = Color(0xFF0284C7);
+  static const Color darkCalendarCellFreeze = Color(0xFF102A43);
+  static const Color darkCalendarCellFreezeIcon = Color(0xFF7DD3FC);
+
+  static const Color calendarCellRepaired = Color(0xFFFEF3C7);
+  static const Color calendarCellRepairedIcon = Color(0xFFD97706);
+  static const Color darkCalendarCellRepaired = Color(0xFF362407);
+  static const Color darkCalendarCellRepairedIcon = Color(0xFFFBBF24);
+
+  static const Color calendarTodayBorder = Color(0xFF6C4DF6);
+  static const Color darkCalendarTodayBorder = Color(0xFFA78BFA);
 }

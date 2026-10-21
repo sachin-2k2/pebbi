@@ -26,7 +26,11 @@ import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/missions/presentation/screens/mission_brief_placeholder_screen.dart';
 import '../features/emergency/presentation/screens/emergency_screen.dart';
-import '../features/missions/presentation/screens/free_talk_placeholder_screen.dart';
+import '../features/missions/presentation/screens/free_talk_screen.dart';
+import '../features/missions/presentation/screens/mission_session_placeholder_screen.dart';
+import '../features/review/presentation/screens/note_detail_placeholder_screen.dart';
+import '../features/review/presentation/screens/practice_placeholder_screen.dart';
+import '../features/rewards/presentation/screens/sticker_book_placeholder_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'rootNav',
@@ -137,7 +141,32 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/missions/free-talk',
-      builder: (context, state) => const FreeTalkPlaceholderScreen(),
+      builder: (context, state) => const FreeTalkScreen(),
+    ),
+    GoRoute(
+      path: '/missions/session',
+      builder: (context, state) {
+        final topicId = state.uri.queryParameters['topicId'] ?? '';
+        final style = state.uri.queryParameters['style'] ?? 'gentle';
+        return MissionSessionPlaceholderScreen(
+          topicId: topicId,
+          correctionStyle: style,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/review/practice',
+      builder: (context, state) {
+        final mode = state.uri.queryParameters['mode'] ?? 'mix2min';
+        return PracticePlaceholderScreen(mode: mode);
+      },
+    ),
+    GoRoute(
+      path: '/review/note/:id',
+      builder: (context, state) {
+        final noteId = state.pathParameters['id'] ?? '';
+        return NoteDetailPlaceholderScreen(noteId: noteId);
+      },
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -182,6 +211,13 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/rewards',
               builder: (context, state) => const RewardsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'sticker-book',
+                  builder: (context, state) =>
+                      const StickerBookPlaceholderScreen(),
+                ),
+              ],
             ),
           ],
         ),

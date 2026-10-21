@@ -802,6 +802,338 @@ abstract final class AppStrings {
     required String meaning,
     required String languageName,
     required String phrase,
-  }) =>
-      '$meaning. In $languageName: $phrase. Double tap to show full screen.';
+  }) => '$meaning. In $languageName: $phrase. Double tap to show full screen.';
+
+  // Free Talk Screen Strings
+  static const String freeTalkScreenTitle =
+      'What do you feel like talking about?';
+  static String freeTalkScreenSubtitle(String targetLanguageName) =>
+      'Any topic. Pebbi keeps the $targetLanguageName at your level.';
+  static const String correctionStyleLabel = 'CORRECTION STYLE';
+  static const String correctionStyleGentle = 'Gentle';
+  static const String correctionStyleLive = 'Live';
+  static const String correctionStyleNone = 'None';
+  static const String correctionHelperGentle =
+      'Fixes come at the end, in the debrief.';
+  static const String correctionHelperLive =
+      'Fixes appear in real time as you chat.';
+  static const String correctionHelperNone =
+      'Chat freely without any corrections.';
+
+  // Custom Topic ("My own") Strings
+  static const String customTopicSheetTitle = 'Choose your topic';
+  static const String customTopicFieldLabel =
+      'What would you like to talk about?';
+  static const String customTopicFieldHint =
+      'e.g., Space exploration, street food...';
+  static const String customTopicStart = 'Start talking';
+  static const String customTopicValidationEmpty =
+      'Please enter a topic to talk about.';
+  static const String customTopicMaxLengthError =
+      'Topic is too long (maximum 60 characters).';
+
+  // Free Talk State & Access Strings
+  static const String freeTalkOfflineNotice =
+      'Offline mode · Free talk requires internet';
+  static const String freeTalkLanguageUnsupported =
+      "Free talk isn't available for this language yet";
+  static const String freeTalkStartTalking = 'Start talking';
+
+  static String topicChipSemantics({
+    required String topic,
+    required bool isCustom,
+  }) {
+    if (isCustom) {
+      return '$topic topic. Double tap to type your topic.';
+    }
+    return '$topic, topic. Double tap to start talking.';
+  }
+
+  static String correctionStyleSemantics({
+    required String style,
+    required bool isSelected,
+  }) {
+    return '$style, ${isSelected ? 'selected' : 'not selected'}';
+  }
+
+  // Review Tab Strings
+  static const String reviewTitle = "Phrases you've learned";
+  static const String reviewSubtitle =
+      'Short and sweet: practice takes about 2 minutes.';
+  static const String addPhraseTooltip = 'Add a phrase';
+
+  // Review Segmented Tabs
+  static const String reviewSegmentPhrases = 'Phrases';
+  static const String reviewSegmentPractice = 'Practice';
+  static const String reviewSegmentLibrary = 'Library';
+  static String reviewSegmentSemantics({
+    required String label,
+    required int index,
+    required int total,
+    required bool isSelected,
+  }) => '$label, tab $index of $total${isSelected ? ', selected' : ''}';
+
+  // Invite A Friend Card
+  static const String inviteCardTitle = 'Invite a friend';
+  static const String inviteCardSubtitle =
+      'Languages stick faster when someone learns beside you.';
+  static const String inviteLinkSemantics = 'Invite link';
+  static const String inviteCopyAction = 'Copy';
+  static const String inviteCopiedAction = 'Copied';
+  static const String inviteCopiedAnnouncement =
+      'Invite link copied to clipboard';
+  static const String inviteShareAction = 'Share the invite';
+  static const String inviteShareSubject = 'Learn languages with me on Pebbi!';
+  static String inviteDefaultShareText(String url) =>
+      'Join me on Pebbi to speak languages for real! $url';
+  static const String inviteLinkUnavailable = 'Invite link unavailable offline';
+
+  // Practise Tricky Phrases
+  static const String practiseTrickyPhrasesAction = 'Practise tricky phrases';
+  static const String practiseTrickyNoPhrasesMessage =
+      'No tricky phrases right now · Keep learning on the Path!';
+
+  // Phrase Filter Chips
+  static const String phraseFilterAll = 'All';
+  static const String phraseFilterTricky = 'Tricky';
+  static const String phraseFilterNew = 'New';
+  static const String phraseFilterSaved = 'Saved';
+  static String phraseFilterSemantics({
+    required String label,
+    required bool isSelected,
+  }) => '$label filter${isSelected ? ', selected' : ''}';
+
+  // Phrases Empty States
+  static const String phrasesEmptyTitle = 'No phrases yet';
+  static const String phrasesEmptySubtitle =
+      'Finish your first stop and every phrase you meet lands here.';
+  static const String phrasesEmptyTrickyTitle = 'Nothing tricky right now';
+  static const String phrasesEmptyTrickySubtitle =
+      'Phrases you get wrong during practice will appear here for focused review.';
+  static const String phrasesEmptyNewTitle = 'No new phrases';
+  static const String phrasesEmptyNewSubtitle =
+      "New phrases from lessons will show up here until they're mastered.";
+  static const String phrasesEmptySavedTitle = 'No saved phrases';
+  static const String phrasesEmptySavedSubtitle =
+      'Tap the star on any phrase to save it to your phrasebook.';
+  static String phrasesMetCount(int count) =>
+      '$count ${count == 1 ? 'phrase' : 'phrases'} met so far';
+
+  // Add Phrase Sheet
+  static const String addPhraseSheetTitle = 'Add a phrase';
+  static const String addPhraseFieldLabel = 'What did you hear or read?';
+  static const String addPhraseFieldHint = 'e.g., Un café por favor...';
+  static const String addPhraseTranslateAction = 'Translate';
+  static const String addPhraseOfflineNotice =
+      'Translating new phrases requires an internet connection.';
+  static const String addPhraseEmptyError =
+      'Please enter a phrase to translate.';
+
+  // Phrase Detail Sheet
+  static const String phraseDetailTitle = 'Phrase details';
+  static const String phraseDetailSpacedRepetitionNotice =
+      'Spaced repetition details and history will appear here.';
+  static const String phraseDetailBookmarkAction = 'Bookmark phrase';
+  static const String phraseDetailRemoveBookmarkAction = 'Remove bookmark';
+
+  // Practice Segment Strings
+  static const String practiceStartButton = 'Start';
+  static String practice2MinTitle(int minutes) => '$minutes-minute practice';
+  static const String practice2MinSubtitle = 'Pebbi picks the best mix for you';
+  static const String practiceFlashcardsTitle = 'Flashcards';
+  static String practiceFlashcardsSubtitle(int count) =>
+      '$count ${count == 1 ? 'card' : 'cards'} · flipped both ways';
+  static const String practiceTrickyTitle = 'Tricky phrases';
+  static String practiceTrickySubtitle(int count) =>
+      '$count ${count == 1 ? 'phrase wants' : 'phrases want'} another look';
+  static const String practiceComingSoonNote =
+      "Listening, Speaking Lab, Stories and Script Lab are the next round of practice rooms — they'll land inside these tiles as they pass native-speaker review.";
+
+  // Practice Availability Notices
+  static const String practiceUnlockFirstLesson =
+      'Finish your first lesson to unlock practice';
+  static const String practiceNoFlashcards =
+      'No flashcards yet — learn phrases in lessons first';
+  static const String practiceNoTricky =
+      'No tricky phrases right now — great job!';
+
+  // Practice Semantics
+  static String practiceTileSemantics({
+    required String title,
+    required String subtitle,
+    required bool isStartAction,
+  }) => isStartAction
+      ? '$title. $subtitle. Double tap to start.'
+      : '$title, $subtitle. Double tap to open.';
+
+  // Library Segment Strings
+  static const String phrasebookTitle = 'Phrasebook';
+  static String phrasebookSavedCount(int count) => '$count saved';
+  static const String phrasebookEmptyNote =
+      'Nothing saved yet. Tap the star on any phrase — or add one you heard today with the + button.';
+  static const String seeAllSavedPhrases = 'See all saved phrases';
+  static const String grammarCultureNotesTitle = 'Grammar and culture notes';
+  static String grammarCultureNotesSubtitle(
+    String languageName,
+    String level,
+  ) =>
+      '$languageName notes for the level you\'re working through. Offline once opened.';
+  static const String noteOfflineUnavailableNotice =
+      'Connect once to read this note, then it works offline';
+  static const String selectNotePrompt = 'Select a note to read';
+  static const String emptyNotesTitle = 'No notes yet';
+  static const String emptyNotesSubtitle =
+      'Grammar and culture notes for this level will appear here.';
+  static String noteTileSemantics({
+    required String title,
+    required String excerpt,
+  }) => '$title. $excerpt. Double tap to read.';
+
+  // Star Button Semantics
+  static const String savePhraseSemantics = 'Save phrase';
+  static const String savedPhraseSemantics = 'Saved, double tap to remove';
+
+  // Placeholders
+  static const String practicePlaceholderTitle = 'Practice';
+  static const String practicePlaceholderSubtitle =
+      '2-minute mix, flashcards, and speed review are on the way.';
+  static const String libraryPlaceholderTitle = 'Library';
+  static const String libraryPlaceholderSubtitle =
+      'Saved phrasebook, grammar and culture notes will appear here.';
+  static const String selectPhrasePrompt =
+      'Select a phrase to view details and practice history';
+
+  // Review Tab Aliases and Convenience Getters
+  static const String reviewPhrasesLearnedTitle = reviewTitle;
+  static const String reviewPhrasesLearnedSubtitle = reviewSubtitle;
+  static const String tabPhrases = reviewSegmentPhrases;
+  static const String tabPractice = reviewSegmentPractice;
+  static const String tabLibrary = reviewSegmentLibrary;
+  static const String inviteCopy = inviteCopyAction;
+  static const String inviteCopied = inviteCopiedAction;
+  static const String copiedToClipboard = inviteCopiedAnnouncement;
+  static const String copyInviteLink = inviteLinkSemantics;
+  static const String inviteShareButton = inviteShareAction;
+  static const String practiseTrickyPhrasesButton = practiseTrickyPhrasesAction;
+  static const String filterAll = phraseFilterAll;
+  static const String filterTricky = phraseFilterTricky;
+  static const String filterNew = phraseFilterNew;
+  static const String filterSaved = phraseFilterSaved;
+  static const String reviewEmptyTitle = phrasesEmptyTitle;
+  static const String reviewEmptySubtitle = phrasesEmptySubtitle;
+  static String emptyFilterTitle(String filterName) => 'No $filterName phrases';
+  static const String emptyFilterSubtitle =
+      'Phrases matching this filter will appear here as you practice.';
+  static const String practicePlaceholderDescription =
+      practicePlaceholderSubtitle;
+  static const String libraryPlaceholderDescription =
+      libraryPlaceholderSubtitle;
+  static const String backToReview = 'Review';
+  static const String unsavePhraseAction = 'Unsave phrase';
+  static const String savePhraseAction = 'Save phrase';
+  static const String savePhraseToBook = 'Save to phrasebook';
+  static const String phraseStatusTricky = 'Tricky';
+  static const String phraseStatusNew = 'New';
+  static const String phraseStatusMastered = 'Mastered';
+  static const String translationRequiresInternet = addPhraseOfflineNotice;
+  static const String translationFailed =
+      'Translation failed. Please try again.';
+  static const String phraseSavedSuccess = 'Phrase saved to your phrasebook!';
+  static const String addPhraseHint = addPhraseFieldHint;
+  static const String addPhraseSheetSubtitle =
+      'Type in your native language or Spanish to translate and save.';
+  static const String translating = 'Translating...';
+  static const String translateAction = addPhraseTranslateAction;
+
+  // Rewards Screen Localization Strings
+  static const String rewardsTitle = 'Your progress';
+  static String rewardsSubtitle(String language, int level, String outfit) =>
+      '$language · level $level · $outfit';
+  static const String rewardsSettingsSemantics = 'Settings';
+
+  static const String rewardsStopsDoneLabel = 'stops done';
+  static const String rewardsPhrasesLabel = 'phrases';
+  static const String rewardsStarsLabel = 'stars';
+
+  static String rewardsDailyGoalTitle(int lessonCount) => lessonCount == 1
+      ? 'Daily goal: 1 lesson'
+      : 'Daily goal: $lessonCount lessons';
+  static const String rewardsDailyGoalMissed =
+      'Missed a day? No problem. Pebbi will be right here.';
+  static const String rewardsDailyGoalDone = 'Done today — nicely done!';
+  static String rewardsReminderSet(String formattedTime) =>
+      'Reminder set for $formattedTime';
+  static String rewardsLevelCaption(int level) => 'Level $level';
+  static String rewardsNextLevelCaption(int nextLevel, int stars) =>
+      'Level $nextLevel at $stars stars';
+  static const String rewardsTopLevel = 'Top level';
+  static String rewardsGoalSemantics(int done, int target) =>
+      'Daily goal, $done of $target ${target == 1 ? "lesson" : "lessons"} done';
+  static String rewardsLevelProgressSemantics(
+    int level,
+    int stars,
+    int? targetStars,
+  ) => targetStars != null
+      ? 'Level $level, $stars of $targetStars stars'
+      : 'Level $level, Top level with $stars stars';
+
+  static String rewardsStreakTitle(int days) =>
+      days == 1 ? '1 day streak' : '$days days streak';
+  static String rewardsStreakSubtitle(int activeDays, int freezes) =>
+      '${activeDays == 1 ? "1 active day" : "$activeDays active days"} · ${freezes == 1 ? "1 freeze ready" : "$freezes freezes ready"}';
+  static const String rewardsCalendarPill = 'calendar';
+  static String rewardsStreakSemantics(
+    int streakDays,
+    int activeDays,
+    int freezes,
+  ) =>
+      '${streakDays == 1 ? "1 day streak" : "$streakDays days streak"}, ${activeDays == 1 ? "1 active day" : "$activeDays active days"}, ${freezes == 1 ? "1 freeze ready" : "$freezes freezes ready"}';
+
+  static const String rewardsLast4WeeksTitle = 'Last 4 weeks';
+  static const String rewardsCalendarRepairNote =
+      'Repair a missed day with a 2-minute warm-up — never by paying.';
+  static String rewardsCalendarSemantics(int activeDays) =>
+      'Last 4 weeks, ${activeDays == 1 ? "1 active day" : "$activeDays active days"}';
+  static String rewardsCalendarCellSemantics(
+    int day,
+    String stateDescription,
+  ) => '$day, $stateDescription';
+
+  static const String rewardsQuestsTitle = 'Quests';
+  static String rewardsQuestsDone(int done, int total) => '$done/$total done';
+  static const String rewardsChestNote =
+      'Finish all four and the weekly chest opens with a sticker inside.';
+  static String rewardsQuestSemantics(String label, int current, int target) =>
+      '$label, $current of $target';
+
+  static const String rewardsBadgesTitle = 'Badges';
+  static String rewardsBadgesEarnedCount(int count) => '$count earned';
+  static const String rewardsBadgeLocked = 'locked';
+  static const String rewardsBadgeInProgress = 'in progress';
+  static const String rewardsBadgeEarned = 'earned';
+  static String rewardsBadgeEarnedOn(String date) => 'Earned $date';
+  static String rewardsBadgeSemanticsLocked(String name, String howToEarn) =>
+      '$name, locked. $howToEarn. Double tap for details.';
+  static String rewardsBadgeSemanticsInProgress(
+    String name,
+    int current,
+    int target,
+  ) => '$name, in progress, $current of $target. Double tap for details.';
+  static String rewardsBadgeSemanticsEarned(String name, String? date) =>
+      date != null
+      ? '$name, earned on $date. Double tap for details.'
+      : '$name, earned. Double tap for details.';
+
+  static String rewardsStickerBookButton(int count) =>
+      'Open the sticker book ($count)';
+  static const String rewardsNextChapterNote =
+      'Skill map and certificates are the next chapter — your progress is already saved for them.';
+  static const String rewardsStickerBookPlaceholderTitle = 'Sticker book';
+  static const String rewardsStickerBookPlaceholderSubtitle =
+      'Your collected stickers will live here.';
+  static const String rewardsSettingsPlaceholderTitle = 'Settings';
+  static const String rewardsSettingsPlaceholderSubtitle =
+      'App settings will live here.';
+  static const String rewardsBadgeDetailTitle = 'Badge details';
+  static const String rewardsBadgeDetailClose = 'Close';
 }

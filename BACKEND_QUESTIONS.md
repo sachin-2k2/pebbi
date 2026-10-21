@@ -483,7 +483,204 @@ Plain list of what this screen needs from the backend team and product alignment
    - The app explicitly displays: *"This phrasebook is for quick communication in common urgent situations. It does not replace local emergency services. In a true emergency, call the local emergency number."*
    - Confirm that Pebbi does **not** attempt to auto-dial or look up local dispatch numbers (911/112/999/119) due to legal liability, geolocation spoofing, and SIM roaming variations.
 
+## 20. Free Talk & Open AI Conversation Specifications
 
+### 20.1 What Free Talk Needs from the Backend (Plain List)
+1. **Topic Catalog Schema (`GET /api/v1/missions/free-talk/topics`)**:
+   - Dynamic list of topics per target language and learner proficiency level.
+   - Schema per topic: `id` (e.g. `today`, `food`, `custom`), `label` (localized), `is_custom` (boolean), optional `icon` / `emoji`.
+   - Fallback behavior when a target language does not yet have a specialized conversational AI curriculum.
+2. **Open-Ended Conversational AI Safety & Minor Protection (COPPA / GDPR-K)**:
+   - Free Talk permits free-form conversational steering. What server-side safety layers and real-time LLM system guardrails protect underage learners?
+   - What is the content policy regarding the **"News"** topic for minors (`AgeBand.child` vs `AgeBand.teen`)? Can sensitive or traumatic current events be filtered dynamically?
+3. **User-Entered Topic Moderation (`isTopicAllowed`)**:
+   - When the user selects "My own", they submit custom text (max 60 chars).
+   - What endpoint performs pre-flight text moderation before the session begins (`POST /api/v1/missions/free-talk/moderate-topic`)?
+   - What error codes or friendly rejection messages are returned if a custom topic violates safety guidelines?
+4. **Data Retention & Privacy of Custom Topics**:
+   - Does the backend persist user-entered custom topics in the user's permanent profile or analytics history?
+   - Recommendation: Discard user-typed custom topics immediately after the session concludes to prevent profiling or accidental storage of sensitive personal data.
+5. **Correction Style Synchronization & Debrief Formatting**:
+   - The user selects one of three styles: `Gentle` (corrections collected for post-session debrief), `Live` (in-stream conversational hints), or `None` (uninterrupted talk).
+   - How does the server receive the chosen correction style (`POST /api/v1/missions/session/start`)?
+   - How is the default correction style synchronized across devices per authenticated user?
+6. **Free Tier Quotas & Rate Limits**:
+   - Clarify the usage limits for Free Talk on the free plan (e.g., minutes per day, turns per conversation, or rewarded ad unlocks).
+   - Server-side error payload when free limits are reached (`limit_reached`).
 
+## 21. Review Tab & Spaced-Repetition Phrasebook Specifications
 
+### 21.1 What the Review Tab Needs from the Backend (Plain List)
+1. **Learned Phrases Schema & Sync (`GET /api/v1/review/phrases`)**:
+   - What is the endpoint schema for retrieving the user's learned phrases per target language?
+   - Expected payload per phrase:
+     - `id`: Unique phrase identifier.
+     - `user_id`: Authenticated user ID (or guest ID).
+     - `target_text`: Phrase in target language (e.g. "Una mesa para dos, por favor").
+     - `meaning`: Translation in the user's explanation language (e.g. "A table for two, please").
+     - `helper_line`: Optional phonetic/romanization guide (e.g. "Oo-nah meh-sah pah-rah dohs, pohr fah-vohr").
+     - `language_code`: Target language code (e.g. "es", "ja", "ar").
+     - `status`: Enum string (`"new" | "tricky" | "mastered"`).
+     - `box`: Integer (0..3) representing Leitner box level (Box 0 = 0 days, Box 1 = 1 day, Box 2 = 3 days, Box 3 = 7 days / strong).
+     - `next_review_at`: ISO 8601 UTC timestamp of next due review.
+     - `times_seen`: Total review attempts.
+     - `times_correct`: Successful review attempts.
+     - `is_saved`: Boolean flag indicating whether bookmarked/starred by the user.
+     - `created_at`: ISO 8601 UTC creation timestamp.
+2. **Leitner Spaced-Repetition Box Progression Ownership**:
+   - Per AGENTS.md §9: *Box 0..3: Correct answer: box +1 (max 3); wrong: reset to 0. Gaps in days by box: 0, 1, 3, 7. Box 3 = "strong"*.
+   - Does the backend compute and advance box levels and due dates on exercise/drill submission (`POST /api/v1/review/submissions`), or does the client calculate this offline and sync via the outbox queue?
+   - When offline, client uses local scheduling rules and pushes queued review answers upon reconnecting.
+3. **Tricky Phrase Classification Criteria**:
+   - When does a phrase transition from `new` to `tricky` or `mastered`?
+   - Client default: `isTricky = (box == 0 && timesSeen >= 2) || (timesSeen > 0 && timesCorrect / timesSeen < 0.6)`. Confirm whether backend uses this exact formula or server-side ML/item response theory.
+4. **Invite Link Generation & Attribution (`GET /api/v1/user/invite-link`)**:
+   - What endpoint returns the user's personal invite URL and share text?
+   - Format: `https://pebbi.app/join/{user_invite_code}` with dynamic localized share copy.
+   - What referral rewards are credited to both referrer and referee upon successful sign-up (e.g. stars, 3 days of free premium, or sticker unlocks)?
+5. **Child Safety on Social Sharing & Invite Links (`AgeBand.child`)**:
+   - Under COPPA and GDPR-K, should invite links and external share dialogs be suppressed or locked behind an adult parental gate for children under 13?
+   - Client enforces `InviteSafetyRules.canShareInvite(ageBand)` to prevent un-gated social sharing for young learners.
+6. **Translation & Add-Phrase API (`POST /api/v1/review/translate`)**:
+   - What endpoint translates custom phrases entered by the user in the "Add a phrase" sheet?
+   - Parameters: `{ query: string, source_language: string, target_language: string }`.
+   - Response: `{ target_text: string, meaning: string, helper_line?: string }`.
+   - Offline handling: Translation requires an active internet connection; if offline, client displays a clear non-blocking warning banner.
+7. **Strict Privacy Policy for User-Entered Translation Queries**:
+   - User-typed phrases in the translation sheet must never be logged to analytics, crash reports, or persistent server logs to ensure zero leakage of private or sensitive text.
+
+## 22. Review Tab: Practice & Library Specifications
+
+### 22.1 What Practice and Library Need from the Backend (Plain List)
+1. **Practice Session Generation & Orchestration (`POST /api/v1/review/practice/start`)**:
+   - What endpoint generates the item queue for the three practice modes?
+     - `mix2min`: High-yield mixed review across multiple exercise formats (listening, multiple choice, sentence builder). How many items constitute a 2-minute drill (e.g., 6–8 items)?
+     - `flashcards`: Spaced-repetition flashcard deck (target phrase prompt on front, meaning + helper line + audio on back). How many cards per session?
+     - `tricky`: Targeted remediation drill focused on Box 0 and low-accuracy phrases.
+   - What payload is sent to start a session (`{ mode: "mix2min" | "flashcards" | "tricky", target_language: string }`), and what question sequence is returned?
+
+2. **Spaced-Repetition Scoring & Box Progression from Practice Drills**:
+   - How do answers during Practice drills update Leitner box progression?
+     - Do flashcard self-assessments (e.g. "I knew it" vs "Review again") advance Leitner box levels identically to curriculum lesson questions?
+     - Does completing a 2-minute practice session award stars (e.g. 10 stars) or increment daily streak activity?
+
+3. **Grammar & Culture Notes CMS API (`GET /api/v1/library/notes`)**:
+   - What endpoint delivers grammar and cultural notes tailored to the learner's target language and proficiency level?
+   - Query parameters: `target_language` (e.g. `es`), `level` (e.g. `know_a_bit` / `A1`), `explanation_language` (e.g. `en`).
+   - Expected item payload:
+     - `id`: Unique note identifier (e.g. `es_a1_gender_basics`).
+     - `emoji`: Visual icon emoji (e.g. `☕`, `👋`, `🍽️`).
+     - `title`: Localized title (e.g. "Order politely: por favor & quisiera").
+     - `excerpt`: 1–2 line plain text summary preview.
+     - `trailing_dots`: Integer (0..3) representing conceptual depth / difficulty level.
+     - `is_free`: Boolean indicating whether free users can read the note without Premium.
+     - `body_url` or `body_content`: Rich text or structured markdown payload.
+
+4. **Note Body Schema & Rich Text Asset Delivery**:
+   - What format will the note body be delivered in?
+     - Structured JSON blocks (e.g. `{ type: "header" | "paragraph" | "callout" | "phrase_example", text: "...", audio_url?: "..." }`), or
+     - Standard Markdown?
+   - Will phrase examples inside notes include tap-to-play audio URLs and one-tap "Save to phrasebook" actions?
+
+5. **Offline Caching & Content Pack Bundling for Library Notes**:
+   - Can notes be downloaded as part of offline unit packs (AGENTS.md §5.1), or are they cached on-demand when first opened?
+   - Client implementation: Notes summaries and opened note bodies are cached locally in SQLite/drift; if a user taps an uncached note while offline, a non-blocking "Available when back online" notice is presented without error crashes.
+
+6. **Saved Phrases & Phrasebook Sync (`GET /api/v1/review/phrasebook/saved`)**:
+   - What endpoint retrieves the learner's bookmarked/starred phrases?
+   - Parameters: `target_language`, pagination (`limit`, `offset`), and sorting (`saved_at_desc` vs `alphabetical`).
+   - What is the endpoint for toggling saved state: `POST /api/v1/review/phrases/{id}/star` with `{ is_saved: boolean }`?
+   - When a user saves a correction from an AI Mission Debrief, does it sync into this same phrasebook collection?
+
+## 23. Rewards Tab: Progression, Streaks, Quests & Badges Specifications
+
+### 23.1 What the Rewards Tab Needs from the Backend (Plain List)
+1. **User Rewards Summary Endpoint (`GET /api/v1/rewards/summary`)**:
+   - What endpoint delivers the learner's aggregated rewards status?
+   - Expected payload:
+     - `level`: Current user level integer (1..8).
+     - `level_name` / `outfit_name`: Name of the unlocked outfit (e.g., "Scarf", "Explorer", "Chef").
+     - `total_stars`: Total cumulative stars earned across all lessons, missions, and test-outs.
+     - `current_level_stars`: Cumulative star baseline at start of current level.
+     - `next_level_stars`: Star target required to reach the subsequent level (null if level 8 / max level).
+     - `stops_done`: Cumulative count of curriculum stops completed.
+     - `phrases_learned`: Total count of phrases learned.
+     - `daily_goal`:
+       - `target_phrases`: Daily phrase target (e.g., 5).
+       - `completed_phrases`: Phrases practiced/learned today.
+       - `reminder_time`: Configured reminder time string (e.g., "19:30" / "7:30 PM").
+     - `streak`:
+       - `current_days`: Current active consecutive day streak count.
+       - `active_days_in_window`: Total active days within the rolling 28-day window.
+       - `freezes_available`: Count of streak freeze tokens currently banked (e.g., 2).
+       - `freezes_max`: Maximum allowed freeze storage limit.
+     - `calendar`: Array of 28 daily records covering the rolling window ending today:
+       - `date`: ISO-8601 date string (`YYYY-MM-DD`).
+       - `day_number`: Month day integer (1..31).
+       - `state`: Status string (`"none"` | `"active"` | `"freeze_used"` | `"repaired"`).
+     - `quests`: Array of active quests:
+       - `id`: Quest identifier (e.g., `speak_phrases`, `first_try_stop`, `keep_streak`).
+       - `emoji`: Visual icon emoji.
+       - `label`: Localized task description.
+       - `current_count`: Current user progress.
+       - `target_count`: Required target count.
+       - `is_completed`: Boolean flag.
+     - `badges`: Array of 12 system badges:
+       - `id`: Badge identifier.
+       - `emoji`: Visual icon emoji.
+       - `title`: Localized badge title.
+       - `how_to_earn`: Explanatory requirement string.
+       - `status`: Status string (`"locked"` | `"in_progress"` | `"earned"`).
+       - `has_progress_bar`: Boolean indicating if partial progress is displayed.
+       - `current_count`: Current progress value (nullable).
+       - `target_count`: Target requirement value (nullable).
+       - `earned_at`: ISO-8601 timestamp string when earned (nullable).
+
+2. **Level Progression Curves & Star Thresholds (Levels 1–8)**:
+   - What are the authoritative star milestones for each of the 8 levels?
+     - Client prototype baseline: Level 1 (0–39 stars, Scarf), Level 2 (40–99 stars), Level 3 (100–179 stars), Level 4 (180–279 stars), Level 5 (280–399 stars), Level 6 (400–549 stars), Level 7 (550–749 stars), Level 8 (750+ stars, Top level).
+   - What outfit unlocks correspond to each level, and how are mascot assets delivered (bundled SVGs vs dynamic Rive/Lottie downloads)?
+
+3. **Streak Attribution, Timezones & Midnight Cutoffs**:
+   - How does the server determine whether an activity counts toward "today"?
+   - Does the client report the user's local timezone (e.g., `America/New_York` or UTC offset) in headers or request payloads?
+   - What is the cutoff grace period? (e.g., does the day end strictly at 00:00 local time, or is there a 3:00 AM / 4:00 AM nocturnal grace period for late-night learners)?
+
+4. **Streak Freezes & Streak Repair Mechanics**:
+   - **Auto-Consumption**: Does the backend automatically consume a banked freeze when a user misses an active day, or must the user manually activate it?
+   - **Acquisition**: How are freezes earned? (e.g., purchase with gems/stars, rewarded ads, streak milestones, or included with Premium)?
+   - **Repair**: The UI displays a reassuring footnote: *"Missed a day? Practice today to keep your streak safe."* What are the exact backend rules for retroactive streak repair? Does completing a lesson today restore a single missed day from yesterday, and what is the window limit?
+
+5. **Quests Cadence & Weekly Chest Rewards**:
+   - Are the 3 quests daily (resetting at midnight local time) or weekly?
+   - The UI includes a note: *"Complete all quests this week for a mystery chest."*
+     - What triggers the weekly mystery chest unlock?
+     - What rewards can the mystery chest contain (e.g., stars, streak freezes, cosmetic stickers, temporary premium pass)?
+     - What endpoint handles chest claim: `POST /api/v1/rewards/quests/chest/claim`?
+
+6. **Badge Event Triggers & Server-Side Evaluation**:
+   - Are badges calculated server-side asynchronously on event submission (e.g. after lesson finish, mission completion, review session), or evaluated synchronously in real-time?
+   - How are the 12 badges defined:
+     1. `First hello`: Complete stop 1 (0/1).
+     2. `10 stars`: Reach 10 stars (0/10).
+     3. `Fifty stars`: Reach 50 stars (0/50).
+     4. `Review hero`: Practice 20 tricky phrases (0/20).
+     5. `Conversation starter`: Complete 1 mission (0/1).
+     6. `Scene stealer`: Complete 5 missions across different scenes (0/5).
+     7. `Voice starter`: Use speech/microphone 10 times (0/10).
+     8. `Three days running`: Achieve a 3-day streak (0/3).
+     9. `Week of fire`: Achieve a 7-day streak (0/7).
+     10. `Script explorer`: Learn 20 phrases in non-Latin scripts or new topics (0/20).
+     11. `Polyglot heart`: Practice 2 different languages (0/2).
+     12. `Café regular`: Complete the Café roleplay mission 3 times (0/3).
+   - What push notification or in-app burst celebration triggers when a badge is unlocked?
+
+7. **Rolling 28-Day Calendar Window Alignment**:
+   - The UI displays a 4×7 grid representing exactly the last 28 days ending on "today".
+   - Does the backend return the 28 pre-computed day states in `GET /api/v1/rewards/summary`, or does the client compute the rolling window from an activity history array?
+
+8. **Child Safety Policy (`AgeBand.child`) on Gamification & Streak Pressure**:
+   - Under COPPA/GDPR-K and child digital wellbeing guidelines (UK Age Appropriate Design Code), aggressive streaks and loss aversion tactics are restricted.
+   - Client rule (`RewardsSafetyRules`): For `AgeBand.child`, the app disables high-pressure streak warnings ("loss of streak" notifications, urgent countdowns) and hides peer invite mechanics.
+   - Question: Does the backend also suppress push reminder alerts with streak-loss urgency for child accounts?
 

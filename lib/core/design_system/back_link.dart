@@ -10,11 +10,7 @@ import '../theme/app_typography.dart';
 /// - Minimum 48dp tap target for accessibility.
 /// - Reused across Emergency Phrasebook ("< Missions") and Settings ("< Back to the path").
 class BackLink extends StatelessWidget {
-  const BackLink({
-    super.key,
-    required this.label,
-    this.onTap,
-  });
+  const BackLink({super.key, required this.label, this.onTap});
 
   /// The label displayed beside the chevron (e.g. 'Missions', 'Back to the path').
   final String label;
