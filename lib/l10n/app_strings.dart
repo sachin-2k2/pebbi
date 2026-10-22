@@ -341,6 +341,50 @@ abstract final class AppStrings {
 
   static const String lessonFinishPlaceholderTitle = 'Lesson Complete';
 
+  // Lesson Complete Screen
+  static const String lessonCompleteTitle = 'Lesson complete!';
+  static const String continueButton = 'Continue';
+  static const String lessonCompleteDefaultSubtitle = "You're doing great.";
+
+  static String lessonCompleteSubtitleForStars(int stars) {
+    switch (stars) {
+      case 3:
+        return "You're doing great.";
+      case 2:
+        return 'Nice progress! Keep it up.';
+      case 1:
+        return 'Good practice! Every step counts.';
+      case 0:
+      default:
+        return 'You made it through! Practice builds fluency.';
+    }
+  }
+
+  static String firstTryCountLine(int correct, int total) =>
+      '$correct of $total right on the first try';
+
+  static const String youCanNowSayTitle = 'You can now say';
+
+  static String moreLearnedPhrasesCount(int count) => '+$count more';
+
+  static String dayStreakValueLabel(int days) => 'day streak';
+
+  static const String goalDoneTitle = 'Goal done!';
+  static const String dailyGoalLabel = 'daily goal';
+
+  static String phraseRowSemantics({
+    required String phrase,
+    required String meaning,
+  }) =>
+      '$phrase. $meaning. Double tap to hear it.';
+
+  static String lessonCompleteAnnouncement({
+    required int stars,
+    required int correct,
+    required int total,
+  }) =>
+      'Lesson complete. $stars of 3 stars. $correct of $total right on the first try.';
+
   // Placement Results Screen
   static const String placementResultSubtitle =
       "That's your spot — and nothing here locks you in.";

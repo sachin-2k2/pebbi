@@ -5,9 +5,12 @@ import '../../domain/path_repository.dart';
 import '../../domain/track.dart';
 import '../../domain/unit.dart';
 
+import '../../../lesson/presentation/providers/lesson_providers.dart';
+
 /// Provider for [PathRepository].
 final pathRepositoryProvider = Provider<PathRepository>((ref) {
-  return MockPathRepository();
+  final progressRepo = ref.watch(progressRepositoryProvider);
+  return MockPathRepository(progressRepository: progressRepo);
 });
 
 /// Currently selected track filter on the Path screen.

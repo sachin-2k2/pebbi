@@ -1,3 +1,4 @@
+import 'lesson_completion.dart';
 import 'lesson_result.dart';
 
 /// Repository interface for saving lesson progress and queuing offline sync events.
@@ -9,6 +10,22 @@ abstract interface class ProgressRepository {
   Future<void> saveLessonProgress({
     required String userId,
     required LessonResult result,
+  });
+
+  /// Records lesson completion for [stopId] and [userId], returning the display-ready [LessonCompletion].
+  ///
+  /// Guarantees idempotency via [clientEventId].
+  Future<LessonCompletion> completeLesson({
+    required String userId,
+    required String stopId,
+    required LessonResult result,
+    String? clientEventId,
+  });
+
+  /// Retrieves the cached [LessonCompletion] for [stopId] and [userId], if previously completed.
+  Future<LessonCompletion?> getLessonCompletion({
+    required String userId,
+    required String stopId,
   });
 
   /// Fetches cached lesson results for [userId].

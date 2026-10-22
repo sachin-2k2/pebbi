@@ -151,7 +151,11 @@ abstract final class AppColors {
   static const Color accentBlue = Color(0xFF0EA5E9);
   static const Color accentRose = Color(0xFFF43F5E);
   static const Color accentPink = Color(0xFFF43F5E);
-  static const Color accentSlate = Color(0xFF475569);
+  // Lesson Completion Tokens (WCAG AA & non-text contrast compliant)
+  static const Color goldStar = Color(0xFFD97706); // Passes 3.26:1 on white (WCAG non-text)
+  static const Color goldStarOutline = Color(0xFFD8D4E8);
+  static const Color darkGoldStar = Color(0xFFFBBF24);
+  static const Color darkGoldStarOutline = Color(0xFF4B4366);
 
   // Dark theme derivations (assumed from tokens per spec)
   static const Color darkBackground = Color(0xFF13101E);

@@ -821,3 +821,44 @@ Plain list of what the speaking exercise needs from the backend team and product
    - Under COPPA and Apple Kids category guidelines, collecting audio recordings from children under 13 requires verifiable parental consent.
    - The client enforces `SpeakingSafetyRules.shouldAllowSpeaking(ageBand)`, automatically bypassing the microphone and presenting Screen B (self-check) for `AgeBand.child`.
    - Please confirm whether child accounts will ever be permitted voice practice with parental consent, or if child profiles remain permanently in self-check mode.
+
+## 27. Lesson Complete Screen & Completion Synchronization (`POST /api/v1/lessons/{stop_id}/complete`)
+
+Plain list of what the lesson complete screen and completion payload need from the backend team:
+1. **Endpoint Contract (`POST /api/v1/lessons/{stop_id}/complete`)**:
+   - **Request Payload**:
+     - `client_event_id`: Unique client UUID (e.g. `evt_guest_1_stop_1_1_1729598400000`) for idempotent outbox synchronization and duplicate avoidance.
+     - `user_id`: Authenticated user ID or guest identifier (`guest_<uuid>`).
+     - `stop_id`: ID of the completed lesson stop.
+     - `completed_at`: UTC ISO-8601 timestamp.
+     - `total_items`: Total number of main exercises presented in the session.
+     - `item_records`: Map of per-item performance `{ [item_id]: { seen: bool, first_try_correct: bool?, attempts: int, hints_used: int, skipped: bool, credit: double, self_check_reason: string? } }`.
+   - **Response Payload**:
+     - `stars_earned`: Integer (0–3 stars).
+     - `scored_count`: Total items evaluated for star score.
+     - `first_try_correct_count`: Number of items answered correctly on first try.
+     - `learned_phrases`: List of phrases learned in the lesson `[ { id, emoji, text, meaning, audio_text, audio_locale, helper_line, is_rtl } ]`.
+     - `streak_days`: Consecutive active days.
+     - `daily_goal`: `{ status: 'done' | 'in_progress', current_minutes: int, target_minutes: int }`.
+     - `next_stop_id`: ID of the newly unlocked next node on the Path.
+     - `unit_completed`: Boolean indicating if this stop was the last stop of a unit.
+     - `new_badge_ids`: List of any badge IDs unlocked by this lesson.
+     - `new_sticker_ids`: List of any sticker IDs unlocked by this lesson.
+     - `level_up`: Boolean indicating if the total stars triggered an avatar level-up.
+2. **Server-Side Star Scoring Algorithm & Thresholds**:
+   - Does the backend compute stars strictly on accuracy ratio `first_try_correct / scored` ($\ge 90\% \to 3$ stars, $\ge 60\% \to 2$ stars, $< 60\% \to 1$ star, all skipped $\to 0$ stars), or are exercise types weighted differently (e.g., build-sentence vs choice vs speak)?
+   - How are self-check speaking items (`credit: 0.5`) and skipped items (`credit: 0.0`) weighted in the server-side star score?
+3. **Learned Phrases Selection & Audio Payloads**:
+   - What logic determines which phrases are included in `learned_phrases`? Are they exclusively items introduced via `ItemType.newPhrase` in this specific stop, or the top key phrases from the stop?
+   - Will the backend supply audio URLs or rely on the client's on-device TTS (`audio_text` + `audio_locale`)?
+   - How are non-Latin scripts (Arabic, Japanese) handled for `is_rtl` and typography font fallbacks?
+4. **Daily Goal & Streak Computation**:
+   - How does the server determine if the daily goal is `done`? Does finishing a single lesson satisfy the goal, or is it based on daily minutes / item count?
+   - How does the server resolve timezones when incrementing streaks? Should the client submit the device's IANA timezone (e.g. `Europe/Madrid`) or UTC offset with each completion?
+5. **Guest Sign-In Prompt Placement**:
+   - When a guest completes their first lesson, should the prompt to register/sign-in be presented immediately on the finish screen before continuing, or after returning to the Path screen?
+   - The client currently places a `// TODO(question: guest sign-in prompt timing)` at the Continue button on `LessonCompleteScreen`.
+6. **Child Safety & COPPA Gamification Restrictions**:
+   - Under child-safe settings (`AgeBand.child`), gamification pressure elements (such as streak counters) can cause anxiety. The client enforces `RewardsSafetyRules.shouldShowRewardsPressureElements(ageBand)`, silencing the streak tile when false.
+   - Please confirm if the backend similarly silences streak notifications and countdowns for child accounts.
+

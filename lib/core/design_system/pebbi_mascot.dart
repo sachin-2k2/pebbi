@@ -9,6 +9,7 @@ enum PebbiExpression {
   sad,
   surprised,
   relaxed,
+  excited,
 }
 
 enum PebbiOutfit { defaultPurple, explorer, casual, backpack, scarf }
@@ -132,7 +133,8 @@ class _PebbiPainter extends CustomPainter {
         ..quadraticBezierTo(w * 0.64, h * 0.42, w * 0.70, h * 0.46);
       canvas.drawPath(winkPath, darkPaint);
     } else if (expression == PebbiExpression.happyClosed ||
-        expression == PebbiExpression.surprised) {
+        expression == PebbiExpression.surprised ||
+        expression == PebbiExpression.excited) {
       final leftArc = Path()
         ..moveTo(w * 0.33, h * 0.47)
         ..quadraticBezierTo(w * 0.38, h * 0.41, w * 0.43, h * 0.47);
@@ -159,7 +161,8 @@ class _PebbiPainter extends CustomPainter {
     }
 
     // 7. Smile / Mouth
-    if (expression == PebbiExpression.surprised) {
+    if (expression == PebbiExpression.surprised ||
+        expression == PebbiExpression.excited) {
       final mouthPaint = Paint()
         ..color = const Color(0xFF1E1647)
         ..style = PaintingStyle.fill;

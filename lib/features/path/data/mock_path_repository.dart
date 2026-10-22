@@ -1,3 +1,4 @@
+import '../../lesson/domain/progress_repository.dart';
 import '../domain/path_node.dart';
 import '../domain/path_repository.dart';
 import '../domain/track.dart';
@@ -9,10 +10,12 @@ import '../domain/unit.dart';
 class MockPathRepository implements PathRepository {
   MockPathRepository({
     this.completedStopIds = const {},
+    this.progressRepository,
     this.simulatedDelay = Duration.zero,
   });
 
   final Set<String> completedStopIds;
+  final ProgressRepository? progressRepository;
   final Duration simulatedDelay;
 
   @override
@@ -87,35 +90,51 @@ class MockPathRepository implements PathRepository {
     }
 
     // Default 'everyday' track matching screenshots exactly
+    final effectiveCompleted = Set<String>.from(completedStopIds);
+    if (progressRepository != null) {
+      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_1') ||
+          await progressRepository!.isStopCompleted(userId: userId, stopId: '1')) {
+        effectiveCompleted.add('stop_1_1');
+      }
+      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_2') ||
+          await progressRepository!.isStopCompleted(userId: userId, stopId: '2')) {
+        effectiveCompleted.add('stop_1_2');
+      }
+      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_3') ||
+          await progressRepository!.isStopCompleted(userId: userId, stopId: '3')) {
+        effectiveCompleted.add('stop_1_3');
+      }
+    }
+
     final isUnit1Done =
-        completedStopIds.contains('stop_1_1') &&
-        completedStopIds.contains('stop_1_2') &&
-        completedStopIds.contains('stop_1_3');
+        effectiveCompleted.contains('stop_1_1') &&
+        effectiveCompleted.contains('stop_1_2') &&
+        effectiveCompleted.contains('stop_1_3');
 
     final unit1Nodes = <PathNode>[
       LessonStopNode(
         id: 'stop_1_1',
         title: 'Say hello',
-        state: completedStopIds.contains('stop_1_1')
+        state: effectiveCompleted.contains('stop_1_1')
             ? NodeState.done
             : NodeState.current,
-        starsEarned: completedStopIds.contains('stop_1_1') ? 3 : 0,
+        starsEarned: effectiveCompleted.contains('stop_1_1') ? 3 : 0,
         stopNumber: 1,
         totalStopsInUnit: 3,
       ),
       LessonStopNode(
         id: 'stop_1_2',
         title: 'Nice to meet you',
-        state: completedStopIds.contains('stop_1_2')
+        state: effectiveCompleted.contains('stop_1_2')
             ? NodeState.done
-            : (completedStopIds.contains('stop_1_1')
+            : (effectiveCompleted.contains('stop_1_1')
                   ? NodeState.current
                   : NodeState.locked),
-        lockReason: completedStopIds.contains('stop_1_1')
+        lockReason: effectiveCompleted.contains('stop_1_1')
             ? LockReason.none
             : LockReason.progress,
-        isNext: !completedStopIds.contains('stop_1_1'),
-        starsEarned: completedStopIds.contains('stop_1_2') ? 3 : 0,
+        isNext: !effectiveCompleted.contains('stop_1_1'),
+        starsEarned: effectiveCompleted.contains('stop_1_2') ? 3 : 0,
         stopNumber: 2,
         totalStopsInUnit: 3,
       ),

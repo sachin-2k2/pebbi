@@ -559,6 +559,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
   }
 
   void _finishSession() {
+    if (state.status == ExerciseStatus.completed) return;
     state = state.copyWith(status: ExerciseStatus.completed);
 
     if (state.stopId != null && progressRepository != null) {
@@ -572,6 +573,14 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
       progressRepository!.saveLessonProgress(
         userId: userId,
         result: lessonResult,
+      );
+      final eventId =
+          'evt_${userId}_${state.stopId}_${DateTime.now().millisecondsSinceEpoch}';
+      progressRepository!.completeLesson(
+        userId: userId,
+        stopId: state.stopId!,
+        result: lessonResult,
+        clientEventId: eventId,
       );
     }
   }

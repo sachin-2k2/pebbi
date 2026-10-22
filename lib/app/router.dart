@@ -9,7 +9,7 @@ import '../features/onboarding/presentation/screens/reminder_step_screen.dart';
 import '../features/onboarding/presentation/screens/meet_pebbi_step_screen.dart';
 import '../features/onboarding/presentation/screens/premium_offer_step_screen.dart';
 import '../features/onboarding/presentation/screens/path_ready_step_screen.dart';
-import '../features/lesson/presentation/screens/lesson_finish_placeholder_screen.dart';
+import '../features/lesson/presentation/screens/lesson_complete_screen.dart';
 import '../features/premium/presentation/screens/premium_screen.dart';
 import '../features/onboarding/presentation/screens/language_step_screen.dart';
 import '../features/onboarding/presentation/screens/learn_language_step_screen.dart';
@@ -44,6 +44,10 @@ final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/welcome',
   routes: [
+    GoRoute(
+      path: '/',
+      redirect: (context, state) => '/path',
+    ),
     GoRoute(
       path: '/welcome',
       builder: (context, state) => const WelcomeScreen(),
@@ -107,7 +111,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/lesson/:id/finish',
-      builder: (context, state) => LessonFinishPlaceholderScreen(
+      builder: (context, state) => LessonCompleteScreen(
         stopId: state.pathParameters['id'] ?? '1',
       ),
     ),
