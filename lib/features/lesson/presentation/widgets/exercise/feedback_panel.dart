@@ -5,25 +5,28 @@ import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/app_strings.dart';
 import '../../../domain/exercise.dart';
+import '../../../domain/session_streak_rules.dart';
 import '../../providers/exercise_session_state.dart';
 import 'feedback_actions.dart';
 import 'feedback_header.dart';
 
 /// Animated sliding feedback panel presented after pressing "Check".
 ///
-/// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
-/// accessible live region announcement, handles correct & wrong variants.
+/// Follows AGENTS.md §3 & §4: under 150 lines, build under 50 lines,
+/// accessible live region announcement, handles correct, streak line & wrong variants.
 class FeedbackPanel extends StatelessWidget {
   const FeedbackPanel({
     super.key,
     required this.kind,
     required this.exercise,
+    this.currentStreak = 0,
     required this.onContinue,
     required this.onWhy,
   });
 
   final FeedbackKind kind;
   final Exercise exercise;
+  final int currentStreak;
   final VoidCallback onContinue;
   final VoidCallback onWhy;
 
@@ -33,8 +36,12 @@ class FeedbackPanel extends StatelessWidget {
     final bg = isCorrect ? AppColors.successSurface : AppColors.errorSurface;
     final border = isCorrect ? AppColors.successBorder : AppColors.errorBorder;
 
+    final streakText =
+        (isCorrect && SessionStreakRules.shouldShowStreak(currentStreak))
+        ? ' ${AppStrings.streakInARow(currentStreak)}'
+        : '';
     final announcement = isCorrect
-        ? 'Correct. ${AppStrings.feedbackCorrectTitle}'
+        ? 'Correct. ${AppStrings.feedbackCorrectTitle}$streakText'
         : 'Not quite. ${AppStrings.feedbackCorrectAnswer(exercise.correctAnswerText)}';
 
     return Semantics(
@@ -94,12 +101,29 @@ class FeedbackPanel extends StatelessWidget {
 
   Widget _buildBodyContent(bool isCorrect) {
     if (isCorrect) {
-      return Text(
-        exercise.feedbackSuccessText,
-        style: AppTypography.bodyMedium.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
-        ),
+      final showStreak = SessionStreakRules.shouldShowStreak(currentStreak);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            exercise.feedbackSuccessText,
+            style: AppTypography.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          if (showStreak) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              '✨ ${AppStrings.streakInARow(currentStreak)}',
+              style: AppTypography.caption.copyWith(
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF0E8A63),
+              ),
+            ),
+          ],
+        ],
       );
     }
 

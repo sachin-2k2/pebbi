@@ -1,3 +1,5 @@
+import '../features/lesson/domain/self_check_reason.dart';
+
 /// Centralized application strings and accessibility labels.
 ///
 /// Follows AGENTS.md requirement that all UI text is localized and not hardcoded.
@@ -237,6 +239,107 @@ abstract final class AppStrings {
       'Word tile $text. Double tap to place into sentence.';
   static String tileInAnswerSemantics(String text, int position, int total) =>
       'Placed word tile $text, position $position of $total. Double tap to return to bank.';
+
+  // Lesson Player & Item Types
+  static const String newPhraseTag = 'New phrase';
+  static const String casualRegisterTag = 'casual';
+  static const String politeRegisterTag = 'polite';
+  static const String speedNormal = 'Normal';
+  static const String speedNormalSemantics = 'Play at normal speed';
+  static const String speedSlow = 'Slow';
+  static const String speedSlowSemantics = 'Play slowly';
+  static const String phrasebookHint =
+      'Tap any word you want to keep in your phrasebook.';
+  static const String gotIt = 'Got it';
+  static const String gotItSemantics = 'Got it, continue to next item';
+  static String tokenTapToSave(String text) =>
+      '$text, tap to keep in your phrasebook';
+  static String tokenTappedSaved(String text) =>
+      '$text, kept in your phrasebook';
+
+  // Match the pairs
+  static const String matchPairsTitle = 'Match the pairs';
+  static String matchPairsProgress(int matched, int total) =>
+      '$matched of $total matched';
+  static const String matchPairsNote = 'Match every pair to carry on';
+  static const String matchPairsNotAPair = 'Not a pair, try again';
+  static String matchPairsCardSelected(String text) => '$text, selected';
+  static String matchPairsCardMatched(String text1, String text2) =>
+      '$text1 matched with $text2';
+
+  // Tap what you hear & Choose the reply
+  static const String tapWhatYouHearTitle = 'Tap what you hear';
+  static const String cantListenNow = "Can't listen now";
+  static const String cantListenNowSemantics =
+      "Can't listen now, skip without penalty";
+  static const String chooseTheReplyTitle = 'Choose the reply';
+  static const String tapToHearAgain = 'Tap to hear again';
+  static const String tapToHearAgainSemantics = 'Tap to hear dialogue again';
+  static String streakInARow(int count) => '$count in a row!';
+
+  // Speaking Exercise (Screen A & Screen B)
+  static const String speakingPlaceholderTitle = 'Say it out loud';
+  static const String speakingPlaceholderBody =
+      'Speaking exercise\n(coming next)';
+  static const String speakTitle = 'Say it out loud';
+  static const String speakTapMicPrompt = 'Tap the mic and say the sentence';
+  static const String speakRatherNotAction =
+      "I'd rather not speak right now";
+  static const String speakRatherNotActionSemantics =
+      "I'd rather not speak right now, switch to self-check";
+  static const String speakTipNote = 'Speak, or skip — nothing is lost';
+  static const String micReadySemantics =
+      'Microphone ready. Tap to start speaking.';
+  static const String micListeningSemantics =
+      'Listening... Speak the phrase now. Tap to stop.';
+  static const String micDisabledSemantics = 'Microphone disabled.';
+  static const String micStopActionSemantics = 'Stop listening';
+  static const String speakMatchedFeedback = '✓ Perfect pronunciation!';
+
+  // Self-Check Fallback (Screen B)
+  static const String selfCheckTitle = 'Say it aloud, then tap below';
+  static const String selfCheckSubNotHeard =
+      "Didn't catch that — try saying it to yourself!";
+  static const String selfCheckSubUserChose =
+      'No problem at all — practice saying it quietly.';
+  static const String selfCheckSubPermissionDenied =
+      'Microphone access is off — you can still practice aloud.';
+  static const String selfCheckSubUnavailable =
+      "Speech recognition isn't available right now — say it aloud!";
+  static const String selfCheckSubSettingOff =
+      'Speaking practice is turned off in Settings.';
+  static const String selfCheckSubPolicy =
+      'Voice practice is paused under current safety policy.';
+  static const String selfCheckHearAgain = '🔊 Hear it again';
+  static const String selfCheckHearAgainSemantics =
+      'Play phrase pronunciation again';
+  static const String selfCheckSaidItAction = 'I said it ✓';
+  static const String selfCheckHalfCreditLabel = '(half credit)';
+  static const String selfCheckSaidItSemantics =
+      'I said it, earn half credit';
+  static const String selfCheckSkipAction = 'Skip for now';
+  static const String selfCheckSkipSemantics =
+      'Skip this speaking exercise without penalty';
+
+  static String selfCheckSubtitleFor(SelfCheckReason? reason) {
+    switch (reason) {
+      case SelfCheckReason.userChose:
+        return selfCheckSubUserChose;
+      case SelfCheckReason.permissionDenied:
+        return selfCheckSubPermissionDenied;
+      case SelfCheckReason.unavailable:
+        return selfCheckSubUnavailable;
+      case SelfCheckReason.settingOff:
+        return selfCheckSubSettingOff;
+      case SelfCheckReason.policy:
+        return selfCheckSubPolicy;
+      case SelfCheckReason.notHeard:
+      case null:
+        return selfCheckSubNotHeard;
+    }
+  }
+
+  static const String lessonFinishPlaceholderTitle = 'Lesson Complete';
 
   // Placement Results Screen
   static const String placementResultSubtitle =
@@ -1136,4 +1239,126 @@ abstract final class AppStrings {
       'App settings will live here.';
   static const String rewardsBadgeDetailTitle = 'Badge details';
   static const String rewardsBadgeDetailClose = 'Close';
+
+  // Settings Tab Strings
+  static const String settingsBackToPath = 'Back to the path';
+  static const String settingsFirstNamePlaceholder = 'Your first name';
+  static String settingsSubtitle(String language, String level) =>
+      '$language learner · $level mode';
+
+  // Settings Courses Card
+  static const String settingsCoursesTitle = 'Courses';
+  static const String settingsCoursesSubtitle =
+      "Switch language, level or the language of explanations. Nothing you've finished is ever lost.";
+  static const String settingsExplanationsInTitle = 'Explanations in';
+  static const String settingsExplanationsInSubtitle =
+      "Used for Pebbi's notes and mission feedback";
+  static const String settingsShowHelperLineTitle = 'Show helper line';
+  static const String settingsShowHelperLineSubtitle =
+      'Romanization, pinyin or transliteration under target text';
+  static const String settingsExplanationSheetTitle = 'Explanations in';
+  static const String settingsSearchLanguagePlaceholder = 'Search language';
+
+  // Settings Goal and Reminders Card
+  static const String settingsGoalRemindersTitle = 'Goal and reminders';
+  static const String settingsGoalRemindersSubtitle =
+      'One nudge a day at most, and quiet hours are respected.';
+  static const String settingsReminderTimeTitle = 'Reminder time';
+  static const String settingsPebbiNudgesTitle = 'Pebbi nudges me';
+  static const String settingsPebbiNudgesSubtitle =
+      'Turn the daily reminder off entirely';
+
+  // Settings Sound and Haptics Card
+  static const String settingsSoundHapticsTitle = 'Sound and haptics';
+  static const String settingsSoundEffectsTitle = 'Sound effects';
+  static const String settingsHapticsTitle = 'Haptics';
+  static const String settingsHapticsSubtitle =
+      'Gentle ticks on tap, correct and wrong';
+  static const String settingsAutoplayTitle = 'Autoplay audio';
+  static const String settingsAutoplaySubtitle =
+      'Plays new phrases as soon as they appear';
+  static const String settingsSpeakingTitle = 'Speaking practice';
+  static const String settingsSpeakingSubtitle =
+      'Off keeps every speaking task in self-check mode';
+  static const String settingsTestSoundTitle = 'Test the sound';
+  static const String settingsSoundEffectsOffMessage = 'Sound effects are off';
+
+  // Settings Appearance Card
+  static const String settingsAppearanceTitle = 'Appearance';
+  static const String settingsAppearanceSubtitle =
+      'Light, dark or follow your phone.';
+  static const String settingsThemeLight = 'Light';
+  static const String settingsThemeDark = 'Dark';
+  static const String settingsThemeSystem = 'System';
+  static const String settingsTextSizeLabel = 'Text size';
+  static String settingsTextSizePercent(int percent) => '$percent%';
+  static String settingsThemeAnnouncement(String mode) => '$mode theme on';
+  static String settingsAccentAnnouncement(String name) =>
+      'Accent colour $name';
+
+  // Settings Accessibility Card
+  static const String settingsAccessibilityTitle = 'Accessibility';
+  static const String settingsAccessibilitySubtitle =
+      'Every animation becomes a soft fade when you ask for less motion.';
+  static const String settingsReduceMotionTitle = 'Reduce motion';
+  static const String settingsCaptionsTitle = 'Captions always on';
+  static const String settingsCaptionsSubtitle =
+      'Target text plus a meaning line in missions';
+  static const String settingsLeftHandedTitle = 'Check button on the left';
+  static const String settingsLeftHandedSubtitle =
+      'Moves the Check and Continue buttons for left-handed use';
+
+  // Settings Account Card
+  static const String settingsAccountTitle = 'Account';
+  static const String settingsAccountSubtitle =
+      "Pebbi works without an account while you're finding your feet.";
+  static const String settingsGuestModeTitle = 'Guest mode';
+  static const String settingsGuestModeSubtitle =
+      'Your streak, stars and phrasebook live on this device.';
+  static const String settingsSignInTitle = 'Sign in and sync';
+  static const String settingsSignInSubtitle =
+      'Keep your stars, streak and phrasebook on every device.';
+  static const String settingsSignInAction = 'Sign in';
+  static const String settingsFreePlanTitle = 'Free plan';
+  static const String settingsFreePlanSubtitle =
+      'The first unit of every language is always free';
+  static const String settingsSeeOptionsAction = 'See options';
+  static const String settingsResetProgressTitle = 'Reset my progress';
+  static const String settingsResetProgressSubtitle =
+      'Clears everything stored on this device';
+
+  // Settings Reset Dialog
+  static const String settingsResetDialogTitle = 'Reset your progress?';
+  static const String settingsResetDialogBody =
+      'This will permanently delete your streak, stars, phrases, saved items, settings, and answers given in setup for this account on this device. This cannot be undone.';
+  static const String settingsResetConfirm = 'Reset';
+  static const String settingsResetCancel = 'Cancel';
+
+  // Settings Signed-In / Premium Placeholders
+  static const String settingsAccountSignedTitle = 'Account';
+  static const String settingsAccountSignedSubtitle =
+      'Your progress syncs across devices';
+  static const String settingsLogOutAction = 'Log out';
+  static const String settingsChangePasswordTitle = 'Change password';
+  static const String settingsDeleteAccountTitle = 'Delete account';
+  static const String settingsManageSubscriptionAction = 'Manage';
+
+  // Settings More Card & Version
+  static const String settingsMoreTitle = 'More';
+  static const String settingsPrivacyTitle = 'Privacy and voice data';
+  static const String settingsHelpTitle = 'Help and fixes';
+  static const String settingsAboutTitle = 'About Pebbi';
+  static String settingsVersion(String version) => 'Pebbi · version $version';
+
+  // Settings Sub-route Placeholders
+  static const String settingsPrivacyPlaceholderTitle =
+      'Privacy and voice data';
+  static const String settingsPrivacyPlaceholderSubtitle =
+      'Privacy policy, speech recording retention, and AI terms will appear here.';
+  static const String settingsHelpPlaceholderTitle = 'Help and fixes';
+  static const String settingsHelpPlaceholderSubtitle =
+      'Frequently asked questions, diagnostics, and support contact will appear here.';
+  static const String settingsAboutPlaceholderTitle = 'About Pebbi';
+  static const String settingsAboutPlaceholderSubtitle =
+      'Pebbi app version, credits, and open-source licenses will appear here.';
 }

@@ -23,6 +23,7 @@ class UserProfile {
     required this.accentId,
     this.firstStickerId,
     required this.plan,
+    this.firstName,
     this.isOnboarded = true,
     this.createdAt,
   });
@@ -66,6 +67,9 @@ class UserProfile {
   /// Selected subscription tier ('free' or 'premium').
   final String plan;
 
+  /// Optional first name for personal greetings.
+  final String? firstName;
+
   /// Whether setup onboarding is complete.
   final bool isOnboarded;
 
@@ -89,6 +93,8 @@ class UserProfile {
     String? accentId,
     String? firstStickerId,
     String? plan,
+    String? firstName,
+    bool clearFirstName = false,
     bool? isOnboarded,
     DateTime? createdAt,
   }) {
@@ -108,6 +114,7 @@ class UserProfile {
       accentId: accentId ?? this.accentId,
       firstStickerId: firstStickerId ?? this.firstStickerId,
       plan: plan ?? this.plan,
+      firstName: clearFirstName ? null : (firstName ?? this.firstName),
       isOnboarded: isOnboarded ?? this.isOnboarded,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -129,6 +136,7 @@ class UserProfile {
           accentId == other.accentId &&
           firstStickerId == other.firstStickerId &&
           plan == other.plan &&
+          firstName == other.firstName &&
           isOnboarded == other.isOnboarded;
 
   @override
@@ -144,6 +152,7 @@ class UserProfile {
     accentId,
     firstStickerId,
     plan,
+    firstName,
     isOnboarded,
   );
 }

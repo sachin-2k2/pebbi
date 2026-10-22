@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Pebbi uses your microphone to practice speaking phrases aloud.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Pebbi recognizes your speech to verify your pronunciation during speaking exercises.</string>
 </dict>
 </plist>

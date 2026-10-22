@@ -684,3 +684,140 @@ Plain list of what this screen needs from the backend team and product alignment
    - Client rule (`RewardsSafetyRules`): For `AgeBand.child`, the app disables high-pressure streak warnings ("loss of streak" notifications, urgent countdowns) and hides peer invite mechanics.
    - Question: Does the backend also suppress push reminder alerts with streak-loss urgency for child accounts?
 
+## 24. Settings Screen & Account Management Alignment
+
+### 24.1 Settings Synchronization Protocol & Conflict Resolution (`AppSettings` DTO)
+1. **Endpoint Specification**:
+   - What REST endpoint handles fetching and updating learner preferences?
+     - `GET /api/v1/user/settings`
+     - `PATCH /api/v1/user/settings`
+2. **Field Schema**:
+   - `theme_mode`: `"light"` | `"dark"` | `"system"`
+   - `accent_id`: `"violet"` | `"mint"` | `"amber"` | `"coral"` | `"sky"` | `"rose"`
+   - `text_scale`: float (`0.85` .. `1.30`)
+   - `reduce_motion`: boolean
+   - `captions_always_on`: boolean
+   - `is_left_handed`: boolean
+   - `sound_enabled`: boolean
+   - `haptics_enabled`: boolean
+   - `autoplay_audio`: boolean
+   - `speaking_practice_enabled`: boolean
+   - `show_helper_line`: boolean
+   - `first_name`: string (max 30 chars, sanitized, nullable)
+3. **Merge & Conflict Resolution**:
+   - If a learner adjusts settings offline on device A and later opens device B, what is the authoritative merge strategy? Does the backend maintain a `settings_updated_at` UTC timestamp where the latest client edit wins, or does the server selectively merge fields?
+
+### 24.2 Account Deletion Endpoint & Data Purge Policy (GDPR Article 17 / App Store Guideline 5.1.1(v))
+1. **Endpoint & Authorization**:
+   - What endpoint executes permanent account deletion?
+     - `DELETE /api/v1/user/account` (requiring active Bearer auth token and optional re-authentication / password confirmation).
+2. **Data Purge Scope**:
+   - Under GDPR Article 17 ("Right to be Forgotten") and COPPA, does the server immediately purge:
+     - User identity and auth credentials?
+     - Learning progress, review box states, and streaks?
+     - Speech-to-text recording fragments and AI roleplay session transcripts?
+     - Associated push notification tokens from APNs/FCM?
+3. **Grace Period**:
+   - Is account deletion immediate, or is there a 14-to-30 day grace period during which logging in allows the user to restore their account?
+
+### 24.3 Progress Reset Scope (Local-Only vs Server-Side Wipe)
+1. **Reset Semantics**:
+   - The UI includes a prominent red action: *"Reset my progress — Clears everything stored on this device"*.
+   - **For Guest Users**: Clears the local database file, resets in-memory Riverpod caches to defaults, cancels all scheduled local reminders via `NotificationScheduler.cancelAllReminders()`, and routes to `/welcome`.
+   - **For Signed-In Users**:
+     - Does "Reset my progress" wipe the user's cloud database record (resetting streak to 0, stars to 0, clearing review queue) while keeping the account and subscription intact?
+     - Or is it purely a local device cache wipe?
+     - What endpoint handles server progress wipe: `POST /api/v1/user/progress/reset`?
+
+### 24.4 App Version Delivery & Minimum Supported Version Enforcement
+1. **Version Header**:
+   - The UI displays: `"Pebbi · version 1.0.0"`.
+   - The client reports the app version via user-agent header `Pebbi-App-Version: 1.0.0` or query parameter.
+2. **Forced Upgrade Verification**:
+   - Will the backend return `minimum_supported_version` and `latest_version` during app bootstrap (`GET /api/v1/app/config`), allowing the app to prompt non-blocking updates or enforce hard update gates for deprecated API versions?
+
+### 24.5 Quiet Hours & Push Notification Scheduling Constraints
+1. **Reminder Scheduling Ownership**:
+   - The learner specifies their reminder time (e.g. `19:00`) and active weekdays (e.g. Mon–Sun).
+   - Currently, the client schedules repeating notifications locally via `NotificationScheduler`.
+2. **Server-Triggered Alerts & Quiet Hours**:
+   - When the backend dispatches remote push notifications (e.g., streak danger warning at 20:00, weekly chest reminder), does the backend store the learner's local timezone and adhere to quiet hours (e.g. no pushes between 22:00 and 08:00 local time)?
+
+## 25. Curriculum Lesson Player (Part 1 of 2: "Say hello" 12-Item Flow)
+
+Plain list of what the lesson player needs from the backend team and product alignment:
+1. **Curriculum Lesson Schema & API Contract (`GET /api/v1/lessons/{stop_id}`)**:
+   - What is the endpoint schema for fetching a curriculum stop's exercises?
+   - Expected payload:
+     - `lesson_id`: Unique lesson identifier.
+     - `stop_id`: Path stop identifier (e.g. `"1"`).
+     - `unit_number`: Integer unit index.
+     - `title`: Localized lesson title (e.g. "Say hello").
+     - `total_items`: Total number of exercises (e.g. 12).
+     - `items`: Polymorphic array of exercises with `type` discriminator:
+       - `"new_phrase_card"`: `phrase`, `tokens` array (`id`, `text`, `meaning`), `meaning`, `picture` emoji/asset URL, `register_tag` ("casual", "polite"), `phrase_kind_tag` ("New phrase"), `tip_text`, `audio_url`, `slow_audio_url`, `audio_text`, `audio_locale`.
+       - `"pick_picture"`: `prompt`, `audio_url`, `options` array (`id`, `image_ref`, `spoken_label`), `correct_option_id`, `correct_answer_text`, `feedback_success_text`, `explanation_text`.
+       - `"choose_meaning"`: `prompt`, `phrase`, `helper_line`, `audio_url`, `options` array (`id`, `text`), `correct_option_id`, `correct_answer_text`, `feedback_success_text`, `explanation_text`.
+       - `"match_pairs"`: `prompt`, `pairs` array (`id`, `target_text`, `meaning_text`), `display_meaning_ids` (pre-shuffled order of meaning column), `feedback_success_text`, `explanation_text`.
+       - `"listen_choose"`: `prompt`, `audio_url`, `options` array (`id`, `text`), `correct_option_id`, `correct_answer_text`, `feedback_success_text`, `explanation_text`.
+       - `"build_sentence"`: `prompt`, `tiles` array (`id`, `text`), `accepted_answers` array of valid tile ID sequences, `distractor_tile_ids`, `audio_url`, `feedback_success_text`, `explanation_text`.
+       - `"choose_reply"`: `prompt`, `speaker_tile` (character role/name), `incoming_bubble_text`, `audio_url`, `options` array (`id`, `text`), `correct_option_id`, `correct_answer_text`, `feedback_success_text`, `explanation_text`.
+       - `"speaking_placeholder"` / `"say_it_out_loud"` (Part 2): `target_phrase`, `audio_url`, `tolerance`.
+2. **Audio Delivery & Dual Playback Rates (Normal vs Slow)**:
+   - Does the backend host dedicated native speaker audio recordings for both Normal (`audio_url`) and Slow (`slow_audio_url`) rates, or should the client perform on-device speech-rate scaling (`0.45` normal, `0.25` slow)?
+   - If pre-recorded CDN assets are provided, what format is preferred (`.aac`, `.mp3`, or `.opus`)?
+3. **Data-Driven Word Tokens vs Client Heuristic Splitting**:
+   - For `NewPhraseCardExercise` token saving and phrasebook bookmarking:
+     - Are tokens explicitly provided in the API payload with their respective word IDs and individual translations (e.g. `[{ id: 'tok_1', text: 'Buenos', meaning: 'Good' }, { id: 'tok_2', text: 'días', meaning: 'days' }]`)?
+     - For non-segmented scripts without word-spacing (Japanese, Chinese, Thai), explicit token arrays from the backend are strictly mandatory.
+4. **Distractor Ambiguities in Visual Options**:
+   - In Item 5 ("Hello" -> 👋 waving hand): distractors include 🙋 (person raising hand) and 😊 (smiling face). Confirm that SVG/illustrated assets provide unambiguous visual contrast between "raising hand" and "waving greeting".
+   - In Item 7 ("Good morning" -> 🌅 sunrise): distractors include ☀️ (plain sun). Confirm whether distractor choices should be curated to avoid subjective ambiguity between sunrise and plain sun.
+5. **Phrasebook Bookmarking: Word Token vs Entire Phrase Saving**:
+   - When a learner taps an individual word token on a new phrase card (e.g. "Hola" or "días"):
+     - Does this bookmark only the individual token to their phrasebook (`POST /api/v1/review/phrases`), or does it bookmark the entire parent sentence?
+     - What Leitner box (0..3) is initialized for token-saved items? (Client defaults to Box 0, status `newPhrase`).
+6. **"Can't Listen Now" Skip Link & Accessibility for Deaf/Hard-of-Hearing Learners**:
+   - In audio-focused exercises (Item 9: "Tap what you hear"), the learner can tap `"Can't listen now"`.
+   - The client currently skips the exercise without penalty and resets the first-try streak.
+   - Does the backend record `skipped: true` in analytics, and does the curriculum adapt by providing an alternative text exercise or re-queueing the listening item for later?
+   - When a user has disabled audio practice in Settings (`speakingPractice = false`, `autoplay = false`), should the backend omit `listen_choose` exercises from curriculum payloads automatically?
+7. **Match the Pairs Column Shuffling & Mistake Limits**:
+   - In Item 8 ("Match the pairs"):
+     - Does the backend deliver pre-shuffled right-column IDs via `display_meaning_ids`, or should the client shuffle meanings locally?
+     - Is there a maximum mistake limit on matching pairs before a strike or penalty is assessed, or are unlimited mismatches permitted until all pairs are paired? (Current prototype allows unlimited attempts, counting mismatches for analytics).
+8. **Lesson Progress & Outbox Synchronization (`POST /api/v1/lessons/{stop_id}/complete`)**:
+   - When a curriculum lesson finishes, the client commits to the local SQLite database and queues a record in the offline outbox.
+   - What is the sync contract:
+     - `POST /api/v1/lessons/{stop_id}/complete`: Accepts `{ stop_id, user_id, total_items, item_records: { [item_id]: { seen, first_try_correct, attempts, hints_used, skipped } }, completed_at }`.
+     - Returns `{ stars_awarded, current_streak, is_new_level, next_stop_id, unlocked_units }`.
+   - How are offline conflicts merged if a user finishes Stop 1 offline on device A while device B is already on Stop 2?
+
+
+
+
+## 26. Speaking Exercise & Self-Check Fallback (Item 12 "Say it out loud")
+
+Plain list of what the speaking exercise needs from the backend team and product alignment:
+1. **Speech Recognition Architecture (Client On-Device STT vs Backend API)**:
+   - Currently, the client uses on-device platform speech recognition (`speech_to_text` wrapping Apple Speech Framework on iOS and Google Android Speech Recognition on Android).
+   - Does the backend plan to provide a dedicated server-side speech recognition or pronunciation evaluation endpoint (e.g. streaming audio to Whisper or custom acoustic model), or should the client always rely on on-device STT?
+   - Note: On-device STT guarantees 100% offline functionality, zero network latency, and complete user privacy.
+2. **Voice Audio Privacy & Zero-Retention Policy**:
+   - Per the Pebbi privacy principles, learner voice audio is never stored on disk, never uploaded to external servers, and never retained.
+   - Transcripts are processed solely in volatile device memory during matching and immediately discarded.
+   - Please confirm product and legal sign-off on this privacy declaration for app store privacy nutrition labels and GDPR/COPPA disclosures.
+3. **Half-Credit (0.5) Scoring & Gamification Contribution**:
+   - When a learner completes Item 12 via Screen B self-check ("I said it ✓"), the client awards half credit (`credit: 0.5`).
+   - Does the backend calculate stars differently for half-credit items (e.g., does a 0.5 credit item grant 1 star instead of 2 stars)?
+   - The client specifies that self-check confirmations do not advance the in-lesson first-try streak. Please confirm that the backend server-side lesson evaluation agrees with this rule.
+4. **Zero-Shame Speech Policy & Exclusion from Redo Rounds**:
+   - When speech recognition fails, is silenced, or the user taps "Skip for now", this is **never** counted as a mistake. No red panel is shown, no error sounds play, and the speaking exercise is never added to the redo round.
+   - Please confirm that backend curriculum analytics track speech non-matches under a separate telemetry event (`stt_fallback`) rather than an answer error (`mistake`).
+5. **Screen B UI: Mic Retry Action Question**:
+   - In the Base44 reference design (Screenshot 11), Screen B includes "Hear it again", "I said it ✓ (half credit)", and "Skip for now", but has no "Try the microphone again" link.
+   - Should a secondary link ("Try the mic again") be provided on Screen B for learners who wish to re-attempt pronunciation before self-checking?
+6. **Child Safety & COPPA Enforcement for Voice Input**:
+   - Under COPPA and Apple Kids category guidelines, collecting audio recordings from children under 13 requires verifiable parental consent.
+   - The client enforces `SpeakingSafetyRules.shouldAllowSpeaking(ageBand)`, automatically bypassing the microphone and presenting Screen B (self-check) for `AgeBand.child`.
+   - Please confirm whether child accounts will ever be permitted voice practice with parental consent, or if child profiles remain permanently in self-check mode.

@@ -80,7 +80,9 @@ void main() {
         expect(find.textContaining('Student cap'), findsOneWidget);
 
         // 2. User A logs out, User B logs in
-        await container.read(currentUserProvider.notifier).saveProfile(profileB);
+        await container
+            .read(currentUserProvider.notifier)
+            .saveProfile(profileB);
         await tester.pumpAndSettle();
 
         // User B sees clean screenshotDefault state (0 badges earned, 1 day streak, Pebbi's little scarf)
@@ -89,10 +91,7 @@ void main() {
           findsOneWidget,
         );
         expect(find.text(AppStrings.rewardsStreakTitle(1)), findsOneWidget);
-        expect(
-          find.textContaining("Pebbi's little scarf"),
-          findsOneWidget,
-        );
+        expect(find.textContaining("Pebbi's little scarf"), findsOneWidget);
       },
     );
   });

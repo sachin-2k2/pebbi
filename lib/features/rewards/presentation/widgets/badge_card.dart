@@ -113,8 +113,9 @@ class BadgeCard extends StatelessWidget {
                           style: AppTypography.caption.copyWith(
                             color: isEarned ? AppColors.accentMint : mutedColor,
                             fontSize: 11.0,
-                            fontWeight:
-                                isEarned ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight: isEarned
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                           ),
                         ),
                       ),

@@ -1,5 +1,6 @@
 import '../../domain/exercise.dart';
 import '../../domain/exercise_result.dart';
+import '../../domain/lesson_result.dart';
 
 /// Lifecycle status of an exercise within the session state machine.
 enum ExerciseStatus {
@@ -19,10 +20,21 @@ enum ExerciseStatus {
 /// Type of feedback shown in the bottom sliding panel.
 enum FeedbackKind { correct, wrong }
 
-/// Immutable state for an interactive exercise session.
+/// Visual mode for the bottom pinned bar.
+enum BottomBarMode {
+  /// Standard exercise bar with optional Hint link and Check button.
+  check,
+
+  /// Full-width mint 3D button "Got it", no Hint link.
+  gotIt,
+
+  /// Hidden bottom bar (e.g. for Match Pairs and self-contained items).
+  none,
+}
+
+/// Immutable state for an interactive exercise or curriculum lesson session.
 ///
-/// Follows AGENTS.md §2.3: session state managed in Riverpod, autoDispose,
-/// with pure Dart state representations.
+/// Follows AGENTS.md §2.3: Riverpod autoDispose state machine, pure Dart.
 class ExerciseSessionState {
   const ExerciseSessionState({
     this.mainExercises = const [],
@@ -36,8 +48,18 @@ class ExerciseSessionState {
     this.removedOptionIds = const {},
     this.hintsUsed = 0,
     this.results = const {},
+    this.itemRecords = const {},
     this.isLoading = false,
     this.placedTileIds = const [],
+    this.stopId,
+    this.lessonTitle,
+    this.currentStreak = 0,
+    this.savedTokenIds = const {},
+    this.selectedTargetMatchId,
+    this.selectedMeaningMatchId,
+    this.matchedPairIds = const {},
+    this.isWrongPairShake = false,
+    this.matchMistakes = 0,
   });
 
   final List<Exercise> mainExercises;
@@ -51,8 +73,18 @@ class ExerciseSessionState {
   final Set<String> removedOptionIds;
   final int hintsUsed;
   final Map<String, ExerciseResult> results;
+  final Map<String, ItemRecord> itemRecords;
   final bool isLoading;
   final List<String> placedTileIds;
+  final String? stopId;
+  final String? lessonTitle;
+  final int currentStreak;
+  final Set<String> savedTokenIds;
+  final String? selectedTargetMatchId;
+  final String? selectedMeaningMatchId;
+  final Set<String> matchedPairIds;
+  final bool isWrongPairShake;
+  final int matchMistakes;
 
   /// Returns the currently active exercise.
   Exercise? get currentExercise {
@@ -68,7 +100,7 @@ class ExerciseSessionState {
     return null;
   }
 
-  /// 1-indexed counter number for display (e.g. 1 of 8).
+  /// 1-indexed counter number for display (e.g. 1/12).
   int get displayCurrentNumber {
     if (isRedoRound) {
       return currentRedoIndex + 1;
@@ -92,6 +124,20 @@ class ExerciseSessionState {
       return (currentRedoIndex / redoQueue.length).clamp(0.0, 1.0);
     }
     return (currentMainIndex / mainExercises.length).clamp(0.0, 1.0);
+  }
+
+  /// Pinned bottom bar mode for the active exercise type.
+  BottomBarMode get bottomBarMode {
+    final exercise = currentExercise;
+    if (exercise is NewPhraseCardExercise) {
+      return BottomBarMode.gotIt;
+    }
+    if (exercise is MatchPairsExercise ||
+        exercise is SpeakingPlaceholderExercise ||
+        exercise is SpeakExercise) {
+      return BottomBarMode.none;
+    }
+    return BottomBarMode.check;
   }
 
   /// Whether the Check button can be tapped.
@@ -136,8 +182,18 @@ class ExerciseSessionState {
     Set<String>? removedOptionIds,
     int? hintsUsed,
     Map<String, ExerciseResult>? results,
+    Map<String, ItemRecord>? itemRecords,
     bool? isLoading,
     List<String>? placedTileIds,
+    String? stopId,
+    String? lessonTitle,
+    int? currentStreak,
+    Set<String>? savedTokenIds,
+    String? selectedTargetMatchId,
+    String? selectedMeaningMatchId,
+    Set<String>? matchedPairIds,
+    bool? isWrongPairShake,
+    int? matchMistakes,
   }) {
     return ExerciseSessionState(
       mainExercises: mainExercises ?? this.mainExercises,
@@ -151,8 +207,20 @@ class ExerciseSessionState {
       removedOptionIds: removedOptionIds ?? this.removedOptionIds,
       hintsUsed: hintsUsed ?? this.hintsUsed,
       results: results ?? this.results,
+      itemRecords: itemRecords ?? this.itemRecords,
       isLoading: isLoading ?? this.isLoading,
       placedTileIds: placedTileIds ?? this.placedTileIds,
+      stopId: stopId ?? this.stopId,
+      lessonTitle: lessonTitle ?? this.lessonTitle,
+      currentStreak: currentStreak ?? this.currentStreak,
+      savedTokenIds: savedTokenIds ?? this.savedTokenIds,
+      selectedTargetMatchId:
+          selectedTargetMatchId ?? this.selectedTargetMatchId,
+      selectedMeaningMatchId:
+          selectedMeaningMatchId ?? this.selectedMeaningMatchId,
+      matchedPairIds: matchedPairIds ?? this.matchedPairIds,
+      isWrongPairShake: isWrongPairShake ?? this.isWrongPairShake,
+      matchMistakes: matchMistakes ?? this.matchMistakes,
     );
   }
 }

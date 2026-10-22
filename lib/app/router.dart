@@ -9,7 +9,7 @@ import '../features/onboarding/presentation/screens/reminder_step_screen.dart';
 import '../features/onboarding/presentation/screens/meet_pebbi_step_screen.dart';
 import '../features/onboarding/presentation/screens/premium_offer_step_screen.dart';
 import '../features/onboarding/presentation/screens/path_ready_step_screen.dart';
-import '../features/lesson/presentation/screens/lesson_placeholder_screen.dart';
+import '../features/lesson/presentation/screens/lesson_finish_placeholder_screen.dart';
 import '../features/premium/presentation/screens/premium_screen.dart';
 import '../features/onboarding/presentation/screens/language_step_screen.dart';
 import '../features/onboarding/presentation/screens/learn_language_step_screen.dart';
@@ -31,6 +31,9 @@ import '../features/missions/presentation/screens/mission_session_placeholder_sc
 import '../features/review/presentation/screens/note_detail_placeholder_screen.dart';
 import '../features/review/presentation/screens/practice_placeholder_screen.dart';
 import '../features/rewards/presentation/screens/sticker_book_placeholder_screen.dart';
+import '../features/settings/presentation/screens/about_placeholder_screen.dart';
+import '../features/settings/presentation/screens/help_placeholder_screen.dart';
+import '../features/settings/presentation/screens/privacy_placeholder_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'rootNav',
@@ -99,8 +102,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/lesson/:id',
-      builder: (context, state) => LessonPlaceholderScreen(
-        lessonNumber: int.tryParse(state.pathParameters['id'] ?? '1') ?? 1,
+      builder: (context, state) =>
+          ExerciseScreen(stopId: state.pathParameters['id'] ?? '1'),
+    ),
+    GoRoute(
+      path: '/lesson/:id/finish',
+      builder: (context, state) => LessonFinishPlaceholderScreen(
+        stopId: state.pathParameters['id'] ?? '1',
       ),
     ),
     GoRoute(
@@ -226,6 +234,20 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/settings',
               builder: (context, state) => const SettingsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'privacy',
+                  builder: (context, state) => const PrivacyPlaceholderScreen(),
+                ),
+                GoRoute(
+                  path: 'help',
+                  builder: (context, state) => const HelpPlaceholderScreen(),
+                ),
+                GoRoute(
+                  path: 'about',
+                  builder: (context, state) => const AboutPlaceholderScreen(),
+                ),
+              ],
             ),
           ],
         ),

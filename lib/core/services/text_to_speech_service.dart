@@ -9,9 +9,10 @@ import 'package:flutter_tts/flutter_tts.dart';
 abstract interface class TextToSpeechService {
   /// Speaks [text] in the requested [locale] (e.g. 'es-ES', 'ja-JP').
   ///
+  /// Optional [speechRate] overrides the default rate (e.g. 0.25 for slow).
   /// Returns `true` if playback initiated successfully, or `false` quietly if
   /// the language voice is unavailable on the device.
-  Future<bool> speak(String text, {required String locale});
+  Future<bool> speak(String text, {required String locale, double? speechRate});
 
   /// Stops any currently playing speech.
   Future<void> stop();
@@ -37,7 +38,11 @@ class FlutterTtsService implements TextToSpeechService {
   }
 
   @override
-  Future<bool> speak(String text, {required String locale}) async {
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+  }) async {
     try {
       final isAvailable = await _tts.isLanguageAvailable(locale);
       if (isAvailable == 0 || isAvailable == false) {
@@ -47,6 +52,11 @@ class FlutterTtsService implements TextToSpeechService {
 
       await _tts.stop();
       await _tts.setLanguage(locale);
+      if (speechRate != null) {
+        await _tts.setSpeechRate(speechRate);
+      } else {
+        await _tts.setSpeechRate(0.45);
+      }
       final result = await _tts.speak(text);
       return result == 1;
     } catch (e) {
@@ -79,14 +89,20 @@ class FakeSpeechService implements TextToSpeechService {
   /// Optional set of supported locales. If null, all locales succeed.
   final Set<String>? supportedLocales;
 
-  final List<({String text, String locale})> spokenHistory = [];
+  final List<({String text, String locale, double? speechRate})> spokenHistory =
+      [];
   String? lastSpokenText;
   String? lastLocale;
+  double? lastSpeechRate;
   bool isSpeaking = false;
   int stopCallCount = 0;
 
   @override
-  Future<bool> speak(String text, {required String locale}) async {
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+  }) async {
     isSpeaking = false;
     stopCallCount++;
 
@@ -96,8 +112,9 @@ class FakeSpeechService implements TextToSpeechService {
 
     lastSpokenText = text;
     lastLocale = locale;
+    lastSpeechRate = speechRate;
     isSpeaking = true;
-    spokenHistory.add((text: text, locale: locale));
+    spokenHistory.add((text: text, locale: locale, speechRate: speechRate));
     return true;
   }
 

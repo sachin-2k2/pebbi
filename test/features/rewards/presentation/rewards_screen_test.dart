@@ -67,11 +67,7 @@ void main() {
       expect(find.text(AppStrings.rewardsTitle), findsOneWidget);
       expect(
         find.text(
-          AppStrings.rewardsSubtitle(
-            'Spanish',
-            1,
-            "Pebbi's little scarf",
-          ),
+          AppStrings.rewardsSubtitle('Spanish', 1, "Pebbi's little scarf"),
         ),
         findsOneWidget,
       );
@@ -89,10 +85,7 @@ void main() {
       // 3. Daily Goal Card
       expect(find.text(AppStrings.rewardsDailyGoalTitle(1)), findsOneWidget);
       expect(find.text(AppStrings.rewardsDailyGoalMissed), findsOneWidget);
-      expect(
-        find.text(AppStrings.rewardsReminderSet('19:00')),
-        findsOneWidget,
-      );
+      expect(find.text(AppStrings.rewardsReminderSet('19:00')), findsOneWidget);
       expect(find.byType(GoalRing), findsOneWidget);
       expect(find.text(AppStrings.rewardsLevelCaption(1)), findsOneWidget);
       expect(
@@ -149,37 +142,44 @@ void main() {
       expect(find.byType(BadgeProgressBar), findsNWidgets(9));
 
       // 9. Sticker Book Button
-      expect(
-        find.text(AppStrings.rewardsStickerBookButton(0)),
-        findsOneWidget,
-      );
+      expect(find.text(AppStrings.rewardsStickerBookButton(0)), findsOneWidget);
 
       // 10. Next Chapter Note
       expect(find.text(AppStrings.rewardsNextChapterNote), findsOneWidget);
     });
 
-    testWidgets('Renders mid-state correctly (earned badges & completed goal)', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+    testWidgets(
+      'Renders mid-state correctly (earned badges & completed goal)',
+      (tester) async {
+        tester.view.physicalSize = const Size(1080, 2400);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
 
-      final repo = MockRewardsRepository(
-        initialSummary: MockRewardsRepository.createMidState(),
-      );
-      await tester.pumpWidget(buildSubject(repository: repo));
-      await tester.pumpAndSettle();
+        final repo = MockRewardsRepository(
+          initialSummary: MockRewardsRepository.createMidState(),
+        );
+        await tester.pumpWidget(buildSubject(repository: repo));
+        await tester.pumpAndSettle();
 
-      expect(find.text(AppStrings.rewardsDailyGoalDone), findsOneWidget);
-      expect(find.text(AppStrings.rewardsStreakTitle(8)), findsOneWidget);
-      expect(find.text(AppStrings.rewardsStreakSubtitle(8, 1)), findsOneWidget);
-      expect(find.text(AppStrings.rewardsBadgesEarnedCount(3)), findsOneWidget);
-      expect(find.textContaining('Student cap'), findsOneWidget);
-      expect(find.text('Level 3'), findsOneWidget);
-      expect(find.text(AppStrings.rewardsStickerBookButton(3)), findsOneWidget);
-    });
+        expect(find.text(AppStrings.rewardsDailyGoalDone), findsOneWidget);
+        expect(find.text(AppStrings.rewardsStreakTitle(8)), findsOneWidget);
+        expect(
+          find.text(AppStrings.rewardsStreakSubtitle(8, 1)),
+          findsOneWidget,
+        );
+        expect(
+          find.text(AppStrings.rewardsBadgesEarnedCount(3)),
+          findsOneWidget,
+        );
+        expect(find.textContaining('Student cap'), findsOneWidget);
+        expect(find.text('Level 3'), findsOneWidget);
+        expect(
+          find.text(AppStrings.rewardsStickerBookButton(3)),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('Renders max-level state correctly', (tester) async {
       tester.view.physicalSize = const Size(1080, 2400);

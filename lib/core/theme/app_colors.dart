@@ -266,4 +266,20 @@ abstract final class AppColors {
 
   static const Color calendarTodayBorder = Color(0xFF6C4DF6);
   static const Color darkCalendarTodayBorder = Color(0xFFA78BFA);
+
+  // Settings Screen Tokens (WCAG AA Compliant)
+  static const Color settingsCardBackground = Color(0xFFFFFFFF);
+  static const Color darkSettingsCardBackground = Color(0xFF1E1A2E);
+  static const Color settingsTileBackground = Color(0xFFF3F0FA);
+  static const Color darkSettingsTileBackground = Color(0xFF28233D);
+  static const Color settingsTileBorder = Color(0xFFE8E4F4);
+  static const Color darkSettingsTileBorder = Color(0xFF383254);
+  static const Color settingsSwitchMintTrack = Color(0xFF25C974);
+  static const Color settingsSwitchOffTrack = Color(0xFFD6D3E3);
+  static const Color settingsSwitchOffBorder = Color(0xFFB5B0CC);
+  static const Color settingsSliderInactiveTrack = Color(0xFFDCD8E8);
+  static const Color destructiveText = Color(0xFFBA1A1A); // > 5.2:1 on #F3F0FA
+  static const Color darkDestructiveText = Color(0xFFFFB4AB);
+  static const Color nameFieldBackground = Color(0xFFF3F0FA);
+  static const Color darkNameFieldBackground = Color(0xFF28233D);
 }

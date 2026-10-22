@@ -4,7 +4,7 @@ import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_strings.dart';
 
-/// Large round 3D purple audio button with speaker icon and playing state animation.
+/// Large round 3D purple audio button with soft pale halo ring and playing animation.
 ///
 /// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
 /// clamped responsive size (72-88dp), respects Reduce motion.
@@ -71,19 +71,27 @@ class _AudioPlayButtonState extends State<AudioPlayButton>
               : 1.0;
           return Transform.scale(scale: scale, child: child);
         },
-        child: Button3D.circular(
-          label: '',
-          size: size,
-          depth: AppSpacing.depthMd,
-          backgroundColor: AppColors.brandPurple,
-          depthColor: AppColors.brandPurpleDepth,
-          onPressed: widget.onPressed,
-          icon: Icon(
-            widget.isPlaying
-                ? Icons.volume_up_rounded
-                : Icons.volume_up_outlined,
-            size: size * 0.45,
-            color: Colors.white,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0ECFD),
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFE5DEFF), width: 1.5),
+          ),
+          child: Button3D.circular(
+            label: '',
+            size: size,
+            depth: AppSpacing.depthMd,
+            backgroundColor: AppColors.brandPurple,
+            depthColor: AppColors.brandPurpleDepth,
+            onPressed: widget.onPressed,
+            icon: Icon(
+              widget.isPlaying
+                  ? Icons.volume_up_rounded
+                  : Icons.volume_up_outlined,
+              size: size * 0.45,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

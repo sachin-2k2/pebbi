@@ -48,7 +48,7 @@ class RewardsScreen extends ConsumerWidget {
             final leftPane = RewardsLeftPane(
               summary: summary,
               calendarKey: calendarKey,
-              onSettingsPressed: () => context.push('/settings'),
+              onSettingsPressed: () => context.go('/settings'),
               onCalendarPressed: () => _scrollToCalendar(calendarKey),
             );
             final rightPane = RewardsRightPane(

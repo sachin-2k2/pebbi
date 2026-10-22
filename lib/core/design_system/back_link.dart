@@ -44,11 +44,15 @@ class BackLink extends StatelessWidget {
                   color: AppColors.textMuted,
                 ),
                 const SizedBox(width: 2.0),
-                Text(
-                  label,
-                  style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.textMuted,
-                    fontWeight: FontWeight.w700,
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.textMuted,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
