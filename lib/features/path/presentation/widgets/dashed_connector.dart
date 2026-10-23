@@ -1,14 +1,13 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Dashed connecting line between two path nodes.
 class DashedConnectorPainter extends CustomPainter {
   const DashedConnectorPainter({
     required this.start,
     required this.end,
+    required this.color,
     this.isCompleted = false,
-    this.color,
     this.dashLength = 6.0,
     this.dashGap = 5.0,
     this.strokeWidth = 3.5,
@@ -17,18 +16,15 @@ class DashedConnectorPainter extends CustomPainter {
   final Offset start;
   final Offset end;
   final bool isCompleted;
-  final Color? color;
+  final Color color;
   final double dashLength;
   final double dashGap;
   final double strokeWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final effectiveColor =
-        color ?? (isCompleted ? AppColors.mint : const Color(0xFFDDDDE5));
-
     final paint = Paint()
-      ..color = effectiveColor
+      ..color = color
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;

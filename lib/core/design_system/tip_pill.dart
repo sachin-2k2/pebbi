@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_palette.dart';
 
 /// Reusable informational pill badge with mint background and accessible text.
 ///
@@ -13,31 +14,32 @@ class TipPill extends StatelessWidget {
   /// Optional leading icon.
   final IconData? icon;
 
-  static const Color _mintBg = Color(0xFFE8FDF5);
-  static const Color _mintBorder = Color(0xFFD1FAE5);
-  static const Color _mintText = Color(0xFF059669);
-
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+    final bg = palette.successSurface;
+    final border = palette.successBorder;
+    final text = palette.successText;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: _mintBg,
+        color: bg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _mintBorder, width: 1),
+        border: Border.all(color: border, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 16, color: _mintText),
+            Icon(icon, size: 16, color: text),
             const SizedBox(width: 6),
           ],
           Flexible(
             child: Text(
               message,
-              style: const TextStyle(
-                color: _mintText,
+              style: TextStyle(
+                color: text,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 height: 1.2,

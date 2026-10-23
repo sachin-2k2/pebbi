@@ -17,6 +17,10 @@ class MockTranslationRepository implements TranslationRepository {
     if (shouldFail) {
       throw StateError('Unable to translate phrase.');
     }
+    final q = query.trim().toLowerCase();
+    if (q.contains('restroom') || q.contains('toilet')) {
+      return 'Où sont les toilettes ?';
+    }
     // Simple mock heuristic returning capitalized query with language indicator
     return query.trim();
   }

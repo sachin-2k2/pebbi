@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
-enum ChipTone { purple, amber, mint }
+enum ChipTone { purple, amber, mint, peach, neutral }
 
 /// Small tinted pill chip ("Bits") supporting multiple semantic tones.
 ///
@@ -27,21 +27,19 @@ class BenefitChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final palette = context.palette;
 
     final (bg, fg) = switch (tone) {
-      ChipTone.purple => (
-        isDark ? AppColors.darkSurfaceVariant : AppColors.chipPurpleBackground,
-        isDark ? AppColors.darkChipPurpleText : AppColors.chipPurpleText,
+      ChipTone.purple => (palette.brandTint, palette.brandText),
+      ChipTone.amber => (palette.warningSurface, palette.warningText),
+      ChipTone.mint => (palette.successSurface, palette.successText),
+      ChipTone.peach => (
+        palette.coralTint,
+        palette.isDark ? palette.coral : palette.coralHeroCard,
       ),
-      ChipTone.amber => (
-        isDark ? AppColors.darkSurfaceVariant : AppColors.chipAmberBackground,
-        isDark ? AppColors.darkChipAmberText : AppColors.chipAmberText,
-      ),
-      ChipTone.mint => (
-        isDark ? AppColors.darkSurfaceVariant : AppColors.chipMintBackground,
-        isDark ? AppColors.darkChipMintText : AppColors.chipMintText,
+      ChipTone.neutral => (
+        palette.isDark ? palette.surfaceVariant : palette.chipUnselectedFill,
+        palette.textMuted,
       ),
     };
 

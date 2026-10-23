@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -33,11 +33,11 @@ class MissionList extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             PebbiMascot(
               size: 64.0,
               expression: PebbiExpression.surprised,
-              accentColor: AppColors.brandPurple,
+              accentColor: context.palette.brand,
             ),
             SizedBox(height: AppSpacing.md),
             Text(

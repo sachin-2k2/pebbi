@@ -3,7 +3,7 @@ import '../../../../core/design_system/button_3d.dart';
 import '../../../../core/design_system/difficulty_pips.dart';
 import '../../../../core/design_system/icon_tile.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -25,31 +25,39 @@ class MissionPreviewPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     if (selectedMission == null) {
       return Container(
         margin: const EdgeInsets.all(AppSpacing.md),
         padding: const EdgeInsets.all(AppSpacing.xl),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: palette.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-          border: Border.all(color: AppColors.borderLight),
+          border: Border.all(color: palette.outline),
+          boxShadow: palette.cardShadow,
         ),
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             PebbiMascot(
               size: 72.0,
               outfit: PebbiOutfit.backpack,
               expression: PebbiExpression.happy,
-              accentColor: AppColors.brandPurple,
+              accentColor: palette.brand,
             ),
-            SizedBox(height: AppSpacing.md),
-            Text('Select a scene', style: AppTypography.cardTitle),
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Select a scene',
+              style: AppTypography.cardTitle.copyWith(
+                color: palette.textPrimary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               AppStrings.selectScenePrompt,
-              style: AppTypography.caption,
+              style: AppTypography.caption.copyWith(color: palette.textMuted),
               textAlign: TextAlign.center,
             ),
           ],
@@ -63,10 +71,10 @@ class MissionPreviewPane extends StatelessWidget {
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        border: Border.all(color: AppColors.borderLight),
-        boxShadow: AppSpacing.cardShadow,
+        border: Border.all(color: palette.outline),
+        boxShadow: palette.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +83,7 @@ class MissionPreviewPane extends StatelessWidget {
             children: [
               IconTile.emoji(
                 mission.emoji,
-                backgroundColor: AppColors.tintPeach,
+                backgroundColor: palette.tintPeach,
                 size: 52.0,
               ),
               const SizedBox(width: AppSpacing.md),
@@ -83,11 +91,18 @@ class MissionPreviewPane extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(mission.title, style: AppTypography.screenTitle),
+                    Text(
+                      mission.title,
+                      style: AppTypography.screenTitle.copyWith(
+                        color: palette.textPrimary,
+                      ),
+                    ),
                     const SizedBox(height: 2.0),
                     Text(
                       '${mission.characterName}, ${mission.characterRole}',
-                      style: AppTypography.caption,
+                      style: AppTypography.caption.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -101,36 +116,38 @@ class MissionPreviewPane extends StatelessWidget {
                 'Difficulty: ',
                 style: AppTypography.caption.copyWith(
                   fontWeight: FontWeight.w700,
+                  color: palette.textPrimary,
                 ),
               ),
               DifficultyPips(
                 filledCount: mission.difficulty,
                 totalCount: 3,
-                filledColor: AppColors.coral,
+                filledColor: palette.coral,
+                emptyColor: palette.disabledFill,
                 excludeSemantics: true,
               ),
               const Spacer(),
               Text(
                 AppStrings.missionDurationMinutes(mission.durationMinutes),
-                style: AppTypography.caption,
+                style: AppTypography.caption.copyWith(color: palette.textMuted),
               ),
             ],
           ),
-          const Divider(height: AppSpacing.xl),
-          const Text(
+          Divider(height: AppSpacing.xl, color: palette.divider),
+          Text(
             'Objectives & Rehearsal Brief',
-            style: AppTypography.cardTitle,
+            style: AppTypography.cardTitle.copyWith(color: palette.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
-          const Text(
+          Text(
             'Practice natural dialogue in real time. Pebbi will guide you through ordering, answering questions, and requesting specifics.',
-            style: AppTypography.caption,
+            style: AppTypography.caption.copyWith(color: palette.textMuted),
           ),
           const Spacer(),
           Button3D(
             label: AppStrings.startPractice,
-            backgroundColor: AppColors.coralHeroCard,
-            depthColor: AppColors.coralHeroCardDepth,
+            backgroundColor: palette.coralHeroCard,
+            depthColor: palette.coralHeroCardDepth,
             onPressed: () => onStartMission(mission),
           ),
         ],

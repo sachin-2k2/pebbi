@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -28,19 +28,15 @@ class UnitHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isLocked ? const Color(0xFF5A45A0) : AppColors.brandPurple;
+    final palette = context.palette;
+    final bgColor = isLocked ? palette.surfaceRaised : palette.brand;
+    final fgOnBrand = palette.textOnBrand;
 
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x266C4DF6),
-            blurRadius: 16.0,
-            offset: Offset(0, 6),
-          ),
-        ],
+        boxShadow: palette.cardShadow,
       ),
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -52,7 +48,7 @@ class UnitHeader extends StatelessWidget {
                 child: Text(
                   '${AppStrings.unitHeaderPrefix} $unitNumber · $stopsDone ${AppStrings.unitHeaderStopsOf} $totalStops ${AppStrings.unitHeaderStopsDone}',
                   style: AppTypography.cardOverline.copyWith(
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: fgOnBrand.withValues(alpha: 0.85),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -60,9 +56,9 @@ class UnitHeader extends StatelessWidget {
               ),
               if (onGuidebookTap != null)
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.menu_book_rounded,
-                    color: Colors.white,
+                    color: fgOnBrand,
                   ),
                   iconSize: 22.0,
                   padding: EdgeInsets.zero,
@@ -78,7 +74,7 @@ class UnitHeader extends StatelessWidget {
           const SizedBox(height: 4.0),
           Text(
             title,
-            style: AppTypography.screenTitle.copyWith(color: Colors.white),
+            style: AppTypography.screenTitle.copyWith(color: fgOnBrand),
           ),
           const SizedBox(height: AppSpacing.md),
           ClipRRect(
@@ -86,8 +82,8 @@ class UnitHeader extends StatelessWidget {
             child: LinearProgressIndicator(
               value: _progress,
               minHeight: 6.0,
-              backgroundColor: Colors.white.withValues(alpha: 0.25),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              backgroundColor: fgOnBrand.withValues(alpha: 0.25),
+              valueColor: AlwaysStoppedAnimation<Color>(fgOnBrand),
             ),
           ),
         ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
@@ -25,15 +25,11 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final bg = isDark ? AppColors.darkSurface : AppColors.surface;
-    final border = isDark ? AppColors.darkBorder : AppColors.borderLight;
-    final titleColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
-    final bodyColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final palette = context.palette;
+    final bg = palette.surface;
+    final border = palette.outline;
+    final titleColor = palette.textPrimary;
+    final bodyColor = palette.textMuted;
 
     return Container(
       margin: margin,
@@ -42,7 +38,7 @@ class InfoCard extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: border, width: 1.0),
-        boxShadow: isDark ? null : AppSpacing.cardShadow,
+        boxShadow: palette.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

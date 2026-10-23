@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/theme/app_palette.dart';
 import '../../../../../../core/theme/app_spacing.dart';
 import '../../../../../../core/theme/app_typography.dart';
 import '../../../../domain/phrase_token.dart';
@@ -33,9 +33,7 @@ class PhraseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark ? AppColors.darkSurface : AppColors.surface;
-    final borderColor = isDark ? AppColors.darkBorder : const Color(0xFFF1F0F5);
+    final palette = context.palette;
 
     return Container(
       width: double.infinity,
@@ -44,16 +42,10 @@ class PhraseCard extends StatelessWidget {
         vertical: AppSpacing.xxl,
       ),
       decoration: BoxDecoration(
-        color: cardBg,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(color: borderColor, width: 1.5),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x08000000),
-            blurRadius: 16.0,
-            offset: Offset(0, 6),
-          ),
-        ],
+        border: Border.all(color: palette.outline, width: 1.5),
+        boxShadow: palette.cardShadow,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -73,7 +65,9 @@ class PhraseCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             meaning,
-            style: AppTypography.bodyLarge.copyWith(color: AppColors.textMuted),
+            style: AppTypography.bodyLarge.copyWith(
+              color: palette.textMuted,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),

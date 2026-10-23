@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../l10n/app_strings.dart';
 
 /// Round profile button triggering the profile & settings sheet.
@@ -12,11 +12,13 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       button: true,
       label: AppStrings.profileButtonSemantics,
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         shape: const CircleBorder(),
         child: InkWell(
           onTap: onTap,
@@ -26,19 +28,13 @@ class ProfileButton extends StatelessWidget {
             height: 40.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.borderLight, width: 1.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0A1E1647),
-                  blurRadius: 4.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              border: Border.all(color: palette.outline, width: 1.0),
+              boxShadow: palette.cardShadow,
             ),
-            child: const Center(
+            child: Center(
               child: Icon(
                 Icons.person_rounded,
-                color: AppColors.textMuted,
+                color: palette.textMuted,
                 size: 20.0,
               ),
             ),

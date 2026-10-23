@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/path_node.dart';
@@ -22,7 +22,8 @@ class PathNodeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visual = _resolveVisual(node);
+    final palette = context.palette;
+    final visual = _resolveVisual(node, palette);
     final isNext =
         node.isCurrent ||
         (node is LessonStopNode && (node as LessonStopNode).isNext);
@@ -79,8 +80,8 @@ class PathNodeTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.labelMedium.copyWith(
                   color: node.isLocked
-                      ? AppColors.textTertiary
-                      : AppColors.textPrimary,
+                      ? palette.textTertiary
+                      : palette.textPrimary,
                   fontWeight: node.isCurrent
                       ? FontWeight.w700
                       : FontWeight.w500,
@@ -100,7 +101,7 @@ class PathNodeTile extends StatelessWidget {
     Color iconColor,
     IconData icon,
   })
-  _resolveVisual(PathNode node) {
+  _resolveVisual(PathNode node, AppPalette palette) {
     if (node.isLocked) {
       return (
         shape: node is ChestNode
@@ -108,9 +109,9 @@ class PathNodeTile extends StatelessWidget {
             : (node is MissionNode
                   ? NodeShapeType.hexagon
                   : NodeShapeType.circle),
-        faceColor: AppColors.disabled,
-        depthColor: AppColors.disabledDepth,
-        iconColor: AppColors.disabledText,
+        faceColor: palette.nodeLocked,
+        depthColor: palette.nodeLockedDepth,
+        iconColor: palette.disabledText,
         icon: Icons.lock_rounded,
       );
     }
@@ -118,9 +119,9 @@ class PathNodeTile extends StatelessWidget {
     if (node is ChestNode) {
       return (
         shape: NodeShapeType.roundedSquare,
-        faceColor: AppColors.starGold,
-        depthColor: AppColors.goldDepth,
-        iconColor: Colors.white,
+        faceColor: palette.gold,
+        depthColor: palette.goldDepth,
+        iconColor: palette.textOnBrand,
         icon: Icons.card_giftcard_rounded,
       );
     }
@@ -130,9 +131,9 @@ class PathNodeTile extends StatelessWidget {
         shape: node is MissionNode
             ? NodeShapeType.hexagon
             : NodeShapeType.circle,
-        faceColor: AppColors.mint,
-        depthColor: AppColors.mintDepth,
-        iconColor: Colors.white,
+        faceColor: palette.nodeDone,
+        depthColor: palette.nodeDoneDepth,
+        iconColor: palette.textOnBrand,
         icon: Icons.check_rounded,
       );
     }
@@ -146,9 +147,9 @@ class PathNodeTile extends StatelessWidget {
 
     return (
       shape: shape,
-      faceColor: AppColors.brandPurple,
-      depthColor: AppColors.brandPurpleDepth,
-      iconColor: Colors.white,
+      faceColor: palette.nodeCurrent,
+      depthColor: palette.nodeCurrentDepth,
+      iconColor: palette.textOnBrand,
       icon: icon,
     );
   }

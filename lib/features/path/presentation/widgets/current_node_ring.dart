@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 
 /// Animated pulse ring for current active node per design spec §5.
 ///
@@ -10,12 +10,12 @@ class CurrentNodeRing extends StatefulWidget {
     super.key,
     required this.child,
     this.diameter = 68.0,
-    this.ringColor = AppColors.brandPurple,
+    this.ringColor,
   });
 
   final Widget child;
   final double diameter;
-  final Color ringColor;
+  final Color? ringColor;
 
   @override
   State<CurrentNodeRing> createState() => _CurrentNodeRingState();
@@ -61,6 +61,7 @@ class _CurrentNodeRingState extends State<CurrentNodeRing>
   Widget build(BuildContext context) {
     final disableAnimations = MediaQuery.disableAnimationsOf(context);
     final isTest = Platform.environment.containsKey('FLUTTER_TEST');
+    final effectiveColor = widget.ringColor ?? context.palette.brand;
 
     if (disableAnimations || isTest) {
       return Stack(
@@ -72,7 +73,7 @@ class _CurrentNodeRingState extends State<CurrentNodeRing>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: widget.ringColor.withValues(alpha: 0.35),
+                color: effectiveColor.withValues(alpha: 0.35),
                 width: 3.0,
               ),
             ),
@@ -96,7 +97,7 @@ class _CurrentNodeRingState extends State<CurrentNodeRing>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: widget.ringColor.withValues(
+                    color: effectiveColor.withValues(
                       alpha: _opacityAnimation.value,
                     ),
                     width: 3.0,

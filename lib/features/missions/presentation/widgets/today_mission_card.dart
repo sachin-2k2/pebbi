@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/design_system/icon_tile.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -49,6 +49,7 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
     final topOffset = _isPressed ? widget.depth : 0.0;
     final radius = BorderRadius.circular(AppSpacing.radiusCard);
 
+    final palette = context.palette;
     final semanticsLabel = AppStrings.todaysMissionSemantics(
       title: mission.title,
       characterName: mission.characterName,
@@ -75,7 +76,7 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                 top: widget.depth,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: AppColors.coralHeroCardDepth,
+                    color: palette.coralHeroCardDepth,
                     borderRadius: radius,
                   ),
                 ),
@@ -91,13 +92,13 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                   bottom: widget.depth - topOffset,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.coralHeroCard,
+                  color: palette.coralHeroCard,
                   borderRadius: radius,
                   boxShadow: _isPressed
                       ? const []
                       : [
                           BoxShadow(
-                            color: AppColors.coralHeroCardDepth.withValues(
+                            color: palette.coralHeroCardDepth.withValues(
                               alpha: 0.3,
                             ),
                             blurRadius: 8.0,
@@ -113,7 +114,9 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                   children: [
                     IconTile.emoji(
                       mission.emoji,
-                      backgroundColor: Colors.white.withValues(alpha: 0.22),
+                      backgroundColor: palette.textOnBrand.withValues(
+                        alpha: 0.22,
+                      ),
                       size: 48.0,
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -130,7 +133,9 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                               Text(
                                 AppStrings.todaysMissionOverline,
                                 style: AppTypography.cardOverline.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                  color: palette.textOnBrand.withValues(
+                                    alpha: 0.9,
+                                  ),
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -141,15 +146,17 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                                     vertical: 2.0,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.25),
+                                    color: palette.textOnBrand.withValues(
+                                      alpha: 0.25,
+                                    ),
                                     borderRadius: BorderRadius.circular(
                                       AppSpacing.radiusPill,
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     AppStrings.missionTagDone,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: palette.textOnBrand,
                                       fontSize: 10.0,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -161,7 +168,7 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                           Text(
                             mission.title,
                             style: AppTypography.cardTitle.copyWith(
-                              color: Colors.white,
+                              color: palette.textOnBrand,
                               fontWeight: FontWeight.w800,
                             ),
                             maxLines: 2,
@@ -171,7 +178,7 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                           Text(
                             '${mission.characterName}, ${mission.characterRole} · ${AppStrings.todaysMissionAboutMinutes(mission.durationMinutes)}',
                             style: AppTypography.caption.copyWith(
-                              color: AppColors.coralHeroCardMutedText,
+                              color: palette.coralHeroCardMutedText,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 2,

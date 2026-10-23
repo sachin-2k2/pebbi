@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/node_layout.dart';
 import '../../domain/path_node.dart';
 import 'dashed_connector.dart';
@@ -6,12 +7,14 @@ import 'path_mascot_marker.dart';
 import 'path_node_tile.dart';
 
 /// Interactive winding learning path rail with dynamic zigzag geometry.
+///
+/// Follows AGENTS.md §3 & §4: Row height sized so labels never collide with NEXT tags.
 class PathRail extends StatelessWidget {
   const PathRail({
     super.key,
     required this.nodes,
     required this.onNodeTap,
-    this.rowHeight = 118.0,
+    this.rowHeight = 148.0,
     this.nodeDiameter = 68.0,
   });
 
@@ -25,6 +28,7 @@ class PathRail extends StatelessWidget {
     if (nodes.isEmpty) return const SizedBox.shrink();
 
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final palette = context.palette;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -39,7 +43,7 @@ class PathRail extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               // Dashed connectors between nodes
-              ..._buildConnectors(centers),
+              ..._buildConnectors(centers, palette),
               // Mascot marker beside current node
               ..._buildMascot(centers),
               // Path node interactive widgets
@@ -60,7 +64,7 @@ class PathRail extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildConnectors(List<Offset> centers) {
+  List<Widget> _buildConnectors(List<Offset> centers, AppPalette palette) {
     final connectors = <Widget>[];
     for (int i = 0; i < centers.length - 1; i++) {
       final isDone = nodes[i].isDone;
@@ -71,6 +75,7 @@ class PathRail extends StatelessWidget {
               start: centers[i],
               end: centers[i + 1],
               isCompleted: isDone,
+              color: isDone ? palette.connectorDone : palette.connectorPending,
             ),
           ),
         ),

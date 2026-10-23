@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
@@ -24,13 +24,9 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
-    final subtitleColor = isDark
-        ? AppColors.darkTextMuted
-        : AppColors.textMuted;
+    final palette = context.palette;
+    final titleColor = palette.textPrimary;
+    final subtitleColor = palette.textMuted;
 
     return Center(
       child: Padding(

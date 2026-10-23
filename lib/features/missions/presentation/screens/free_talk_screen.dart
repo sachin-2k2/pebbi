@@ -5,7 +5,7 @@ import '../../../../core/design_system/back_link.dart';
 import '../../../../core/design_system/notice_banner.dart';
 import '../../../../core/layout/adaptive_sheet.dart';
 import '../../../../core/layout/content_width_limiter.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -67,10 +67,10 @@ class FreeTalkScreen extends ConsumerWidget {
     final topicsAsync = ref.watch(freeTalkTopicsProvider);
     final style = ref.watch(freeTalkCorrectionStyleProvider);
     final isOffline = ref.watch(freeTalkIsOfflineProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.surface,
+      backgroundColor: palette.background,
       body: SafeArea(
         child: ContentWidthLimiter(
           maxWidth: 580,
@@ -99,11 +99,7 @@ class FreeTalkScreen extends ConsumerWidget {
                     const Center(child: CircularProgressIndicator.adaptive()),
                 error: (err, stack) => Text(
                   AppStrings.freeTalkLanguageUnsupported,
-                  style: TextStyle(
-                    color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.textMuted,
-                  ),
+                  style: TextStyle(color: palette.textMuted),
                 ),
                 data: (topics) => TopicChipWrap(
                   topics: topics,

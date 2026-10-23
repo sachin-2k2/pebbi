@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import 'app_logo_tile.dart';
 import 'language_pill.dart';
@@ -31,6 +31,8 @@ class TopPillsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -46,9 +48,9 @@ class TopPillsRow extends StatelessWidget {
           ),
           const SizedBox(width: 4.0),
           StatPill(
-            icon: const Icon(
+            icon: Icon(
               Icons.local_fire_department_rounded,
-              color: AppColors.streakOrange,
+              color: palette.coral,
               size: 18.0,
             ),
             value: streakCount,
@@ -57,9 +59,9 @@ class TopPillsRow extends StatelessWidget {
           ),
           const SizedBox(width: 4.0),
           StatPill(
-            icon: const Icon(
+            icon: Icon(
               Icons.star_rounded,
-              color: AppColors.starGold,
+              color: palette.gold,
               size: 18.0,
             ),
             value: starsCount,

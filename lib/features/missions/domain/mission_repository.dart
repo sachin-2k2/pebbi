@@ -1,5 +1,8 @@
+import 'mission_brief.dart';
 import 'mission_category.dart';
+import 'mission_mode.dart';
 import 'mission_summary.dart';
+import 'mission_support.dart';
 import 'today_mission.dart';
 
 /// Abstract contract for fetching role-play missions and category taxonomy.
@@ -32,4 +35,30 @@ abstract class MissionRepository {
 
   /// Marks today's featured mission as completed for [userId].
   Future<void> completeTodayMission({required String userId});
+
+  /// Loads the full mission brief details for [missionId] scoped to [userId] and [targetLanguageCode].
+  Future<MissionBrief?> loadBrief({
+    required String missionId,
+    required String userId,
+    required String targetLanguageCode,
+    required String explanationLanguageCode,
+  });
+
+  /// Retrieves the saved default [MissionMode] for [userId].
+  Future<MissionMode> getDefaultMode({required String userId});
+
+  /// Saves the default [MissionMode] for [userId].
+  Future<void> saveDefaultMode({
+    required String userId,
+    required MissionMode mode,
+  });
+
+  /// Retrieves the saved default [MissionSupport] for [userId].
+  Future<MissionSupport> getDefaultSupport({required String userId});
+
+  /// Saves the default [MissionSupport] for [userId].
+  Future<void> saveDefaultSupport({
+    required String userId,
+    required MissionSupport support,
+  });
 }

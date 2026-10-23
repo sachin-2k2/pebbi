@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../domain/mission_summary.dart';
@@ -23,10 +23,12 @@ class MissionStatusTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     if (isPremiumLocked) {
       return _buildTag(
-        background: AppColors.chipPurpleBackground,
-        foreground: AppColors.brandPurple,
+        background: palette.tintLavender,
+        foreground: palette.brandText,
         label: AppStrings.missionTagPremium,
         icon: Icons.lock_rounded,
       );
@@ -35,21 +37,21 @@ class MissionStatusTag extends StatelessWidget {
     switch (status) {
       case MissionStatus.newMission:
         return _buildTag(
-          background: AppColors.tintLavender,
-          foreground: AppColors.brandPurple,
+          background: palette.tintLavender,
+          foreground: palette.brandText,
           label: AppStrings.missionTagNew,
         );
       case MissionStatus.done:
         return _buildTag(
-          background: AppColors.tintMint,
-          foreground: AppColors.mintDepth,
+          background: palette.tintMint,
+          foreground: palette.successText,
           label: AppStrings.missionTagDone,
           icon: Icons.check_rounded,
         );
       case MissionStatus.inProgress:
         return _buildTag(
-          background: AppColors.chipAmberBackground,
-          foreground: AppColors.chipAmberText,
+          background: palette.tintYellow,
+          foreground: palette.warningText,
           label: AppStrings.missionTagInProgress,
           icon: Icons.timelapse_rounded,
         );
@@ -78,9 +80,9 @@ class MissionStatusTag extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: foreground,
-              fontSize: 12.0,
+              fontSize: 11.5,
               fontWeight: FontWeight.w700,
+              color: foreground,
             ),
           ),
         ],

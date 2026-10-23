@@ -13,6 +13,12 @@ abstract final class AppColors {
   static const Color premiumGradientStart = Color(0xFF6C4DF6);
   static const Color premiumGradientEnd = Color(0xFF4B33C4);
 
+  // Splash Screen Tokens (TODO(question): exact values from designer)
+  // Derived from linear gradient at 50% height (tile center): Color.lerp(top, bottom, 0.5)
+  static const Color splashGradientTop = Color(0xFF6A49EF);
+  static const Color splashGradientBottom = Color(0xFF5535BE);
+  static const Color splashBackgroundSolid = Color(0xFF603FD7);
+
   // Secondary actions / Success / Goal ring
   static const Color mint = Color(0xFF2DD4A4);
   static const Color mintDepth = Color(0xFF1CA67E);
@@ -88,6 +94,26 @@ abstract final class AppColors {
     0xFF92400E,
   ); // Deep amber-brown (passes WCAG AAA > 7:1)
 
+  // Semantic Notice / Info / Safety Banner tokens (WCAG AAA & AA compliant)
+  static const Color infoSurface = Color(
+    0xFFE8F6FD,
+  ); // Soft sky blue background
+  static const Color infoBorder = Color(
+    0xFFBAE6FD,
+  ); // Pale sky border (sky 200)
+  static const Color infoText = Color(
+    0xFF0369A1,
+  ); // Deep sky text (sky 700: 5.47:1 on #E8F6FD)
+  static const Color darkInfoSurface = Color(
+    0xFF102A3C,
+  ); // Deep navy-sky background
+  static const Color darkInfoBorder = Color(
+    0xFF1B4868,
+  ); // Muted navy-sky border
+  static const Color darkInfoText = Color(
+    0xFF7DD3FC,
+  ); // Bright sky text (sky 300: 8.79:1 on #102A3C)
+
   // Exercise Feedback Panel Tokens (WCAG AAA & AA compliant)
   static const Color successSurface = Color(
     0xFFEAF9F5,
@@ -152,7 +178,9 @@ abstract final class AppColors {
   static const Color accentRose = Color(0xFFF43F5E);
   static const Color accentPink = Color(0xFFF43F5E);
   // Lesson Completion Tokens (WCAG AA & non-text contrast compliant)
-  static const Color goldStar = Color(0xFFD97706); // Passes 3.26:1 on white (WCAG non-text)
+  static const Color goldStar = Color(
+    0xFFD97706,
+  ); // Passes 3.26:1 on white (WCAG non-text)
   static const Color goldStarOutline = Color(0xFFD8D4E8);
   static const Color darkGoldStar = Color(0xFFFBBF24);
   static const Color darkGoldStarOutline = Color(0xFF4B4366);

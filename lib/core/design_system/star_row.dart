@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 
 /// Reusable row of 1 to 3 animated stars indicating completion rating.
 ///
@@ -86,12 +86,10 @@ class _StarRowState extends State<StarRow> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
 
-    final filledColor = isDark ? AppColors.darkGoldStar : AppColors.goldStar;
-    final emptyColor = isDark
-        ? AppColors.darkGoldStarOutline
-        : AppColors.goldStarOutline;
+    final filledColor = palette.gold;
+    final emptyColor = palette.goldStarOutline;
 
     final semanticsLabel = '${widget.starsEarned} of ${widget.totalStars} stars';
 

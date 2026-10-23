@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/mission_category.dart';
@@ -7,8 +7,8 @@ import '../../domain/mission_category.dart';
 /// Single category filter chip pill.
 ///
 /// Follows AGENTS.md §3 (under 150 lines) and §8:
-/// - Selected: lavender fill, brand purple border, bold purple text.
-/// - Unselected: white surface, light border, muted text.
+/// - Selected: brandTint fill, brand border, bold brand text.
+/// - Unselected: chipUnselectedFill surface, light border, muted text.
 class CategoryChip extends StatelessWidget {
   const CategoryChip({
     super.key,
@@ -23,9 +23,10 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isSelected ? AppColors.tintLavender : AppColors.surface;
-    final border = isSelected ? AppColors.brandPurple : AppColors.borderLight;
-    final fg = isSelected ? AppColors.brandPurple : AppColors.textMuted;
+    final palette = context.palette;
+    final bg = isSelected ? palette.brandTint : palette.chipUnselectedFill;
+    final border = isSelected ? palette.brand : palette.chipUnselectedBorder;
+    final fg = isSelected ? palette.brandText : palette.chipUnselectedText;
 
     return Semantics(
       button: true,

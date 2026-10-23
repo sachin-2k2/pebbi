@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
 
@@ -9,25 +9,27 @@ class NextTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
       decoration: BoxDecoration(
-        color: AppColors.brandPurple,
+        color: palette.brand,
         borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x336C4DF6),
+            color: palette.brand.withValues(alpha: 0.3),
             blurRadius: 4.0,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: const Text(
+      child: Text(
         AppStrings.nextTag,
         style: TextStyle(
           fontSize: 10.0,
           fontWeight: FontWeight.w800,
-          color: Colors.white,
+          color: palette.textOnBrand,
           letterSpacing: 0.5,
         ),
       ),

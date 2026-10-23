@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -21,11 +21,13 @@ class LanguagePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       button: true,
       label: AppStrings.languagePillSemantics(language),
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
         elevation: 0,
         child: InkWell(
@@ -36,14 +38,8 @@ class LanguagePill extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-              border: Border.all(color: AppColors.borderLight, width: 1.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0A1E1647),
-                  blurRadius: 4.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              border: Border.all(color: palette.outline, width: 1.0),
+              boxShadow: palette.cardShadow,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -54,18 +50,17 @@ class LanguagePill extends StatelessWidget {
                   child: Text(
                     language,
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textPrimary,
+                      color: palette.textPrimary,
                       fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 2.0),
-                const Icon(
+                Icon(
                   Icons.arrow_drop_down_rounded,
-                  size: 18.0,
-                  color: AppColors.textMuted,
+                  color: palette.textMuted,
+                  size: 20.0,
                 ),
               ],
             ),
@@ -83,19 +78,22 @@ class _GlyphBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 1.0),
+      width: 24.0,
+      height: 24.0,
       decoration: BoxDecoration(
-        color: AppColors.tintLavender,
-        borderRadius: BorderRadius.circular(6.0),
+        color: palette.tintLavender,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
       ),
+      alignment: Alignment.center,
       child: Text(
         glyph,
-        style: const TextStyle(
+        style: TextStyle(
+          color: palette.brandText,
           fontSize: 12.0,
           fontWeight: FontWeight.w800,
-          color: AppColors.brandPurple,
-          height: 1.2,
         ),
       ),
     );

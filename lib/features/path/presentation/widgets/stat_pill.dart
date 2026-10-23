@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 
@@ -22,12 +22,15 @@ class StatPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       button: true,
       label: semanticsLabel,
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+        elevation: 0,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
@@ -36,14 +39,8 @@ class StatPill extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-              border: Border.all(color: AppColors.borderLight, width: 1.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0A1E1647),
-                  blurRadius: 4.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              border: Border.all(color: palette.outline, width: 1.0),
+              boxShadow: palette.cardShadow,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -53,7 +50,7 @@ class StatPill extends StatelessWidget {
                 Text(
                   value.toString(),
                   style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.textPrimary,
+                    color: palette.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

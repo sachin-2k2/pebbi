@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_strings.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
 /// Segmented difficulty rating indicator.
@@ -14,8 +14,8 @@ class DifficultyPips extends StatelessWidget {
     super.key,
     required this.filledCount,
     this.totalCount = 3,
-    this.filledColor = AppColors.brandPurple,
-    this.emptyColor = AppColors.disabled,
+    this.filledColor,
+    this.emptyColor,
     this.pipWidth = 14.0,
     this.pipHeight = 4.0,
     this.excludeSemantics = false,
@@ -28,10 +28,10 @@ class DifficultyPips extends StatelessWidget {
   final int totalCount;
 
   /// Color used for active segments.
-  final Color filledColor;
+  final Color? filledColor;
 
   /// Color used for inactive segments.
-  final Color emptyColor;
+  final Color? emptyColor;
 
   /// Width of each segment.
   final double pipWidth;
@@ -44,6 +44,9 @@ class DifficultyPips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+    final activeColor = filledColor ?? palette.brand;
+    final inactiveColor = emptyColor ?? palette.disabledFill;
     final effectiveFilled = filledCount.clamp(0, totalCount);
 
     Widget content = Row(
@@ -55,11 +58,11 @@ class DifficultyPips extends StatelessWidget {
             width: pipWidth,
             height: pipHeight,
             decoration: BoxDecoration(
-              color: i < effectiveFilled ? filledColor : emptyColor,
+              color: i < effectiveFilled ? activeColor : inactiveColor,
               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
               border: i < effectiveFilled
                   ? null
-                  : Border.all(color: AppColors.borderLight, width: 0.8),
+                  : Border.all(color: palette.outline, width: 0.8),
             ),
           ),
         ],

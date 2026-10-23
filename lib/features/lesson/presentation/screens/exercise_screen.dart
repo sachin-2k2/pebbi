@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/text_to_speech_service.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/exercise.dart';
 import '../providers/exercise_session_notifier.dart';
 import '../providers/lesson_providers.dart';
@@ -85,11 +85,13 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     final settings = ref.watch(lessonSettingsProvider);
     final exercise = state.currentExercise;
 
+    final palette = context.palette;
+
     if (state.isLoading || exercise == null) {
-      return const Scaffold(
-        backgroundColor: AppColors.background,
+      return Scaffold(
+        backgroundColor: palette.background,
         body: Center(
-          child: CircularProgressIndicator(color: AppColors.brandPurple),
+          child: CircularProgressIndicator(color: palette.brand),
         ),
       );
     }
@@ -100,7 +102,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
         if (!didPop) _handleExit();
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: palette.background,
         body: SafeArea(
           child: Column(
             children: [

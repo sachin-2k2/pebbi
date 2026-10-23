@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_palette.dart';
 
 /// Small vector outline crown icon matching the Pebbi design system.
 ///
@@ -13,7 +14,7 @@ class CrownIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        color ?? IconTheme.of(context).color ?? const Color(0xFF6C4DF6);
+        color ?? IconTheme.of(context).color ?? context.palette.brand;
 
     return SizedBox(
       width: size,

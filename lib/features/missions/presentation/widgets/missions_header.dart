@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -13,6 +13,8 @@ class MissionsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       header: true,
       label: '${AppStrings.missionsTitle}. ${AppStrings.missionsSubtitle}',
@@ -24,11 +26,11 @@ class MissionsHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const ExcludeSemantics(
+            ExcludeSemantics(
               child: PebbiMascot(
                 size: 48.0,
                 outfit: PebbiOutfit.backpack,
-                accentColor: AppColors.brandPurple,
+                accentColor: palette.brand,
                 expression: PebbiExpression.happy,
               ),
             ),
@@ -37,15 +39,19 @@ class MissionsHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text(
                     AppStrings.missionsTitle,
-                    style: AppTypography.screenTitle,
+                    style: AppTypography.screenTitle.copyWith(
+                      color: palette.textPrimary,
+                    ),
                   ),
-                  SizedBox(height: 2.0),
+                  const SizedBox(height: 2.0),
                   Text(
                     AppStrings.missionsSubtitle,
-                    style: AppTypography.caption,
+                    style: AppTypography.caption.copyWith(
+                      color: palette.textMuted,
+                    ),
                   ),
                 ],
               ),

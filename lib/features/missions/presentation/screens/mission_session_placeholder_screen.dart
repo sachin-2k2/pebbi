@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+
+import '../../domain/session_config.dart';
 
 /// Placeholder screen for an active role-play or Free Talk conversation session.
 ///
@@ -14,17 +16,19 @@ class MissionSessionPlaceholderScreen extends StatelessWidget {
     super.key,
     required this.topicId,
     required this.correctionStyle,
+    this.sessionConfig,
   });
 
   final String topicId;
   final String correctionStyle;
+  final SessionConfig? sessionConfig;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
+      backgroundColor: palette.background,
       appBar: AppBar(
         title: const Text('Conversation Session'),
         leading: IconButton(
@@ -39,10 +43,10 @@ class MissionSessionPlaceholderScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.chat_bubble_outline_rounded,
                   size: 64,
-                  color: AppColors.brandPurple,
+                  color: palette.brand,
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(

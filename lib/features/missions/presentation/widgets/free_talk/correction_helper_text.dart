@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../l10n/app_strings.dart';
 import '../../../domain/correction_style.dart';
 
@@ -25,10 +25,8 @@ class CorrectionHelperText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final disableAnimations = MediaQuery.disableAnimationsOf(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark
-        ? AppColors.darkCorrectionHelperText
-        : AppColors.correctionHelperText;
+    final palette = context.palette;
+    final textColor = palette.textPrimary;
 
     final text = _getHelperText(style);
 

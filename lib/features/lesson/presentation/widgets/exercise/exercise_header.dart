@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/app_strings.dart';
@@ -26,9 +26,8 @@ class ExerciseHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final counterColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final palette = context.palette;
+    final counterColor = palette.textMuted;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -41,22 +40,22 @@ class ExerciseHeader extends StatelessWidget {
             button: true,
             label: AppStrings.closeExerciseSemantics,
             child: Material(
-              color: isDark ? AppColors.darkSurface : AppColors.surface,
+              color: palette.surface,
               shape: CircleBorder(
                 side: BorderSide(
-                  color: isDark ? AppColors.darkBorder : AppColors.borderLight,
+                  color: palette.outline,
                   width: 1.0,
                 ),
               ),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 onTap: onClose,
-                child: const SizedBox(
+                child: SizedBox(
                   width: AppSpacing.minTouchTarget,
                   height: AppSpacing.minTouchTarget,
                   child: Icon(
                     Icons.close,
-                    color: AppColors.textPrimary,
+                    color: palette.textPrimary,
                     size: 22,
                   ),
                 ),

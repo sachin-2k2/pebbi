@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/icon_tile.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
 import 'quick_action_card.dart';
@@ -20,6 +20,7 @@ class QuickActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScale = MediaQuery.textScalerOf(context).scale(1.0);
+    final palette = context.palette;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -28,7 +29,7 @@ class QuickActionRow extends StatelessWidget {
         final emergencyCard = QuickActionCard(
           iconTile: IconTile.emoji(
             '⚠️',
-            backgroundColor: AppColors.tintRose,
+            backgroundColor: palette.tintRose,
             size: 42.0,
             fontSize: 20.0,
           ),
@@ -40,7 +41,7 @@ class QuickActionRow extends StatelessWidget {
         final freeTalkCard = QuickActionCard(
           iconTile: IconTile.emoji(
             '💬',
-            backgroundColor: AppColors.tintLavender,
+            backgroundColor: palette.tintLavender,
             size: 42.0,
             fontSize: 20.0,
           ),

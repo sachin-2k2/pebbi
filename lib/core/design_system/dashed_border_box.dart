@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
 /// Container that renders a dashed rounded rectangle border around its child.
@@ -10,7 +10,7 @@ class DashedBorderBox extends StatelessWidget {
   const DashedBorderBox({
     super.key,
     required this.child,
-    this.color = AppColors.borderLight,
+    this.color,
     this.strokeWidth = 1.2,
     this.dashWidth = 5.0,
     this.dashGap = 4.0,
@@ -19,7 +19,7 @@ class DashedBorderBox extends StatelessWidget {
   });
 
   final Widget child;
-  final Color color;
+  final Color? color;
   final double strokeWidth;
   final double dashWidth;
   final double dashGap;
@@ -30,7 +30,7 @@ class DashedBorderBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _DashedRRectPainter(
-        color: color,
+        color: color ?? context.palette.outline,
         strokeWidth: strokeWidth,
         dashWidth: dashWidth,
         dashGap: dashGap,

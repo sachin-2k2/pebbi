@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
 /// Reusable rounded-square tinted tile for icons, emojis, or small avatars.
@@ -12,7 +12,7 @@ class IconTile extends StatelessWidget {
   const IconTile({
     super.key,
     required this.child,
-    this.backgroundColor = AppColors.tintLavender,
+    this.backgroundColor,
     this.size = 48.0,
     this.minSize = 40.0,
     this.maxSize = 52.0,
@@ -24,7 +24,7 @@ class IconTile extends StatelessWidget {
   factory IconTile.emoji(
     String emoji, {
     Key? key,
-    Color backgroundColor = AppColors.tintPeach,
+    Color? backgroundColor,
     double size = 48.0,
     double fontSize = 24.0,
   }) {
@@ -44,7 +44,7 @@ class IconTile extends StatelessWidget {
   final Widget child;
 
   /// Background tint color.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Nominal size (width and height).
   final double size;
@@ -64,12 +64,13 @@ class IconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveSize = size.clamp(minSize, maxSize);
+    final effectiveBg = backgroundColor ?? context.palette.tintLavender;
 
     Widget content = Container(
       width: effectiveSize,
       height: effectiveSize,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: effectiveBg,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       alignment: Alignment.center,

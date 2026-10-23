@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_palette.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import 'nav_destination_item.dart';
 
-/// Bottom tab bar for compact screens with active lavender pill and purple icon.
+/// Bottom tab bar for compact screens with theme-aware background and active pill.
 class AppTabBar extends StatelessWidget {
   const AppTabBar({super.key, required this.currentIndex, required this.onTap});
 
@@ -13,10 +13,12 @@ class AppTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.borderLight)),
+      decoration: BoxDecoration(
+        color: palette.tabBarBackground,
+        border: Border(top: BorderSide(color: palette.tabBarBorder)),
       ),
       child: SafeArea(
         top: false,
@@ -58,7 +60,8 @@ class _TabBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? AppColors.brandPurple : AppColors.textMuted;
+    final palette = context.palette;
+    final color = isSelected ? palette.tabBarSelected : palette.tabBarUnselected;
 
     return Semantics(
       button: true,
@@ -83,7 +86,7 @@ class _TabBarItem extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.tintLavender
+                      ? palette.tabBarIndicator
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                 ),

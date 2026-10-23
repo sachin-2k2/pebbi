@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
 /// Circular accent colour swatch with idle and selected states.
@@ -27,11 +27,9 @@ class AccentSwatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final ringColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
-    final gapColor = isDark ? AppColors.darkBackground : AppColors.background;
+    final palette = context.palette;
+    final ringColor = palette.textPrimary;
+    final gapColor = palette.background;
 
     final semanticsLabel =
         '$name, option $index of $total${isSelected ? ', selected' : ''}';

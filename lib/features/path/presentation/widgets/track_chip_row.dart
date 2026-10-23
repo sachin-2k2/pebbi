@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/track.dart';
@@ -55,9 +55,10 @@ class _TrackChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isSelected ? AppColors.tintLavender : AppColors.surface;
-    final border = isSelected ? AppColors.brandPurple : AppColors.borderLight;
-    final fg = isSelected ? AppColors.brandPurple : AppColors.textMuted;
+    final palette = context.palette;
+    final bg = isSelected ? palette.brandTint : palette.surface;
+    final border = isSelected ? palette.brand : palette.outline;
+    final fg = isSelected ? palette.brandText : palette.textMuted;
 
     return Semantics(
       button: true,

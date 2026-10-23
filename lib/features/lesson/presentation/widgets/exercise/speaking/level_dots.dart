@@ -35,7 +35,9 @@ class LevelDots extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final availableWidth = constraints.maxWidth;
+        final availableWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : 140.0;
         // Compute how many dots fit comfortably centered
         final dotUnit = _dotSize + _spacing;
         final maxDots = ((availableWidth) / dotUnit).floor();

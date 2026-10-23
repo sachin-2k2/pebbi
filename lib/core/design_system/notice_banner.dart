@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
@@ -25,19 +25,21 @@ class NoticeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     final bgColor = switch (tone) {
-      NoticeBannerTone.warning => AppColors.noticeWarningBackground,
-      NoticeBannerTone.info => AppColors.tintSky,
+      NoticeBannerTone.warning => palette.warningSurface,
+      NoticeBannerTone.info => palette.infoSurface,
     };
 
     final borderColor = switch (tone) {
-      NoticeBannerTone.warning => AppColors.noticeWarningBorder,
-      NoticeBannerTone.info => AppColors.borderLight,
+      NoticeBannerTone.warning => palette.warningBorder,
+      NoticeBannerTone.info => palette.infoBorder,
     };
 
     final textColor = switch (tone) {
-      NoticeBannerTone.warning => AppColors.noticeWarningText,
-      NoticeBannerTone.info => AppColors.textPrimary,
+      NoticeBannerTone.warning => palette.warningText,
+      NoticeBannerTone.info => palette.infoText,
     };
 
     return Semantics(

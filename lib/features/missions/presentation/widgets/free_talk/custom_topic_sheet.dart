@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/design_system/button_3d.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/app_strings.dart';
@@ -56,7 +56,7 @@ class _CustomTopicSheetState extends State<CustomTopicSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Padding(
@@ -96,10 +96,10 @@ class _CustomTopicSheetState extends State<CustomTopicSheet> {
               labelText: AppStrings.customTopicFieldLabel,
               hintText: AppStrings.customTopicFieldHint,
               filled: true,
-              fillColor: isDark ? AppColors.darkSurface : AppColors.surface,
+              fillColor: palette.inputFill,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusButton),
-                borderSide: const BorderSide(color: AppColors.borderLight),
+                borderSide: BorderSide(color: palette.inputBorder),
               ),
             ),
             onSubmitted: (_) {

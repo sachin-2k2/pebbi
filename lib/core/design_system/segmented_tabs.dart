@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
-/// Reusable 3-segment pill control on a soft lavender track.
+/// Reusable 3-segment pill control on a soft track.
 ///
 /// Follows AGENTS.md §3 (<100 lines), §4.6 (>=44dp tap target), & WCAG AA:
-/// - Track uses [AppColors.segmentedTrackBackground].
-/// - Selected segment renders as an elevated white pill with soft shadow.
-/// - Unselected segments maintain >=6.2:1 contrast ratio.
+/// - Track uses palette.surfaceVariant.
+/// - Selected segment renders as an elevated pill with soft shadow.
+/// - Unselected segments maintain contrast ratio.
 class SegmentedTabs<T> extends StatelessWidget {
   const SegmentedTabs({
     super.key,
@@ -27,10 +27,8 @@ class SegmentedTabs<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final trackColor = isDark
-        ? AppColors.darkSegmentedTrackBackground
-        : AppColors.segmentedTrackBackground;
+    final palette = context.palette;
+    final trackColor = palette.surfaceVariant;
 
     return Container(
       constraints: const BoxConstraints(minHeight: 48.0),
@@ -78,17 +76,9 @@ class _SegmentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final selectedBg = isDark
-        ? AppColors.darkSegmentedPillBackground
-        : AppColors.segmentedPillBackground;
-    final textColor = isSelected
-        ? (isDark
-              ? AppColors.darkSegmentedTextSelected
-              : AppColors.segmentedTextSelected)
-        : (isDark
-              ? AppColors.darkSegmentedTextUnselected
-              : AppColors.segmentedTextUnselected);
+    final palette = context.palette;
+    final selectedBg = palette.surface;
+    final textColor = isSelected ? palette.textPrimary : palette.textMuted;
 
     return Semantics(
       button: true,
@@ -104,15 +94,7 @@ class _SegmentItem extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected ? selectedBg : Colors.transparent,
               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 4.0,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : null,
+              boxShadow: isSelected ? palette.cardShadow : null,
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(

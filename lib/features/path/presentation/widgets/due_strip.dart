@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -7,6 +7,7 @@ import '../../../../l10n/app_strings.dart';
 /// "Phrases due" status strip linking to Review per design spec §5 & §8.
 ///
 /// Distinguishes between 0 phrases, 0 due (strong), and N due.
+/// Wraps text to up to 2 lines so phrases are never truncated by ellipsis.
 class DueStrip extends StatelessWidget {
   const DueStrip({
     super.key,
@@ -31,44 +32,47 @@ class DueStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        border: Border.all(color: AppColors.borderLight),
-        boxShadow: AppSpacing.cardShadow,
+        border: Border.all(color: palette.outline),
+        boxShadow: palette.cardShadow,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Sparkle Icon Tile
           Container(
             width: 32.0,
             height: 32.0,
             decoration: BoxDecoration(
-              color: AppColors.tintLavender,
+              color: palette.tintLavender,
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.auto_awesome_rounded,
-              color: AppColors.brandPurple,
+              color: palette.brand,
               size: 16.0,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
 
-          // Message
+          // Message (wrapped up to 2 lines without clipping)
           Expanded(
             child: Text(
               _message,
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
+                color: palette.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -82,12 +86,11 @@ class DueStrip extends StatelessWidget {
               minimumSize: const Size(48.0, 48.0),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: const Text(
-              AppStrings.reviewButton,
-              style: TextStyle(
-                color: AppColors.brandPurple,
+            child: Text(
+              AppStrings.dueStripReviewAction,
+              style: AppTypography.labelMedium.copyWith(
+                color: palette.brandText,
                 fontWeight: FontWeight.w700,
-                fontSize: 14.0,
               ),
             ),
           ),

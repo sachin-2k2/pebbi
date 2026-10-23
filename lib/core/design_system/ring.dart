@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 
 /// Reusable circular progress ring matching the Pebbi design system.
 ///
@@ -12,7 +12,7 @@ class Ring extends StatelessWidget {
     required this.progress,
     this.size = 180.0,
     this.strokeWidth = 12.0,
-    this.color = AppColors.brandPurple,
+    this.color,
     this.trackColor,
     this.strokeCap = StrokeCap.round,
     this.child,
@@ -22,7 +22,7 @@ class Ring extends StatelessWidget {
   final double progress;
   final double size;
   final double strokeWidth;
-  final Color color;
+  final Color? color;
   final Color? trackColor;
   final StrokeCap strokeCap;
   final Widget? child;
@@ -30,11 +30,9 @@ class Ring extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final effectiveTrack =
-        trackColor ??
-        (isDark ? AppColors.darkSurfaceVariant : AppColors.tintLavender);
+    final palette = context.palette;
+    final effectiveColor = color ?? palette.brand;
+    final effectiveTrack = trackColor ?? palette.progressTrack;
     final clamped = progress.clamp(0.0, 1.0);
 
     return Semantics(
@@ -50,7 +48,7 @@ class Ring extends StatelessWidget {
               painter: _RingPainter(
                 progress: clamped,
                 strokeWidth: strokeWidth,
-                color: color,
+                color: effectiveColor,
                 trackColor: effectiveTrack,
                 strokeCap: strokeCap,
               ),

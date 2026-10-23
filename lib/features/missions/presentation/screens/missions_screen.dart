@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/layout/content_width_limiter.dart';
 import '../../../../core/layout/window_class.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../widgets/missions_compact_layout.dart';
 import '../widgets/missions_expanded_layout.dart';
 
@@ -15,9 +15,10 @@ class MissionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isExpanded = context.isExpanded;
+    final palette = context.palette;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: palette.background,
       body: SafeArea(
         child: ContentWidthLimiter(
           maxWidth: isExpanded ? 1200.0 : 640.0,

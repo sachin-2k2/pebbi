@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/button_3d.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -23,13 +23,14 @@ class ContinueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
     final effectiveOverline = overline ?? AppStrings.continueLessonOverline;
 
     return Semantics(
       button: true,
       label: '$effectiveOverline: $title, $subtitle',
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         elevation: 0,
         child: InkWell(
@@ -38,8 +39,8 @@ class ContinueCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-              border: Border.all(color: AppColors.borderLight),
-              boxShadow: AppSpacing.cardShadow,
+              border: Border.all(color: palette.outline),
+              boxShadow: palette.cardShadow,
             ),
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
@@ -49,12 +50,17 @@ class ContinueCard extends StatelessWidget {
                   width: 52.0,
                   height: 52.0,
                   decoration: BoxDecoration(
-                    color: AppColors.tintLavender,
+                    color: palette.tintLavender,
                     borderRadius: BorderRadius.circular(
                       AppSpacing.radiusIconTile,
                     ),
                   ),
-                  child: const Center(child: PebbiMascot(size: 38.0)),
+                  child: Center(
+                    child: PebbiMascot(
+                      size: 38.0,
+                      accentColor: palette.brand,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
 
@@ -66,19 +72,25 @@ class ContinueCard extends StatelessWidget {
                     children: [
                       Text(
                         effectiveOverline,
-                        style: AppTypography.cardOverline,
+                        style: AppTypography.cardOverline.copyWith(
+                          color: palette.textMuted,
+                        ),
                       ),
                       const SizedBox(height: 2.0),
                       Text(
                         title,
-                        style: AppTypography.cardTitle,
+                        style: AppTypography.cardTitle.copyWith(
+                          color: palette.textPrimary,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2.0),
                       Text(
                         subtitle,
-                        style: AppTypography.caption,
+                        style: AppTypography.caption.copyWith(
+                          color: palette.textMuted,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -96,11 +108,11 @@ class ContinueCard extends StatelessWidget {
                   minHeight: 48.0,
                   padding: EdgeInsets.zero,
                   borderRadius: AppSpacing.radiusPill,
-                  backgroundColor: AppColors.mint,
-                  depthColor: AppColors.mintDepth,
-                  icon: const Icon(
+                  backgroundColor: palette.mint,
+                  depthColor: palette.mintDepth,
+                  icon: Icon(
                     Icons.play_arrow_rounded,
-                    color: Colors.white,
+                    color: palette.textOnBrand,
                     size: 28.0,
                   ),
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/button_3d.dart';
 import '../../../../core/layout/adaptive_sheet.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -23,6 +23,8 @@ class LockedNodeSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
@@ -32,26 +34,29 @@ class LockedNodeSheet extends StatelessWidget {
             width: 56.0,
             height: 56.0,
             decoration: BoxDecoration(
-              color: AppColors.tintLavender,
+              color: palette.brandTint,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.lock_rounded,
-              color: AppColors.brandPurple,
+              color: palette.brandText,
               size: 28.0,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             node.title,
-            style: AppTypography.screenTitle.copyWith(fontSize: 20.0),
+            style: AppTypography.screenTitle.copyWith(
+              fontSize: 20.0,
+              color: palette.textPrimary,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             AppStrings.lockedNodeSheetDescription,
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textMuted,
+              color: palette.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -70,11 +75,11 @@ class LockedNodeSheet extends StatelessWidget {
                 ),
               );
             },
-            backgroundColor: AppColors.brandPurple,
-            depthColor: AppColors.brandPurpleDepth,
-            icon: const Icon(
+            backgroundColor: palette.brand,
+            depthColor: palette.brandDepth,
+            icon: Icon(
               Icons.bolt_rounded,
-              color: Colors.white,
+              color: palette.textOnBrand,
               size: 20.0,
             ),
           ),
@@ -84,10 +89,10 @@ class LockedNodeSheet extends StatelessWidget {
             style: TextButton.styleFrom(
               minimumSize: const Size(double.infinity, 48.0),
             ),
-            child: const Text(
+            child: Text(
               AppStrings.lockedNodeGoBackAction,
               style: TextStyle(
-                color: AppColors.textMuted,
+                color: palette.textMuted,
                 fontWeight: FontWeight.w600,
               ),
             ),

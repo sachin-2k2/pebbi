@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_strings.dart';
 import '../../../domain/correction_style.dart';
@@ -21,13 +21,9 @@ class CorrectionStyleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark
-        ? AppColors.darkCorrectionCardBackground
-        : AppColors.correctionCardBackground;
-    final labelColor = isDark
-        ? AppColors.darkCorrectionLabelMuted
-        : AppColors.correctionLabelMuted;
+    final palette = context.palette;
+    final cardBg = palette.surfaceVariant;
+    final labelColor = palette.textMuted;
 
     return Container(
       width: double.infinity,

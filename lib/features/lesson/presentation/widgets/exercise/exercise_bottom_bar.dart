@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/design_system/button_3d.dart';
 import '../../../../../core/layout/content_width_limiter.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_strings.dart';
 import '../../providers/exercise_session_state.dart';
@@ -38,10 +38,9 @@ class ExerciseBottomBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final bg = isDark ? AppColors.darkSurface : AppColors.surface;
-    final dividerColor = isDark ? AppColors.darkBorder : AppColors.borderLight;
+    final palette = context.palette;
+    final bg = palette.surface;
+    final dividerColor = palette.outline;
 
     return Container(
       decoration: BoxDecoration(
@@ -56,18 +55,19 @@ class ExerciseBottomBar extends StatelessWidget {
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
           ),
-          child: mode == BottomBarMode.gotIt ? _buildGotIt() : _buildCheck(),
+          child:
+              mode == BottomBarMode.gotIt ? _buildGotIt(palette) : _buildCheck(),
         ),
       ),
     );
   }
 
-  Widget _buildGotIt() {
+  Widget _buildGotIt(AppPalette palette) {
     return Button3D(
       label: AppStrings.gotIt,
-      backgroundColor: AppColors.mint,
-      depthColor: AppColors.mintDepth,
-      textColor: Colors.white,
+      backgroundColor: palette.mint,
+      depthColor: palette.mintDepth,
+      textColor: palette.textOnBrand,
       onPressed: onGotIt,
     );
   }

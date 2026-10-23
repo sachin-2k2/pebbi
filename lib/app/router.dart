@@ -18,16 +18,23 @@ import '../features/onboarding/presentation/screens/placement_result_screen.dart
 import '../features/onboarding/presentation/screens/placement_intro_screen.dart';
 import '../features/onboarding/presentation/screens/reason_step_screen.dart';
 import '../features/onboarding/presentation/screens/welcome_screen.dart';
+import '../features/onboarding/presentation/screens/splash_screen.dart';
 import '../features/review/presentation/screens/review_screen.dart';
 import '../features/rewards/presentation/screens/rewards_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
-import '../features/missions/presentation/screens/mission_brief_placeholder_screen.dart';
+import '../features/missions/domain/correction_style.dart';
+import '../features/missions/domain/mission_mode.dart';
+import '../features/missions/domain/mission_support.dart';
+import '../features/missions/domain/session_config.dart';
+import '../features/missions/presentation/screens/mission_brief_screen.dart';
 import '../features/emergency/presentation/screens/emergency_screen.dart';
 import '../features/missions/presentation/screens/free_talk_screen.dart';
-import '../features/missions/presentation/screens/mission_session_placeholder_screen.dart';
+import '../features/missions/domain/debrief_ref.dart';
+import '../features/missions/presentation/screens/mission_session_screen.dart';
+import '../features/missions/presentation/screens/mission_debrief_placeholder_screen.dart';
 import '../features/review/presentation/screens/note_detail_placeholder_screen.dart';
 import '../features/review/presentation/screens/practice_placeholder_screen.dart';
 import '../features/rewards/presentation/screens/sticker_book_placeholder_screen.dart';
@@ -42,8 +49,12 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
 /// Application router with responsive [AdaptiveShell] bottom tab & rail branches.
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/welcome',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
     GoRoute(
       path: '/',
       redirect: (context, state) => '/path',
@@ -143,7 +154,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/missions/brief/:id',
-      builder: (context, state) => MissionBriefPlaceholderScreen(
+      builder: (context, state) => MissionBriefScreen(
         missionId: state.pathParameters['id'] ?? '',
       ),
     ),
@@ -160,11 +171,25 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final topicId = state.uri.queryParameters['topicId'] ?? '';
         final style = state.uri.queryParameters['style'] ?? 'gentle';
-        return MissionSessionPlaceholderScreen(
-          topicId: topicId,
-          correctionStyle: style,
-        );
+        final config = state.extra as SessionConfig?;
+        final effectiveConfig = config ??
+            SessionConfig(
+              missionId: topicId.isEmpty ? 'order_coffee' : topicId,
+              mode: MissionMode.chat,
+              support: MissionSupport.guided,
+              correctionStyle: CorrectionStyle.fromId(style),
+              captionsOn: true,
+              targetLanguageCode: 'fr',
+              explanationLanguageCode: 'en',
+            );
+        return MissionSessionScreen(config: effectiveConfig);
       },
+    ),
+    GoRoute(
+      path: '/missions/debrief',
+      builder: (context, state) => MissionDebriefPlaceholderScreen(
+        debriefRef: state.extra as DebriefRef?,
+      ),
     ),
     GoRoute(
       path: '/review/practice',

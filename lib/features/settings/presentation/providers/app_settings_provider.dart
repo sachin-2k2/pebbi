@@ -128,3 +128,9 @@ final handPreferenceProvider = Provider<HandPreference>((ref) {
   final isLeft = ref.watch(isLeftHandedProvider);
   return isLeft ? HandPreference.leftHanded : HandPreference.rightHanded;
 });
+
+/// Derived provider exposing whether reduce motion is enabled.
+final reduceMotionProvider = Provider<bool>((ref) {
+  return ref.watch(appSettingsProvider.select((s) => s.reduceMotion));
+});
+

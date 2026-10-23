@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/layout/window_class.dart';
-import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_palette.dart';
 import '../../core/theme/app_spacing.dart';
 import 'nav_destination_item.dart';
 
@@ -18,24 +18,25 @@ class AppNavRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isExpanded = context.isExpanded;
+    final palette = context.palette;
 
     return NavigationRail(
       extended: isExpanded,
       selectedIndex: currentIndex,
       onDestinationSelected: onDestinationSelected,
-      backgroundColor: AppColors.surface,
-      indicatorColor: AppColors.tintLavender,
+      backgroundColor: palette.navRailBackground,
+      indicatorColor: palette.tabBarIndicator,
       minWidth: 72.0,
       minExtendedWidth: 190.0,
-      unselectedIconTheme: const IconThemeData(color: AppColors.textMuted),
-      selectedIconTheme: const IconThemeData(color: AppColors.brandPurple),
-      unselectedLabelTextStyle: const TextStyle(
-        color: AppColors.textMuted,
+      unselectedIconTheme: IconThemeData(color: palette.textMuted),
+      selectedIconTheme: IconThemeData(color: palette.brandText),
+      unselectedLabelTextStyle: TextStyle(
+        color: palette.textMuted,
         fontWeight: FontWeight.w500,
         fontSize: 13.0,
       ),
-      selectedLabelTextStyle: const TextStyle(
-        color: AppColors.brandPurple,
+      selectedLabelTextStyle: TextStyle(
+        color: palette.brandText,
         fontWeight: FontWeight.w700,
         fontSize: 13.0,
       ),

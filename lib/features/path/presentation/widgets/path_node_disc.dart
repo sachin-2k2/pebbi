@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/path_node_data.dart';
 
 /// 3D circular disc widget for a path stop.
@@ -17,7 +17,8 @@ class PathNodeDisc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = _resolveColors(node);
+    final palette = context.palette;
+    final colors = _resolveColors(node, palette);
     final icon = _resolveIcon(node);
 
     return SizedBox(
@@ -47,13 +48,7 @@ class PathNodeDisc extends StatelessWidget {
               decoration: BoxDecoration(
                 color: colors.face,
                 shape: BoxShape.circle,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x1A000000),
-                    blurRadius: 4.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+                boxShadow: palette.cardShadow,
               ),
               child: Center(
                 child: Icon(icon, color: colors.icon, size: diameter * 0.45),
@@ -67,32 +62,33 @@ class PathNodeDisc extends StatelessWidget {
 
   static ({Color face, Color depth, Color icon}) _resolveColors(
     PathNodeData node,
+    AppPalette palette,
   ) {
     if (node.isLocked) {
       return (
-        face: AppColors.disabled,
-        depth: AppColors.disabledDepth,
-        icon: AppColors.disabledText,
+        face: palette.nodeLocked,
+        depth: palette.nodeLockedDepth,
+        icon: palette.disabledText,
       );
     }
     if (node.type == PathNodeType.chest) {
       return (
-        face: AppColors.starGold,
-        depth: AppColors.goldDepth,
-        icon: Colors.white,
+        face: palette.gold,
+        depth: palette.goldDepth,
+        icon: palette.textOnBrand,
       );
     }
     if (node.isCompleted) {
       return (
-        face: AppColors.mint,
-        depth: AppColors.mintDepth,
-        icon: Colors.white,
+        face: palette.nodeDone,
+        depth: palette.nodeDoneDepth,
+        icon: palette.textOnBrand,
       );
     }
     return (
-      face: AppColors.brandPurple,
-      depth: AppColors.brandPurpleDepth,
-      icon: Colors.white,
+      face: palette.nodeCurrent,
+      depth: palette.nodeCurrentDepth,
+      icon: palette.textOnBrand,
     );
   }
 

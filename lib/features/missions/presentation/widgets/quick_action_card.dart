@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 
@@ -24,11 +24,13 @@ class QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       button: true,
       label: semanticsLabel ?? title,
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         elevation: 0,
         child: InkWell(
@@ -37,8 +39,8 @@ class QuickActionCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-              border: Border.all(color: AppColors.borderLight),
-              boxShadow: AppSpacing.cardShadow,
+              border: Border.all(color: palette.outline),
+              boxShadow: palette.cardShadow,
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -52,7 +54,7 @@ class QuickActionCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         title,
@@ -60,6 +62,7 @@ class QuickActionCard extends StatelessWidget {
                           fontSize: 15.0,
                           fontWeight: FontWeight.w700,
                           height: 1.2,
+                          color: palette.textPrimary,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -68,7 +71,10 @@ class QuickActionCard extends StatelessWidget {
                         const SizedBox(height: 2.0),
                         Text(
                           subtitle!,
-                          style: AppTypography.caption.copyWith(fontSize: 12.0),
+                          style: AppTypography.caption.copyWith(
+                            fontSize: 12.0,
+                            color: palette.textMuted,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

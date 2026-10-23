@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
@@ -20,6 +20,8 @@ class BackLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Semantics(
       button: true,
       label: 'Back to $label',
@@ -38,10 +40,10 @@ class BackLink extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.chevron_left_rounded,
                   size: 20.0,
-                  color: AppColors.textMuted,
+                  color: palette.textMuted,
                 ),
                 const SizedBox(width: 2.0),
                 Flexible(
@@ -50,7 +52,7 @@ class BackLink extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textMuted,
+                      color: palette.textMuted,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

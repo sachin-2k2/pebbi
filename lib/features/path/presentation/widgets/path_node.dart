@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/path_node_data.dart';
@@ -27,6 +27,8 @@ class PathNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return GestureDetector(
       onTap: _handleTap,
       behavior: HitTestBehavior.opaque,
@@ -60,8 +62,8 @@ class PathNode extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: AppTypography.labelMedium.copyWith(
                 color: node.isLocked
-                    ? AppColors.textTertiary
-                    : AppColors.textPrimary,
+                    ? palette.textTertiary
+                    : palette.textPrimary,
                 fontWeight: node.isCurrent ? FontWeight.w700 : FontWeight.w500,
               ),
             ),

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'speech_to_text_recognizer_service.dart';
 
 /// Abstract service interface for device speech recognition.
 ///
@@ -42,3 +44,11 @@ abstract class SpeechRecognizerService {
   /// Releases resources.
   void dispose();
 }
+
+/// Riverpod provider for the application [SpeechRecognizerService].
+final speechRecognizerServiceProvider =
+    Provider<SpeechRecognizerService>((ref) {
+  final service = SpeechToTextRecognizerService();
+  ref.onDispose(() => service.dispose());
+  return service;
+});

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -23,7 +24,10 @@ class MissionsSectionTitle extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: AppTypography.screenTitle.copyWith(fontSize: 20.0),
+          style: AppTypography.screenTitle.copyWith(
+            fontSize: 20.0,
+            color: context.palette.textPrimary,
+          ),
         ),
       ),
     );

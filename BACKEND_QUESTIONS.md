@@ -862,3 +862,143 @@ Plain list of what the lesson complete screen and completion payload need from t
    - Under child-safe settings (`AgeBand.child`), gamification pressure elements (such as streak counters) can cause anxiety. The client enforces `RewardsSafetyRules.shouldShowRewardsPressureElements(ageBand)`, silencing the streak tile when false.
    - Please confirm if the backend similarly silences streak notifications and countdowns for child accounts.
 
+## 12. Mission Brief ("Order a coffee") & Role-Play Conversation Session Setup
+
+### 12.1 Brief Content Schema & Localization
+- **Client Mock Implementation**:
+  - `MissionBrief` domain model with:
+    - `mission_id`: Unique identifier (e.g. `order_coffee`).
+    - `emoji`: Visual emoji glyph (e.g. `☕`).
+    - `title`: Scene display title in the learner's explanation language with English fallback (e.g. *"Order a coffee"*).
+    - `character_name` & `character_role`: Persona information (e.g. *"Lucía"*, *"barista"*).
+    - `scene_line`: Context line (e.g. *"A busy café, morning rush"*); nullable/optional (hidden cleanly without leaving a gap when omitted).
+    - `goals`: Sequential list of goals `[ { id: string, text: string } ]` in the learner's explanation language (e.g. *"Order a drink"*, *"Ask the price"*, *"Pay and say thank you"*). Display-only circles on the client, completed during the active session.
+    - `estimated_minutes`: Integer (e.g. `5`).
+    - `difficulty`: Integer rating (1 to 3).
+    - `language_code`: Target language for the mission (e.g. `es`).
+    - `is_premium`: Boolean flag indicating premium subscription gating.
+    - `status`: Per-user completion state (`newMission`, `inProgress`, `done`).
+- **Backend Questions**:
+  1. What is the exact REST/GraphQL schema for fetching mission brief data?
+  2. Are goal instruction texts, scene lines, and character names provided by the backend in the learner's explanation language (e.g. English, Spanish, French, German), or is the client expected to localize them?
+  3. Does the server support variable numbers of goals (e.g., 1 to 5 goals per scene)?
+
+### 12.2 Voice & Speech Capabilities per Language and Mission
+- **Client Implementation**:
+  - Voice mode is disabled on the client when:
+    1. Settings > Speaking practice is turned OFF (`AppSettings.speakingPracticeEnabled == false`).
+    2. Learner's age band disallows voice recording (`SpeakingSafetyRules.shouldAllowSpeaking(ageBand) == false`).
+    3. Speech recognition is unavailable on the device for this language.
+    4. Mission scene does not support voice (`MissionBrief.supportsVoice == false`).
+  - Microphone permission is requested only upon tapping "Start" in Voice mode (never on opening the screen or tapping the option pill).
+  - If microphone permission is denied, the client falls back to Chat mode with a friendly notice.
+- **Backend Questions**:
+  1. Does the backend conversation endpoint accept raw audio streaming (via WebSockets/WebRTC) or client-transcribed text?
+  2. If the backend transcribes audio, which STT engine and languages are supported server-side?
+  3. Which specific mission scenes or languages will have `supports_voice = false`?
+
+### 12.3 Free Tier Quotas & Premium Gating
+- **Client Implementation**:
+  - Evaluates `MissionAccessRules.missionAccess(user, mission)`. Premium missions require active subscription (`/premium/options`).
+- **Backend Questions**:
+  1. What is the daily role-play mission quota for free-tier users (e.g., 1 mission per day, or 3 missions per week)?
+  2. How does the server indicate quota exhaustion (`limitReached`), and what payload communicates quota refresh time?
+
+### 12.4 Safety Statement & AI Character Guardrails
+- **Client Implementation**:
+  - Displays persistent safety notice: *"Pebbi's character stays inside this scene and never asks for personal details. You can leave at any point."*
+- **Backend Questions**:
+  1. What system prompts and safety moderation guardrails ensure the LLM stays strictly inside the role-play persona and never elicits PII (names, addresses, phone numbers) from learners, especially minors?
+  2. Has this safety statement been approved by legal counsel for COPPA/GDPR-K compliance?
+
+### 12.5 Session Startup Handshake & Payload
+- **Client Implementation**:
+  - Navigates to `/missions/session` with `SessionConfig(missionId, mode, support, correctionStyle, captionsOn, targetLanguageCode, explanationLanguageCode, level)`.
+- **Backend Questions**:
+  1. What is the initial HTTP/WebSocket handshake payload required to initiate an active AI conversation session?
+  2. How do `support = guided` vs `support = light_hints` differ in server-side responses? (e.g., does `guided` return suggested reply options `suggested_replies: string[]` on every assistant turn, while `light_hints` omits them?)
+  3. How is `correction_style` (`gentle`, `live`, `none`) communicated to the LLM agent prompt?
+
+## 13. Role-Play Active Session, Chat Mode ("Lucía, barista") & Conversation Engine
+
+### 13.1 Session Initialization Handshake & Context Hydration
+- **Client Implementation**:
+  - `ConversationRepository.startSession(config)` invokes backend initialization with:
+    - `mission_id`: string (e.g. `order_coffee`).
+    - `mode`: `chat` | `voice`.
+    - `support`: `guided` | `light_hints`.
+    - `correction_style`: `gentle` | `live` | `none`.
+    - `target_language_code`: ISO 639-1 string (e.g. `fr`, `es`).
+    - `explanation_language_code`: ISO 639-1 string (e.g. `en`).
+    - `learner_level`: string code (e.g. `beginner_a1`, `intermediate_b1`).
+    - `client_session_id`: UUIDv4 string for client-side idempotency.
+  - Expected `SessionStart` response payload:
+    - `session_id`: string.
+    - `character_name`: string (e.g. *"Lucía"*).
+    - `character_role`: string (e.g. *"barista"*).
+    - `character_avatar_url`: string? (nullable).
+    - `character_status_text`: string (e.g. *"in the café"* or *"online"*).
+    - `goals`: list of `{ id: string, label: string, is_completed: boolean }`.
+    - `initial_message`: `{ id: string, author: 'character', text: string, translation: string?, audio_url: string?, timestamp: int }`.
+    - `initial_suggestions`: list of `{ id: string, text: string, translation: string? }`.
+- **Backend Questions**:
+  1. What is the transport mechanism for live turns: REST HTTP polling/long-polling, Server-Sent Events (SSE), or WebSockets?
+  2. How is character typing status broadcast if streaming responses? (Client simulates typing dots during generation).
+  3. Are goal labels returned already localized in the user's `explanation_language_code`?
+
+### 13.2 Turn Execution, Idempotency & Retries
+- **Client Implementation**:
+  - Client invokes `ConversationRepository.sendTurn(sessionId, userText, clientTurnId)`:
+    - User message is optimistically appended to local conversation with `deliveryState: sending`.
+    - `clientTurnId`: unique UUIDv4 generated per message attempt. If a network drop occurs, user taps "Retry" and resubmits with the exact same `clientTurnId`.
+    - Failure transitions turn state to `deliveryState: failed`, exposing inline "Retry" and "Delete" actions.
+    - Client applies a 12-second generation timeout before marking a turn as failed.
+- **Backend Questions**:
+  1. How long does the backend deduplication cache retain `client_turn_id` values? (Client recommends at least 24 hours).
+  2. What is the standard P95/P99 latency budget for turn generation? If turn generation exceeds 10 seconds, does the server send a heartbeat to prevent socket timeouts?
+  3. In error conditions (e.g. LLM rate limit, safety moderation flag, or database timeout), what structured JSON error payload is returned? Is there an `is_retryable: boolean` flag?
+
+### 13.3 Real-Time Corrections Engine & Inline Notes
+- **Client Implementation**:
+  - `CorrectionStyle.gentle`: Deferred to session debrief; minimal in-turn interruptions.
+  - `CorrectionStyle.live`: In-turn correction note (`correction_note.dart`) displayed beneath the user bubble with:
+    - `original_text`: what the learner typed/spoke.
+    - `better_way`: natural native phrasing.
+    - `explanation`: concise grammar or cultural note in the explanation language.
+    - "Save phrase" action: adds `better_way` directly to the learner's Review library via `TranslationRepository`.
+  - `CorrectionStyle.none`: Pure immersion, zero grammar interventions.
+- **Backend Questions**:
+  1. What is the JSON schema for turn corrections? Does the server include word-level diffs or span indices?
+  2. Are grammar explanations always localized to `explanation_language_code`?
+
+### 13.4 Guided Suggestions & Level Adaptation
+- **Client Implementation**:
+  - In `support = guided`, the LLM returns 2–3 `suggestions` on each character turn.
+  - Tapping a suggestion card immediately sends it as the user's turn.
+  - On compact mobile viewports, when the software keyboard opens, suggestions collapse into a single-line horizontal scroll strip to avoid occluding the chat history.
+- **Backend Questions**:
+  1. Does the backend guarantee 2–3 suggestions on every turn when `support == guided`?
+  2. If the user picks `support == light_hints`, does the server return 1 short starter phrase or none at all?
+  3. How does the generation prompt ensure suggestions directly satisfy the next pending goal?
+
+### 13.5 Safety Moderation & Child Protection (COPPA / GDPR-K)
+- **Client Implementation**:
+  - Header displays AI character badge with disclosure sheet (`ai_disclosure_sheet.dart`) stating: *"Lucía is an AI practice character designed to help you practice conversations safely. She never asks for personal information."*
+  - Includes "Report character message" sheet with moderation categories (Inappropriate content, Broke character, Asked for personal information, Offensive language).
+- **Backend Questions**:
+  1. What system-level prompt boundaries prevent the character from breaking persona or engaging in adversarial jailbreaks?
+  2. For `AgeBand.child`, what secondary safety filters are applied server-side before returning LLM responses to the client?
+  3. When a learner reports a message, what telemetry or context snippet is uploaded to the backend moderation queue?
+
+### 13.6 Session Finalization & Debrief Contract
+- **Client Implementation**:
+  - When all goals are achieved, a system note is displayed and the input bar changes to an emerald "See your debrief" button.
+  - Users can also tap "Finish & debrief" from the footer links at any time.
+  - If the user taps "Finish" before sending any messages, a prompt sheet warns them that leaving now awards no stars.
+  - Upon finish, `ConversationRepository.finishSession(sessionId)` returns a `DebriefRef(debriefId, missionId, starsEarned, goalsHit, totalGoals, timestamp)` and routes to `/missions/debrief`.
+- **Backend Questions**:
+  1. How are stars computed server-side? (e.g. 25 base stars for completion + bonus for first-try grammar accuracy and politeness).
+  2. Can a user resume an incomplete session if they accidentally close the app or lose connection?
+  3. Does the server persist unfinished sessions, or are they automatically garbage-collected after an idle timeout (e.g. 1 hour)?
+
+

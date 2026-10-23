@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/theme/app_palette.dart';
 import '../../../../../../core/theme/app_spacing.dart';
 import '../../../../../../core/theme/app_typography.dart';
 
@@ -18,6 +18,8 @@ class PhraseTagRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Wrap(
@@ -26,13 +28,13 @@ class PhraseTagRow extends StatelessWidget {
         children: [
           _buildPill(
             text: phraseKindTag,
-            backgroundColor: const Color(0xFFEDE9FE),
-            textColor: AppColors.brandPurple,
+            backgroundColor: palette.brandTint,
+            textColor: palette.brandText,
           ),
           _buildPill(
             text: registerTag,
-            backgroundColor: const Color(0xFFF1F0F5),
-            textColor: const Color(0xFF2E2A36),
+            backgroundColor: palette.surfaceVariant,
+            textColor: palette.textPrimary,
           ),
         ],
       ),

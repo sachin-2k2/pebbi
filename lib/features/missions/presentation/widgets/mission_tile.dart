@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/difficulty_pips.dart';
 import '../../../../core/design_system/icon_tile.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -30,6 +30,7 @@ class MissionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
     final statusText = isPremiumLocked
         ? AppStrings.missionTagPremium
         : (mission.status == MissionStatus.done
@@ -53,7 +54,7 @@ class MissionTile extends StatelessWidget {
       button: true,
       label: semanticsLabel,
       child: Material(
-        color: AppColors.surface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         elevation: 0,
         child: InkWell(
@@ -62,8 +63,8 @@ class MissionTile extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-              border: Border.all(color: AppColors.borderLight),
-              boxShadow: AppSpacing.cardShadow,
+              border: Border.all(color: palette.outline),
+              boxShadow: palette.cardShadow,
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -74,7 +75,7 @@ class MissionTile extends StatelessWidget {
               children: [
                 IconTile.emoji(
                   mission.emoji,
-                  backgroundColor: AppColors.tintPeach,
+                  backgroundColor: palette.tintPeach,
                   size: 48.0,
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -89,6 +90,7 @@ class MissionTile extends StatelessWidget {
                           mission.title,
                           style: AppTypography.cardTitle.copyWith(
                             fontWeight: FontWeight.w700,
+                            color: palette.textPrimary,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -107,6 +109,7 @@ class MissionTile extends StatelessWidget {
                                 mission.title,
                                 style: AppTypography.cardTitle.copyWith(
                                   fontWeight: FontWeight.w700,
+                                  color: palette.textPrimary,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -124,7 +127,7 @@ class MissionTile extends StatelessWidget {
                       Text(
                         '${mission.characterName}, ${mission.characterRole} · ${AppStrings.missionDurationMinutes(mission.durationMinutes)}',
                         style: AppTypography.caption.copyWith(
-                          color: AppColors.textMuted,
+                          color: palette.textMuted,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -133,7 +136,8 @@ class MissionTile extends StatelessWidget {
                       DifficultyPips(
                         filledCount: mission.difficulty,
                         totalCount: 3,
-                        filledColor: AppColors.coral,
+                        filledColor: palette.coral,
+                        emptyColor: palette.disabledFill,
                         pipWidth: 16.0,
                         pipHeight: 5.0,
                         excludeSemantics: true,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 
 /// Animated thin progress bar with a small visible cap at zero progress and mint fill.
@@ -22,6 +22,7 @@ class ExerciseProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
     // Ensures a small visible cap is shown even at 0% per design spec
     final effectiveProgress = progress.clamp(minCapFactor, 1.0);
 
@@ -29,7 +30,7 @@ class ExerciseProgressBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
       child: Container(
         height: height,
-        color: AppColors.borderLight,
+        color: palette.progressTrack,
         child: TweenAnimationBuilder<double>(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -40,7 +41,7 @@ class ExerciseProgressBar extends StatelessWidget {
               widthFactor: value,
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.mint,
+                  color: palette.mint,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                 ),
               ),

@@ -1405,4 +1405,165 @@ abstract final class AppStrings {
   static const String settingsAboutPlaceholderTitle = 'About Pebbi';
   static const String settingsAboutPlaceholderSubtitle =
       'Pebbi app version, credits, and open-source licenses will appear here.';
+
+  // Mission Brief Strings
+  static const String yourGoalSectionLabel = 'YOUR GOAL';
+  static const String modeSectionLabel = 'MODE';
+  static const String supportSectionLabel = 'SUPPORT';
+  static const String modeChat = 'Chat';
+  static const String modeVoice = 'Voice';
+  static const String supportLightHints = 'Light hints';
+  static const String supportGuided = 'Guided';
+  static const String suggestedRepliesOn = 'Suggested replies on';
+  static const String suggestedRepliesOff = 'Suggested replies off';
+  static const String missionSafetyNotice =
+      "Pebbi's character stays inside this scene and never asks for personal details. You can leave at any point.";
+  static const String startMission = 'Start';
+  static const String tryAgainMission = 'Try again';
+  static const String hearGoalOutLoud = 'Hear the goal out loud';
+  static const String stopGoalPlayback = 'Stop';
+  static const String captionsSheetTitle = 'Captions in missions';
+  static const String captionsSheetSubtitle =
+      'Subtitles and meaning translations during role-play.';
+  static const String captionsSwitchLabel = 'Captions always on';
+  static const String voiceDisabledSpeakingOff =
+      'Speaking practice is off in Settings';
+  static const String voiceDisabledAge = 'Voice is unavailable for this account';
+  static const String voiceDisabledRecognizer =
+      'Speech recognition is not available for this language';
+  static const String voiceDisabledScene =
+      'This scene does not support voice';
+  static const String voicePermissionFallback =
+      'Microphone permission denied. Switched to Chat.';
+  static const String missionNotFound = 'Mission not found';
+  static const String missionNotFoundSubtitle =
+      'The scene you are looking for may have moved or is unavailable.';
+  static const String missionCompletedTag = 'Done';
+  static const String missionLockedTag = 'Locked';
+
+  static String missionCaptionsRow(bool isOn) =>
+      'Captions: ${isOn ? 'on' : 'off'}  ›';
+
+  static String missionDurationMinutesApprox(int minutes) =>
+      'About $minutes min';
+
+  static String goalListSemantics(int index, int total, String goal) =>
+      'Goal $index of $total: $goal. Not done yet.';
+
+  // Role-Play Session Strings
+  static String sessionCharacterOnline(String role) => '$role · online';
+  static const String sessionHelpButtonLabel = 'Help';
+  static const String sessionHelpButtonSemantics = 'Help options and scene tips';
+  static String sessionGoalChipSemantics(
+    int index,
+    int total,
+    String text,
+    bool isDone,
+  ) =>
+      isDone
+          ? 'Goal $index of $total: $text, completed.'
+          : 'Goal $index of $total: $text, not completed.';
+  static String sessionGoalCompletedAnnouncement(String text) =>
+      '$text goal completed!';
+  static String sessionGoalsSummaryChip(int completed, int total) =>
+      'Goals $completed of $total  ›';
+  static const String sessionGoalsSheetTitle = 'Mission Goals';
+  static const String sessionGoalsSheetSubtitle =
+      'Complete each objective during the conversation.';
+  static const String sessionAllGoalsDone =
+      'All goals done — finish whenever you like';
+
+  static String sessionReplyPlaceholder(String languageName) =>
+      'Reply in $languageName...';
+  static const String sendMessage = 'Send message';
+  static String sessionCharacterTyping(String name) => '$name is typing';
+  static const String sessionMessageSending = 'Sending...';
+  static const String sessionMessageFailed = 'Not sent';
+  static const String sessionRetrySend = 'Retry';
+  static const String sessionDeleteFailedMessage = 'Delete';
+  static const String sessionTypeInstead = 'Type instead';
+  static const String sessionMicListening = 'Listening...';
+  static const String sessionMicTapToSpeak = 'Tap to speak';
+
+  static const String sessionLiveCorrectionPrefix = 'Better: ';
+  static const String sessionPlayLineTooltip = 'Listen to line';
+  static String sessionCharacterMessageSemantics(
+    String name,
+    String text,
+    String? translation,
+  ) =>
+      translation != null
+          ? '$name says: $text. Meaning: $translation. Double tap to hear it.'
+          : '$name says: $text. Double tap to hear it.';
+  static String sessionUserMessageSemantics(
+    String text,
+    String? translation,
+    bool isFailed,
+  ) =>
+      isFailed
+          ? 'You said: $text, not sent. Double tap to retry.'
+          : (translation != null
+              ? 'You said: $text. Meaning: $translation.'
+              : 'You said: $text.');
+
+  static const String sessionSayInMyLanguage = 'Say it in my language';
+  static const String sessionCaptionsOn = 'captions on';
+  static const String sessionCaptionsOff = 'captions off';
+  static const String sessionFinishAndDebrief = 'Finish & debrief';
+  static const String sessionSeeDebrief = 'See your debrief';
+
+  static const String sayInMyLanguageTitle = 'Say it in your language';
+  static const String sayInMyLanguageSubtitle =
+      'Type what you want to say and Pebbi will translate it into the target language.';
+  static const String sayInMyLanguageInputPlaceholder =
+      'Type in your language...';
+  static const String sayInMyLanguageTranslateButton = 'Translate';
+  static const String sayInMyLanguageTranslating = 'Translating...';
+  static const String sayInMyLanguageHearIt = 'Hear it';
+  static const String sayInMyLanguageUseThis = 'Use this';
+  static const String sayInMyLanguageError =
+      'Could not translate. Check your connection and try again.';
+
+  static const String helpSheetTitle = 'Need a hand?';
+  static const String helpOptionShowHint = 'Show a hint';
+  static const String helpOptionTranslateLast = 'Translate the last message';
+  static const String helpOptionLeave = 'Leave the mission';
+
+  static const String aiDisclosureTitle = 'About this conversation';
+  static String aiDisclosureBody(String name) =>
+      '$name is an AI character made by Pebbi to practise real-life conversations. Do not share personal details or real sensitive information.';
+
+  static const String leaveSessionTitle = 'Leave this mission?';
+  static const String leaveSessionBody =
+      'Your conversation in this session will be lost.';
+  static const String leaveSessionKeepGoing = 'Keep going';
+  static const String leaveSessionLeave = 'Leave';
+
+  static const String finishWithoutSpeakingTitle = 'Leave without a debrief?';
+  static const String finishWithoutSpeakingBody =
+      "You haven't sent any messages in this mission yet.";
+
+  static const String reportMessageTitle = 'Report message';
+  static const String reportMessageSubtitle =
+      'Help keep Pebbi safe and helpful for all learners.';
+  static const String reportReasonInappropriate = 'Inappropriate or offensive';
+  static const String reportReasonInaccurate =
+      'Grammatically inaccurate or confusing';
+  static const String reportReasonOffTopic = 'Completely off-topic for the scene';
+  static const String reportReasonOther = 'Other problem';
+  static const String reportSubmit = 'Submit report';
+  static const String reportSuccessNotice =
+      'Thank you for your report. We will review it.';
+
+  static const String sessionLanguageUnavailableTitle =
+      'Mission not available yet';
+  static String sessionLanguageUnavailableBody(String languageName) =>
+      'This role-play scene is not yet available in $languageName. Our content team is actively creating it.';
+
+  static const String sessionTimeoutNotice =
+      'The character took too long to respond. Tap to retry.';
+  static const String sessionRateLimitNotice =
+      'You reached the daily role-play mission limit.';
+  static const String sessionGenericErrorNotice =
+      'Could not send message. Please check your connection and tap retry.';
 }

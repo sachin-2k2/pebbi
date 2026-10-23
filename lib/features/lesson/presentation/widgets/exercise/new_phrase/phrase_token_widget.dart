@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/theme/app_palette.dart';
 import '../../../../../../core/theme/app_spacing.dart';
 import '../../../../../../core/theme/app_typography.dart';
 import '../../../../../../l10n/app_strings.dart';
@@ -8,8 +8,7 @@ import '../../../../domain/phrase_token.dart';
 /// Individual tappable word token within a phrase card.
 ///
 /// Follows AGENTS.md §3 & §4: 48dp tap area, accessible semantics.
-/// Visual state estimated: soft lavender fill with a tiny star when saved.
-/// TODO(question): Confirm saved token design with product/design team.
+/// Word token renders cleanly with zero murky grey ink smudges when unsaved.
 class PhraseTokenWidget extends StatelessWidget {
   const PhraseTokenWidget({
     super.key,
@@ -24,6 +23,7 @@ class PhraseTokenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
     final semanticLabel = isSaved
         ? AppStrings.tokenTappedSaved(token.text)
         : AppStrings.tokenTapToSave(token.text);
@@ -34,10 +34,12 @@ class PhraseTokenWidget extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 48.0, minWidth: 48.0),
         child: Material(
-          color: isSaved ? const Color(0xFFEDE9FE) : Colors.transparent,
+          color: isSaved ? palette.brandTint : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           child: InkWell(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            highlightColor: Colors.transparent,
+            splashColor: palette.brandTint.withValues(alpha: 0.3),
             onTap: onTap,
             child: Container(
               padding: const EdgeInsets.symmetric(
@@ -47,7 +49,7 @@ class PhraseTokenWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 border: isSaved
-                    ? Border.all(color: AppColors.brandPurple, width: 1.5)
+                    ? Border.all(color: palette.brand, width: 1.5)
                     : null,
               ),
               child: Row(
@@ -58,16 +60,16 @@ class PhraseTokenWidget extends StatelessWidget {
                       token.text,
                       style: AppTypography.display.copyWith(
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: isSaved ? palette.brandText : palette.textPrimary,
                       ),
                     ),
                   ),
                   if (isSaved) ...[
                     const SizedBox(width: AppSpacing.xxs),
-                    const Icon(
+                    Icon(
                       Icons.star_rounded,
                       size: 16.0,
-                      color: AppColors.brandPurple,
+                      color: palette.brand,
                     ),
                   ],
                 ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_spacing.dart';
 
 /// Available sizing scale for [SelectablePillChip].
@@ -61,27 +61,21 @@ class SelectablePillChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
     final defaultSelectedBg =
-        selectedBackgroundColor ?? AppColors.correctionPillSelected;
+        selectedBackgroundColor ?? palette.chipSelectedFill;
     final defaultUnselectedBg =
-        unselectedBackgroundColor ??
-        (isDark ? AppColors.darkCorrectionPillUnselected : AppColors.surface);
+        unselectedBackgroundColor ?? palette.chipUnselectedFill;
     final bg = isSelected ? defaultSelectedBg : defaultUnselectedBg;
 
-    final defaultSelectedFg = selectedTextColor ?? Colors.white;
+    final defaultSelectedFg = selectedTextColor ?? palette.chipSelectedText;
     final defaultUnselectedFg =
-        unselectedTextColor ??
-        (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary);
+        unselectedTextColor ?? palette.chipUnselectedText;
     final fg = isSelected ? defaultSelectedFg : defaultUnselectedFg;
 
     final defaultBorder =
         borderColor ??
-        (isSelected
-            ? defaultSelectedBg
-            : (isDark
-                  ? AppColors.darkCorrectionPillBorder
-                  : AppColors.correctionPillBorder));
+        (isSelected ? palette.chipSelectedBorder : palette.chipUnselectedBorder);
 
     return Semantics(
       button: true,

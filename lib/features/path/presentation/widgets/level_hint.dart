@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -14,6 +14,7 @@ class LevelHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayText = text ?? AppStrings.levelHintLittle;
+    final palette = context.palette;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -32,7 +33,7 @@ class LevelHint extends StatelessWidget {
               child: Text(
                 displayText,
                 style: AppTypography.captionSmall.copyWith(
-                  color: AppColors.textMuted,
+                  color: palette.textMuted,
                   fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,

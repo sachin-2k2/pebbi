@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
@@ -12,6 +12,8 @@ class FreeUnitNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.palette;
+
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -19,9 +21,9 @@ class FreeUnitNote extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.tintLavender.withValues(alpha: 0.5),
+        color: palette.brandTint,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        border: Border.all(color: AppColors.brandPurple.withValues(alpha: 0.2)),
+        border: Border.all(color: palette.outline),
       ),
       child: Row(
         children: [
@@ -29,12 +31,12 @@ class FreeUnitNote extends StatelessWidget {
             width: 36.0,
             height: 36.0,
             decoration: BoxDecoration(
-              color: AppColors.tintLavender,
+              color: palette.surfaceVariant,
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.lock_open_rounded,
-              color: AppColors.brandPurple,
+              color: palette.brandText,
               size: 20.0,
             ),
           ),
@@ -46,12 +48,17 @@ class FreeUnitNote extends StatelessWidget {
               children: [
                 Text(
                   AppStrings.freeUnitNoteTitle,
-                  style: AppTypography.cardTitle.copyWith(fontSize: 14.0),
+                  style: AppTypography.cardTitle.copyWith(
+                    fontSize: 14.0,
+                    color: palette.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 2.0),
                 Text(
                   AppStrings.freeUnitNoteSubtitle,
-                  style: AppTypography.captionSmall,
+                  style: AppTypography.captionSmall.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -64,10 +71,10 @@ class FreeUnitNote extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                 minimumSize: const Size(48.0, 48.0),
               ),
-              child: const Text(
+              child: Text(
                 'Unlock',
                 style: TextStyle(
-                  color: AppColors.brandPurple,
+                  color: palette.brandText,
                   fontWeight: FontWeight.w700,
                   fontSize: 13.0,
                 ),

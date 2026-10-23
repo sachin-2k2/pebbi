@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 
@@ -67,9 +67,10 @@ class _TrackChipItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isSelected ? AppColors.tintLavender : AppColors.surface;
-    final border = isSelected ? AppColors.brandPurple : AppColors.borderLight;
-    final fg = isSelected ? AppColors.brandPurple : AppColors.textMuted;
+    final palette = context.palette;
+    final bg = isSelected ? palette.brandTint : palette.chipUnselectedFill;
+    final border = isSelected ? palette.brand : palette.chipUnselectedBorder;
+    final fg = isSelected ? palette.brandText : palette.chipUnselectedText;
 
     return Material(
       color: bg,

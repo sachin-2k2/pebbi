@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_palette.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/app_strings.dart';
@@ -14,13 +14,9 @@ class FreeTalkHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryTextColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
-    final subtitleColor = isDark
-        ? AppColors.darkTextMuted
-        : AppColors.textMuted;
+    final palette = context.palette;
+    final primaryTextColor = palette.textPrimary;
+    final subtitleColor = palette.textMuted;
 
     return Semantics(
       header: true,

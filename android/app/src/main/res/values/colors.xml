@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Solid splash background color sampled at 50% height (tile center): Color.lerp(#6A49EF, #5535BE, 0.5) -->
+    <color name="splash_background_solid">#603FD7</color>
+</resources>
