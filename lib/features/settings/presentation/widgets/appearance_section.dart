@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/design_system/accent_swatch_row.dart';
 import '../../../../core/design_system/segmented_tabs.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
+import '../../../onboarding/domain/accent_option.dart';
 import '../../domain/text_size_rules.dart';
 import 'settings_section_card.dart';
 import 'text_size_slider.dart';
@@ -46,11 +47,11 @@ class AppearanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
-    final descColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+    final palette = context.palette;
+    final titleColor = palette.textPrimary;
+    final descColor = palette.textMuted;
+    final accentOption = AccentOption.findById(selectedAccentId);
+    final accentColor = Color(accentOption.colorValue);
 
     return SettingsSectionCard(
       emoji: '🎨',
@@ -95,6 +96,7 @@ class AppearanceSection extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           TextSizeSlider(
             currentScale: textScale,
+            activeColor: accentColor,
             onChanged: onTextScaleChanged,
           ),
         ],

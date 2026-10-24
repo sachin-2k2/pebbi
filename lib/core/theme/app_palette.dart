@@ -95,6 +95,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.splashGradientTop,
     required this.splashGradientBottom,
     required this.splashBackgroundSolid,
+    required this.splashForegroundMuted,
+    required this.splashDashLit,
+    required this.splashDashDim,
   });
 
   final Brightness brightness;
@@ -211,8 +214,27 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color splashGradientTop;
   final Color splashGradientBottom;
   final Color splashBackgroundSolid;
+  final Color splashForegroundMuted;
+  final Color splashDashLit;
+  final Color splashDashDim;
 
   bool get isDark => brightness == Brightness.dark;
+
+  // Semantic Tag Roles (WCAG AA compliant >= 4.5:1 text, >= 3.0:1 UI)
+  Color get tagGrammarFill => brandTint;
+  Color get tagGrammarText => isDark ? brandText : const Color(0xFF5636D8);
+  Color get tagCultureFill => coralTint;
+  Color get tagCultureText =>
+      isDark ? const Color(0xFFFF8A6C) : const Color(0xFFB03010);
+  Color get tagNeutralFill => surfaceVariant;
+  Color get tagNeutralText => textPrimary;
+
+  // Playing Row Highlight Roles
+  Color get playingRowFill => brandTint;
+  Color get playingRowBorder => isDark ? const Color(0xFFA78BFA) : brand;
+  Color get playingRowText => textPrimary;
+  Color get playingRowMutedText =>
+      isDark ? textMuted : const Color(0xFF4C4668);
 
   /// Creates a Light mode palette instance.
   factory AppPalette.light([Color accentColor = AppColors.brandPurple]) {
@@ -305,6 +327,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
       splashGradientTop: AppColors.splashGradientTop,
       splashGradientBottom: AppColors.splashGradientBottom,
       splashBackgroundSolid: AppColors.splashBackgroundSolid,
+      splashForegroundMuted: AppColors.splashForegroundMuted,
+      splashDashLit: AppColors.splashDashLit,
+      splashDashDim: AppColors.splashDashDim,
     );
   }
 
@@ -405,6 +430,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
       splashGradientTop: AppColors.splashGradientTop,
       splashGradientBottom: AppColors.splashGradientBottom,
       splashBackgroundSolid: AppColors.splashBackgroundSolid,
+      splashForegroundMuted: AppColors.splashForegroundMuted,
+      splashDashLit: AppColors.splashDashLit,
+      splashDashDim: AppColors.splashDashDim,
     );
   }
 
@@ -534,6 +562,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? splashGradientTop,
     Color? splashGradientBottom,
     Color? splashBackgroundSolid,
+    Color? splashForegroundMuted,
+    Color? splashDashLit,
+    Color? splashDashDim,
   }) {
     return AppPalette(
       brightness: brightness ?? this.brightness,
@@ -624,6 +655,10 @@ class AppPalette extends ThemeExtension<AppPalette> {
       splashGradientBottom: splashGradientBottom ?? this.splashGradientBottom,
       splashBackgroundSolid:
           splashBackgroundSolid ?? this.splashBackgroundSolid,
+      splashForegroundMuted:
+          splashForegroundMuted ?? this.splashForegroundMuted,
+      splashDashLit: splashDashLit ?? this.splashDashLit,
+      splashDashDim: splashDashDim ?? this.splashDashDim,
     );
   }
 
@@ -796,6 +831,21 @@ class AppPalette extends ThemeExtension<AppPalette> {
       splashBackgroundSolid: Color.lerp(
         splashBackgroundSolid,
         other.splashBackgroundSolid,
+        t,
+      )!,
+      splashForegroundMuted: Color.lerp(
+        splashForegroundMuted,
+        other.splashForegroundMuted,
+        t,
+      )!,
+      splashDashLit: Color.lerp(
+        splashDashLit,
+        other.splashDashLit,
+        t,
+      )!,
+      splashDashDim: Color.lerp(
+        splashDashDim,
+        other.splashDashDim,
         t,
       )!,
     );

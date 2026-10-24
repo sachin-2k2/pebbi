@@ -13,6 +13,7 @@ class UnitHeader extends StatelessWidget {
     required this.stopsDone,
     required this.totalStops,
     this.onGuidebookTap,
+    this.guidebookFocusNode,
     this.isLocked = false,
   });
 
@@ -21,6 +22,7 @@ class UnitHeader extends StatelessWidget {
   final int stopsDone;
   final int totalStops;
   final VoidCallback? onGuidebookTap;
+  final FocusNode? guidebookFocusNode;
   final bool isLocked;
 
   double get _progress =>
@@ -56,10 +58,8 @@ class UnitHeader extends StatelessWidget {
               ),
               if (onGuidebookTap != null)
                 IconButton(
-                  icon: Icon(
-                    Icons.menu_book_rounded,
-                    color: fgOnBrand,
-                  ),
+                  focusNode: guidebookFocusNode,
+                  icon: Icon(Icons.menu_book_rounded, color: fgOnBrand),
                   iconSize: 22.0,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(

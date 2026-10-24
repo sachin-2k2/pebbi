@@ -18,7 +18,7 @@ class AppLogoTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: palette.surface,
         borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: palette.outline, width: 1.0),
+        border: Border.all(color: palette.brand, width: 2.0),
         boxShadow: palette.cardShadow,
       ),
       child: Stack(

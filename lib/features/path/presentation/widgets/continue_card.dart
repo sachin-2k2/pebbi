@@ -56,10 +56,7 @@ class ContinueCard extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: PebbiMascot(
-                      size: 38.0,
-                      accentColor: palette.brand,
-                    ),
+                    child: PebbiMascot(size: 38.0, accentColor: palette.brand),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),

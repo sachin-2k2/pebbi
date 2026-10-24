@@ -15,6 +15,7 @@ class TopPillsRow extends StatelessWidget {
     required this.language,
     required this.streakCount,
     required this.starsCount,
+    this.glyph,
     this.onLanguageTap,
     this.onStreakTap,
     this.onStarsTap,
@@ -24,6 +25,7 @@ class TopPillsRow extends StatelessWidget {
   final String language;
   final int streakCount;
   final int starsCount;
+  final String? glyph;
   final VoidCallback? onLanguageTap;
   final VoidCallback? onStreakTap;
   final VoidCallback? onStarsTap;
@@ -41,35 +43,53 @@ class TopPillsRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const AppLogoTile(),
-          const SizedBox(width: 4.0),
           Flexible(
-            child: LanguagePill(language: language, onTap: onLanguageTap),
-          ),
-          const SizedBox(width: 4.0),
-          StatPill(
-            icon: Icon(
-              Icons.local_fire_department_rounded,
-              color: palette.coral,
-              size: 18.0,
+            child: Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.sm),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AppLogoTile(),
+                  const SizedBox(width: AppSpacing.sm),
+                  Flexible(
+                    child: LanguagePill(
+                      language: language,
+                      glyph: glyph ?? LanguagePill.glyphFor(language),
+                      onTap: onLanguageTap,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            value: streakCount,
-            semanticsLabel: '$streakCount day streak',
-            onTap: onStreakTap,
           ),
-          const SizedBox(width: 4.0),
-          StatPill(
-            icon: Icon(
-              Icons.star_rounded,
-              color: palette.gold,
-              size: 18.0,
-            ),
-            value: starsCount,
-            semanticsLabel: '$starsCount stars',
-            onTap: onStarsTap,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              StatPill(
+                icon: Icon(
+                  Icons.local_fire_department_outlined,
+                  color: palette.coral,
+                  size: 18.0,
+                ),
+                value: streakCount,
+                semanticsLabel: '$streakCount day streak',
+                onTap: onStreakTap,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              StatPill(
+                icon: Icon(
+                  Icons.star_outline_rounded,
+                  color: palette.gold,
+                  size: 18.0,
+                ),
+                value: starsCount,
+                semanticsLabel: '$starsCount stars',
+                onTap: onStarsTap,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              ProfileButton(onTap: onProfileTap),
+            ],
           ),
-          const SizedBox(width: 4.0),
-          ProfileButton(onTap: onProfileTap),
         ],
       ),
     );

@@ -92,16 +92,34 @@ class MockPathRepository implements PathRepository {
     // Default 'everyday' track matching screenshots exactly
     final effectiveCompleted = Set<String>.from(completedStopIds);
     if (progressRepository != null) {
-      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_1') ||
-          await progressRepository!.isStopCompleted(userId: userId, stopId: '1')) {
+      if (await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: 'stop_1_1',
+          ) ||
+          await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: '1',
+          )) {
         effectiveCompleted.add('stop_1_1');
       }
-      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_2') ||
-          await progressRepository!.isStopCompleted(userId: userId, stopId: '2')) {
+      if (await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: 'stop_1_2',
+          ) ||
+          await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: '2',
+          )) {
         effectiveCompleted.add('stop_1_2');
       }
-      if (await progressRepository!.isStopCompleted(userId: userId, stopId: 'stop_1_3') ||
-          await progressRepository!.isStopCompleted(userId: userId, stopId: '3')) {
+      if (await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: 'stop_1_3',
+          ) ||
+          await progressRepository!.isStopCompleted(
+            userId: userId,
+            stopId: '3',
+          )) {
         effectiveCompleted.add('stop_1_3');
       }
     }

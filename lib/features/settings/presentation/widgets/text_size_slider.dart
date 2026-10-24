@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../domain/text_size_rules.dart';
 
 /// Accessible slider controlling the in-app text scale factor.
@@ -10,18 +10,18 @@ class TextSizeSlider extends StatelessWidget {
     super.key,
     required this.currentScale,
     required this.onChanged,
+    this.activeColor,
   });
 
   final double currentScale;
   final ValueChanged<double> onChanged;
+  final Color? activeColor;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = AppColors.brandPurple;
-    final inactiveColor = isDark
-        ? AppColors.darkBorder
-        : AppColors.settingsSliderInactiveTrack;
+    final palette = context.palette;
+    final sliderActiveColor = activeColor ?? palette.accent;
+    final inactiveColor = palette.sliderTrackInactive;
 
     final percentString = TextSizeRules.formatPercent(currentScale);
 
@@ -46,10 +46,10 @@ class TextSizeSlider extends StatelessWidget {
       child: SliderTheme(
         data: SliderTheme.of(context).copyWith(
           trackHeight: 6.0,
-          activeTrackColor: activeColor,
+          activeTrackColor: sliderActiveColor,
           inactiveTrackColor: inactiveColor,
-          thumbColor: activeColor,
-          overlayColor: activeColor.withValues(alpha: 0.15),
+          thumbColor: sliderActiveColor,
+          overlayColor: sliderActiveColor.withValues(alpha: 0.15),
           thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10.0),
           overlayShape: const RoundSliderOverlayShape(overlayRadius: 24.0),
         ),
@@ -63,6 +63,8 @@ class TextSizeSlider extends StatelessWidget {
             min: TextSizeRules.minTextScale,
             max: TextSizeRules.maxTextScale,
             divisions: TextSizeRules.divisions,
+            activeColor: sliderActiveColor,
+            inactiveColor: inactiveColor,
             onChanged: (val) => onChanged(TextSizeRules.snapScale(val)),
           ),
         ),

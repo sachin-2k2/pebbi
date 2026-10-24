@@ -17,6 +17,7 @@ import 'locked_node_sheet.dart';
 import 'path_rail.dart';
 import 'top_pills.dart';
 import 'track_chip_row.dart';
+import 'unit_guide/unit_guide_sheet.dart';
 import 'unit_header.dart';
 
 /// Two-pane responsive layout for expanded screens (tablets & landscape).
@@ -99,8 +100,9 @@ class PathExpandedLayout extends ConsumerWidget {
                       totalStops: unit.totalStops,
                       isLocked: unit.isLocked,
                       onGuidebookTap: () =>
-                          _showPlaceholder(context, 'Unit guidebook'),
+                          UnitGuideSheet.show(context, unitId: unit.id),
                     ),
+                    const SizedBox(height: AppSpacing.xxl),
                     PathRail(
                       nodes: unit.nodes,
                       onNodeTap: (node) => _handleNodeTap(context, node),

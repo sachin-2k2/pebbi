@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/welcome_page_data.dart';
+import '../widgets/splash/splash_config.dart';
 import '../widgets/step_scaffold.dart';
 import '../widgets/welcome_bottom_bar.dart';
 import '../widgets/welcome_card.dart';
@@ -35,6 +37,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!kReleaseMode && SplashConfig.enableSplashTimingLogs) {
+        debugPrint(
+          '[SPLASH_TIMING] WelcomeScreen first interactive frame rendered at ${DateTime.now().millisecondsSinceEpoch}',
+        );
+      }
+    });
   }
 
   @override

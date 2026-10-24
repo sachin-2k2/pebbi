@@ -1001,4 +1001,24 @@ Plain list of what the lesson complete screen and completion payload need from t
   2. Can a user resume an incomplete session if they accidentally close the app or lose connection?
   3. Does the server persist unfinished sessions, or are they automatically garbage-collected after an idle timeout (e.g. 1 hour)?
 
+## 14. Unit Guidebook ("First conversations: Your guidebook for this unit")
+
+Plain list of what this screen needs from the backend team and product alignment:
+1. **Unit Guidebook API Endpoint & Content Schema**:
+   - What is the endpoint schema for fetching unit guidebooks? (e.g. `GET /api/v1/units/{unit_id}/guidebook?lang={target}&exp_lang={explanation}`)
+   - Does the backend return:
+     - `key_phrases`: array of `{ id, target_text, meaning, helper_line, audio_locale, audio_url, slow_audio_url, text_direction }`
+     - `notes`: array of `{ id, emoji, title, body, tag, text_direction }`
+2. **Offline Unit Pack Integration**:
+   - Will unit guidebook text and accompanying native audio assets be bundled into downloadable offline content packs (`unit_pack_{id}.zip`), or fetched on demand over HTTP?
+3. **Native Speaker Audio Assets & Slow Playback**:
+   - Does the backend intend to provide pre-recorded native studio audio files (with optional slow 0.75x versions) to replace on-device TTS synthesis?
+4. **Library & Review Integration**:
+   - Does opening or reading grammar/culture notes in the Unit Guidebook mark those notes as read in the `Review > Library` tab, or sync read states across devices?
+5. **Gamification & Progress Impact**:
+   - Does opening a unit guidebook or completing "Listen to the unit" playback contribute towards daily goals, streaks, or review queues?
+6. **Free vs. Premium Locked Unit Access**:
+   - Can free-tier learners open and view the guidebook of a premium-locked unit (e.g., Unit 2+) as a preview of what they will learn?
+
+
 

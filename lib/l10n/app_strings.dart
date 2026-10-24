@@ -853,6 +853,34 @@ abstract final class AppStrings {
   static const String lockedNodeTestOutAction = testOutAction;
   static const String lockedNodeGoBackAction = goBackAction;
 
+  // Unit Guidebook Strings
+  static const String unitGuideSubtitle = 'Your guidebook for this unit';
+  static const String listenToUnit = 'Listen to the unit';
+  static const String stopListening = 'Stop';
+  static const String keyPhrasesSection = 'KEY PHRASES';
+  static const String notesSection = 'NOTES';
+  static const String unitGuideUnavailableTitle = 'Guidebook coming soon';
+  static const String unitGuideUnavailableMessage =
+      "We're still writing the guidebook for this unit.";
+  static const String unitGuideOfflineMessage =
+      'Connect to the internet to load this guidebook.';
+  static const String audioUnavailableHint =
+      "Audio isn't available for this language on this phone";
+  static String miniPlayerPhraseOf(int current, int total) =>
+      '$current of $total';
+  static const String closeGuidebook = 'Close guidebook';
+  static const String tagGrammar = 'grammar';
+  static const String tagCulture = 'culture';
+  static String listenButtonSemantics(int count) =>
+      'Listen to the unit. Plays $count phrases';
+  static String phraseSemantics({
+    required String phrase,
+    required String meaning,
+  }) =>
+      '$phrase. $meaning. Double tap to hear it.';
+  static const String playbackStartedAnnouncement = 'Unit playback started';
+  static const String playbackCompletedAnnouncement = 'Unit playback completed';
+
   // Missions Tab Screen Strings
   static const String missionsTitle = 'Real life, practised';
   static const String missionsSubtitle =
@@ -1567,3 +1595,4 @@ abstract final class AppStrings {
   static const String sessionGenericErrorNotice =
       'Could not send message. Please check your connection and tap retry.';
 }
+

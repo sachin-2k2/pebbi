@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -41,7 +42,9 @@ final splashShouldShowArtProvider = FutureProvider<bool>((ref) async {
 ///   0ms when art is off.
 /// - Marks hasSeenSplashArtPrefKey so subsequent cold starts skip art if config is false.
 final appStartupProvider = FutureProvider<String>((ref) async {
-  final stopwatch = Stopwatch()..start();
+  if (kDebugMode && SplashConfig.enableSplashTimingLogs) {
+    debugPrint('[SPLASH_TIMING] appStartupProvider START at ${DateTime.now().millisecondsSinceEpoch}');
+  }
 
   final prefs = await ref.watch(nonUserSharedPreferencesProvider.future);
   final shouldShowArt = await ref.watch(splashShouldShowArtProvider.future);
@@ -62,14 +65,8 @@ final appStartupProvider = FutureProvider<String>((ref) async {
     targetRoute = '/welcome';
   }
 
-  // Enforce minimum time budget so entrance animation is not truncated mid-sequence
-  final minTime = shouldShowArt
-      ? SplashConfig.minDisplayTimeWithArt
-      : SplashConfig.minDisplayTimeWithoutArt;
-
-  final elapsed = stopwatch.elapsed;
-  if (elapsed < minTime) {
-    await Future.delayed(minTime - elapsed);
+  if (kDebugMode && SplashConfig.enableSplashTimingLogs) {
+    debugPrint('[SPLASH_TIMING] appStartupProvider FINISH at ${DateTime.now().millisecondsSinceEpoch}, route: $targetRoute');
   }
 
   return targetRoute;

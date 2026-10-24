@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -10,9 +11,15 @@ abstract interface class TextToSpeechService {
   /// Speaks [text] in the requested [locale] (e.g. 'es-ES', 'ja-JP').
   ///
   /// Optional [speechRate] overrides the default rate (e.g. 0.25 for slow).
+  /// Optional [onCompletion] is invoked when the speech engine finishes utterance.
   /// Returns `true` if playback initiated successfully, or `false` quietly if
   /// the language voice is unavailable on the device.
-  Future<bool> speak(String text, {required String locale, double? speechRate});
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+    VoidCallback? onCompletion,
+  });
 
   /// Stops any currently playing speech.
   Future<void> stop();
@@ -42,6 +49,7 @@ class FlutterTtsService implements TextToSpeechService {
     String text, {
     required String locale,
     double? speechRate,
+    VoidCallback? onCompletion,
   }) async {
     try {
       final isAvailable = await _tts.isLanguageAvailable(locale);
@@ -51,6 +59,9 @@ class FlutterTtsService implements TextToSpeechService {
       }
 
       await _tts.stop();
+      if (onCompletion != null) {
+        _tts.setCompletionHandler(() => onCompletion());
+      }
       await _tts.setLanguage(locale);
       if (speechRate != null) {
         await _tts.setSpeechRate(speechRate);
@@ -82,12 +93,28 @@ class FlutterTtsService implements TextToSpeechService {
   }
 }
 
+/// Simulation behavior modes for [FakeSpeechService] in test suites.
+enum FakeTtsMode {
+  normal,
+  error,
+  neverCompleting,
+  lateCompletion,
+}
+
 /// In-memory fake implementation of [TextToSpeechService] for unit and widget tests.
 class FakeSpeechService implements TextToSpeechService {
-  FakeSpeechService({this.supportedLocales});
+  FakeSpeechService({
+    this.supportedLocales,
+    this.mode = FakeTtsMode.normal,
+    this.completionDelay = Duration.zero,
+    this.lateCompletionDelay = const Duration(seconds: 15),
+  });
 
   /// Optional set of supported locales. If null, all locales succeed.
   final Set<String>? supportedLocales;
+  FakeTtsMode mode;
+  final Duration completionDelay;
+  final Duration lateCompletionDelay;
 
   final List<({String text, String locale, double? speechRate})> spokenHistory =
       [];
@@ -102,6 +129,7 @@ class FakeSpeechService implements TextToSpeechService {
     String text, {
     required String locale,
     double? speechRate,
+    VoidCallback? onCompletion,
   }) async {
     isSpeaking = false;
     stopCallCount++;
@@ -110,11 +138,26 @@ class FakeSpeechService implements TextToSpeechService {
       return false;
     }
 
+    if (mode == FakeTtsMode.error) {
+      return false;
+    }
+
     lastSpokenText = text;
     lastLocale = locale;
     lastSpeechRate = speechRate;
     isSpeaking = true;
     spokenHistory.add((text: text, locale: locale, speechRate: speechRate));
+
+    if (mode == FakeTtsMode.normal && onCompletion != null) {
+      if (completionDelay == Duration.zero) {
+        scheduleMicrotask(onCompletion);
+      } else {
+        Future<void>.delayed(completionDelay, onCompletion);
+      }
+    } else if (mode == FakeTtsMode.lateCompletion && onCompletion != null) {
+      Future<void>.delayed(lateCompletionDelay, onCompletion);
+    }
+
     return true;
   }
 

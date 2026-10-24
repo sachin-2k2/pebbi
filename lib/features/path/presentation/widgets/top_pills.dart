@@ -8,6 +8,7 @@ class TopPills extends StatelessWidget {
     required this.language,
     required this.streakCount,
     required this.starsCount,
+    this.glyph,
     this.onLanguageTap,
     this.onStreakTap,
     this.onStarsTap,
@@ -17,6 +18,7 @@ class TopPills extends StatelessWidget {
   final String language;
   final int streakCount;
   final int starsCount;
+  final String? glyph;
   final VoidCallback? onLanguageTap;
   final VoidCallback? onStreakTap;
   final VoidCallback? onStarsTap;
@@ -28,6 +30,7 @@ class TopPills extends StatelessWidget {
       language: language,
       streakCount: streakCount,
       starsCount: starsCount,
+      glyph: glyph,
       onLanguageTap: onLanguageTap,
       onStreakTap: onStreakTap,
       onStarsTap: onStarsTap,

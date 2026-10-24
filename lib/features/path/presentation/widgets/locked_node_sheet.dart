@@ -55,9 +55,7 @@ class LockedNodeSheet extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             AppStrings.lockedNodeSheetDescription,
-            style: AppTypography.bodyMedium.copyWith(
-              color: palette.textMuted,
-            ),
+            style: AppTypography.bodyMedium.copyWith(color: palette.textMuted),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),

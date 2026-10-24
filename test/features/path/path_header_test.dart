@@ -35,6 +35,44 @@ void main() {
       await tester.tap(find.text('3'));
       expect(streakTapped, isTrue);
     });
+
+    testWidgets('groups logo and language on the left and stats on the right with a gap', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390 * 3, 844 * 3);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: TopPills(
+              language: 'Français',
+              streakCount: 1,
+              starsCount: 158,
+            ),
+          ),
+        ),
+      );
+
+      final logoBox = tester.getRect(find.text('✨'));
+      final langBox = tester.getRect(find.text('Français'));
+      final streakBox = tester.getRect(find.text('1'));
+      final starsBox = tester.getRect(find.text('158'));
+
+      // Logo and language are adjacent on the left
+      expect(langBox.left, greaterThan(logoBox.right));
+      final leftGroupGap = langBox.left - logoBox.right;
+
+      // Stats are adjacent on the right
+      expect(starsBox.left, greaterThan(streakBox.right));
+      final rightGroupGap = starsBox.left - streakBox.right;
+
+      // The middle gap between language pill and streak is significantly larger than the intra-group gaps
+      final middleGap = streakBox.left - langBox.right;
+      expect(middleGap, greaterThan(leftGroupGap));
+      expect(middleGap, greaterThan(rightGroupGap));
+    });
   });
 
   group('TrackChips Widget', () {

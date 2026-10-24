@@ -22,9 +22,11 @@ class SplashContent extends StatelessWidget {
     required this.wordmarkSlide,
     required this.decorationsOpacity,
     required this.sparkleOpacity,
-    required this.dashHighlightIndex,
+    required this.dashesOpacity,
+    required this.dashAnimation,
     required this.driftOffset,
     required this.showArt,
+    this.reduceMotion = false,
   });
 
   final double gradientOpacity;
@@ -32,9 +34,11 @@ class SplashContent extends StatelessWidget {
   final double wordmarkSlide;
   final double decorationsOpacity;
   final double sparkleOpacity;
-  final int dashHighlightIndex;
+  final double dashesOpacity;
+  final Animation<double> dashAnimation;
   final Offset driftOffset;
   final bool showArt;
+  final bool reduceMotion;
 
   @override
   Widget build(BuildContext context) {
@@ -106,17 +110,23 @@ class SplashContent extends StatelessWidget {
             left: 0,
             right: 0,
             top: cy + (SplashConfig.tileLogicalSize / 2) + 12.0 + wordmarkSlide,
-            child: Opacity(
-              opacity: wordmarkOpacity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SplashWordmark(),
-                  const SizedBox(height: 14.0),
-                  SplashLoadingDashes(highlightIndex: dashHighlightIndex),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Opacity(
+                  opacity: wordmarkOpacity,
+                  child: const SplashWordmark(),
+                ),
+                const SizedBox(height: 14.0),
+                Opacity(
+                  opacity: dashesOpacity,
+                  child: SplashLoadingDashes(
+                    animation: dashAnimation,
+                    reduceMotion: reduceMotion,
+                  ),
+                ),
+              ],
             ),
           ),
       ],

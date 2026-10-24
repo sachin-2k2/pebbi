@@ -33,8 +33,8 @@ class ProfileButton extends StatelessWidget {
             ),
             child: Center(
               child: Icon(
-                Icons.person_rounded,
-                color: palette.textMuted,
+                Icons.person_outline_rounded,
+                color: palette.brand,
                 size: 20.0,
               ),
             ),
