@@ -41,10 +41,7 @@ class VoiceInputBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MicButton(
-                isListening: isListening,
-                onPressed: onMicTap,
-              ),
+              MicButton(isListening: isListening, onPressed: onMicTap),
               const SizedBox(width: AppSpacing.md),
               SizedBox(
                 width: 140.0,

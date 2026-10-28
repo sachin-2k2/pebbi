@@ -133,7 +133,8 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
 
     final sid = _sessionId!;
     _turnIndex++;
-    final clientTurnId = 'turn_${sid}_${_turnIndex}_${DateTime.now().millisecondsSinceEpoch}';
+    final clientTurnId =
+        'turn_${sid}_${_turnIndex}_${DateTime.now().millisecondsSinceEpoch}';
 
     final userMsg = ChatMessage(
       id: 'msg_user_${sid}_$_turnIndex',
@@ -153,7 +154,12 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
       clearErrorMessage: true,
     );
 
-    await _executeTurn(sid: sid, clientTurnId: clientTurnId, userMsg: userMsg, text: text);
+    await _executeTurn(
+      sid: sid,
+      clientTurnId: clientTurnId,
+      userMsg: userMsg,
+      text: text,
+    );
   }
 
   Future<void> retryFailedMessage(ChatMessage failedMessage) async {
@@ -267,7 +273,8 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
   }
 
   Future<void> playMessageAudio(ChatMessage message) async {
-    final locale = message.audioLocale ??
+    final locale =
+        message.audioLocale ??
         (config.targetLanguageCode == 'fr' ? 'fr-FR' : 'es-ES');
     await ttsService.speak(message.targetText, locale: locale);
   }
@@ -289,7 +296,10 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
     );
   }
 
-  Future<void> reportMessage({required String messageId, required String reason}) async {
+  Future<void> reportMessage({
+    required String messageId,
+    required String reason,
+  }) async {
     if (_sessionId == null) return;
     await repository.reportMessage(
       sessionId: _sessionId!,
@@ -323,21 +333,21 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
 /// Riverpod family provider for [MissionSessionNotifier].
 final missionSessionNotifierProvider = StateNotifierProvider.autoDispose
     .family<MissionSessionNotifier, ConversationState, SessionConfig>((
-  ref,
-  config,
-) {
-  final repository = ref.watch(conversationRepositoryProvider);
-  final user = ref.watch(currentUserProvider);
-  final settings = ref.watch(appSettingsProvider);
-  final ttsService = ref.watch(textToSpeechServiceProvider);
-  final speechRecognizer = ref.watch(speechRecognizerServiceProvider);
+      ref,
+      config,
+    ) {
+      final repository = ref.watch(conversationRepositoryProvider);
+      final user = ref.watch(currentUserProvider);
+      final settings = ref.watch(appSettingsProvider);
+      final ttsService = ref.watch(textToSpeechServiceProvider);
+      final speechRecognizer = ref.watch(speechRecognizerServiceProvider);
 
-  return MissionSessionNotifier(
-    config: config,
-    repository: repository,
-    user: user,
-    settings: settings,
-    ttsService: ttsService,
-    speechRecognizer: speechRecognizer,
-  );
-});
+      return MissionSessionNotifier(
+        config: config,
+        repository: repository,
+        user: user,
+        settings: settings,
+        ttsService: ttsService,
+        speechRecognizer: speechRecognizer,
+      );
+    });

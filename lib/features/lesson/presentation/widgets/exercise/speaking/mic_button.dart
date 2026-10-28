@@ -67,8 +67,8 @@ class _MicButtonState extends State<MicButton>
     final semanticsLabel = !widget.isEnabled
         ? AppStrings.micDisabledSemantics
         : widget.isListening
-            ? AppStrings.micListeningSemantics
-            : AppStrings.micReadySemantics;
+        ? AppStrings.micListeningSemantics
+        : AppStrings.micReadySemantics;
 
     final haloColor = isDark
         ? AppColors.brandPurple.withValues(alpha: 0.25)

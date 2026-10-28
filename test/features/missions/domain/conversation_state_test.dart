@@ -16,31 +16,34 @@ void main() {
       expect(state.areAllGoalsDone, isFalse);
     });
 
-    test('canSend requires userTurn or failed status and non-whitespace text', () {
-      const emptyState = ConversationState(
-        status: ConversationStatus.userTurn,
-        draftText: '   ',
-      );
-      expect(emptyState.canSend, isFalse);
+    test(
+      'canSend requires userTurn or failed status and non-whitespace text',
+      () {
+        const emptyState = ConversationState(
+          status: ConversationStatus.userTurn,
+          draftText: '   ',
+        );
+        expect(emptyState.canSend, isFalse);
 
-      const readyState = ConversationState(
-        status: ConversationStatus.userTurn,
-        draftText: 'Bonjour',
-      );
-      expect(readyState.canSend, isTrue);
+        const readyState = ConversationState(
+          status: ConversationStatus.userTurn,
+          draftText: 'Bonjour',
+        );
+        expect(readyState.canSend, isTrue);
 
-      const failedState = ConversationState(
-        status: ConversationStatus.failed,
-        draftText: 'Bonjour',
-      );
-      expect(failedState.canSend, isTrue);
+        const failedState = ConversationState(
+          status: ConversationStatus.failed,
+          draftText: 'Bonjour',
+        );
+        expect(failedState.canSend, isTrue);
 
-      const sendingState = ConversationState(
-        status: ConversationStatus.sending,
-        draftText: 'Bonjour',
-      );
-      expect(sendingState.canSend, isFalse);
-    });
+        const sendingState = ConversationState(
+          status: ConversationStatus.sending,
+          draftText: 'Bonjour',
+        );
+        expect(sendingState.canSend, isFalse);
+      },
+    );
 
     test('Goals progress and completion calculation', () {
       const g1 = SessionGoal(id: 'g1', text: 'Order a drink', isDone: true);

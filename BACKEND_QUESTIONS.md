@@ -1020,5 +1020,66 @@ Plain list of what this screen needs from the backend team and product alignment
 6. **Free vs. Premium Locked Unit Access**:
    - Can free-tier learners open and view the guidebook of a premium-locked unit (e.g., Unit 2+) as a preview of what they will learn?
 
+## 15. TUTOTOCO Backend API Alignment & Draft Specification (Phase 0)
+
+### 15.1 Authentication, Identity & Session Management
+1. **OTP Verification vs. Register Flow**:
+   - The flow diagram in the draft API document references `POST /api/auth/send-otp` (sending level and languages), whereas the specification defines `POST /api/auth/register`. Which URL is authoritative?
+   - What is the rate limit and resend interval for OTP requests (e.g. 60 seconds cooldown)? Is there a dedicated resend endpoint (`POST /api/auth/resend-otp`), or should the client call `register` again with the same payload?
+   - The document specifies that `POST /api/auth/verify-otp` returns an `access_token` of type `bearer`, but provides no `refresh_token` or token expiration duration (`expires_in`). What is the access token TTL, and how does the client refresh an expired session without requiring the user to re-authenticate with password/OTP?
+2. **Password Reset & Account Management**:
+   - Does the backend provide endpoints for requesting a password reset (`POST /api/auth/forgot-password`) and confirming a new password with reset token (`POST /api/auth/reset-password`)?
+   - Are account deletion (`DELETE /api/me`) and guest-to-account data migration endpoints planned?
+3. **User Profile Shape**:
+   - In `TUTOTOCO-BACKEND-APIS.md`, `POST /api/auth/login` returns `{ id, display_name, email, language_pref }`, whereas `verify-otp` returns `{ id, display_name, email, level, learning_language, native_language, accent_color, onboarding_done }`. `API-UPDATES.md` indicates that login should return the same full user object. What is the canonical schema for user profiles across `login`, `verify-otp`, and `GET /api/me`?
+
+### 15.2 Placement Test APIs
+1. **Intro & Language Parameters**:
+   - `GET /api/placement/intro?` includes a trailing question mark without documented query parameters. Does it require `?native_language=xx` so the welcome message can be localized, or is it inferred?
+   - `GET /api/placement/questions` indicates no parameters are needed because languages come from onboarding choices, but guests have no auth token or server session prior to registration. Will the backend accept query parameters `?target_language=xx&native_language=yy` unconditionally?
+2. **Placement Submission & Persistence**:
+   - `POST /api/placement/submit` does not include `target_language` in the request body (only `native_language` and `answers`). How does the backend identify which language was evaluated?
+   - `TUTOTOCO-BACKEND-APIS.md` claims that `/submit` saves the user's level in the database, whereas `API-UPDATES.md` clarifies that `/submit` does not persist anything and calculates level on the fly for local storage. Please confirm that `/submit` is stateless and that the final level is saved during registration.
+3. **Level Naming & Taxonomy**:
+   - The API uses `starter`, `know_a_bit`, and `expert`. In our client domain, these correspond to `little`, `knowABit`, and `expert`. Is `starter` the permanent backend identifier for the beginner tier?
+
+### 15.3 Onboarding Data Mappings & Validation
+1. **Age Band Values & Child Accounts**:
+   - The backend specifies allowed `age_band` strings: `"13-17"`, `"18-24"`, `"25-34"`, `"35-44"`, `"45-54"`, `"55+"`, with a minimum age of 13.
+   - The app's onboarding collects birth year and categorizes users into `AgeBand.child` (<13), `AgeBand.teen` (13–17), and `AgeBand.adult` (18+). How should children under 13 be handled? Will the API reject registrations for users under 13?
+2. **Accent Colors & Starters**:
+   - The draft API document uses hex strings (e.g. `"#7C3AED"`), whereas `API-UPDATES.md` confirms IDs: `violet`, `green`, `orange`, `blue`, `pink`, `slate`. Please confirm that color IDs are used across all request and response schemas.
+   - Starter stickers in the app domain are `'wave'`, `'sparkle'`, `'wellsaid'`, while the update mentions `first_hello`, `little_spark`, `well_said`, `explorer`, `star`. Please confirm the canonical sticker ID list.
+3. **Reminder Days**:
+   - Does `reminder_days` accept ISO weekday numbers (`[1, 2, 3, 4, 5, 6, 7]`), day names (`["Monday", "Tuesday", ...]`), or single letters (`["M", "T", "W", "T", "F", "S", "S"]`)? ISO numbers (1=Monday..7=Sunday) are standard across mobile platforms.
+
+### 15.4 Curriculum, Tracks & Winding Path Structure
+1. **Tracks Catalog Endpoint**:
+   - The documentation references `GET /api/tracks` in notes, but does not provide an endpoint definition. What is the schema for retrieving the list of available tracks (`id`, `title`, `emoji`, `has_content`)?
+2. **Flat Lessons vs. Units and Path Nodes**:
+   - `GET /api/lessons/track/{track_id}` returns a flat array of lesson items (`lesson_id`, `lesson_number`, `level`, `title`, `icon`, `xp_reward`, `status`, `locked`).
+   - The Pebbi app UI organizes courses into numbered **Units** (e.g. "Unit 1: First conversations") containing a winding path of heterogeneous nodes: **Lesson stops**, **Review stops**, **AI Mission stops**, and **Reward Chests**.
+   - Will the backend support unit groupings and non-lesson path nodes, or should the mobile client synthesize unit boundaries and milestone nodes from lesson numbers?
+3. **XP vs. Stars Gamification**:
+   - The backend API defines `xp_reward`, `xp_earned`, and `xp_awarded`. The Pebbi design specification uses a **Stars** economy (10 stars base per lesson, +2 first-try bonus, chests = 20 stars, missions = 25 stars). Are XP and Stars synonymous, or will the backend transition to a `stars` field?
+
+### 15.5 Exercise Types & Offline Evaluation
+1. **Exercise Type Variety**:
+   - `GET /api/lessons/{lesson_id}` provides phrase definitions and questions with `question_type: "pick_meaning"`.
+   - Pebbi features 9 interactive exercise types: `NewPhraseCard`, `ChooseMeaning`, `ListenChoose`, `PictureMatch`, `BuildSentence` (word tiles), `MatchPairs`, `FillBlank`, `Reply`, and `SayItOutLoud` (speech recognition).
+   - When will schemas for other exercise types (e.g. word tile tokens, pair matches, audio URLs) be added to the lesson payload?
+2. **Offline-First Architecture & Per-Question Checking**:
+   - `POST /api/lessons/{lesson_id}/check` checks answers one question at a time over HTTP.
+   - Per AGENTS.md §5, lessons must function seamlessly offline and without per-question network latency. If the client evaluates answers locally offline, will `POST /api/lessons/{lesson_id}/submit` accept the full exercise submission independently of whether `/check` was called?
+3. **Idempotency on Lesson Submission**:
+   - In mobile environments with intermittent connectivity, submissions may be retried. Can the backend accept an idempotency key (such as `client_attempt_id` or `idempotency_key: UUID`) on `POST /api/lessons/{lesson_id}/submit` to prevent duplicate XP/stars or double-incrementing attempts?
+
+### 15.6 Error Handling & Status Codes
+1. **Stable Error Codes**:
+   - Error responses currently return human-readable English strings in `{"detail": "..."}`. To support multi-language localizations without string parsing, can the backend provide machine-readable error codes (e.g. `{"code": "EMAIL_ALREADY_EXISTS", "detail": "Email already registered"}`)?
+2. **Validation Error Formats**:
+   - When FastAPI or Pydantic validation fails, `detail` is returned as a list of error objects (`[{"loc": [...], "msg": "...", "type": "..."}]`). Can the backend confirm the structure of 422 Unprocessable Entity payloads?
+
+
 
 

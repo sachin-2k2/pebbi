@@ -6,6 +6,7 @@ import '../../../../core/design_system/info_card.dart';
 import '../../../../core/layout/content_width_limiter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../domain/language_level.dart';
 import '../../domain/level_info.dart';
@@ -90,6 +91,18 @@ class PlacementResultScreen extends ConsumerWidget {
                     streakDay: state.result.streakDay,
                     isScoreVisible: state.result.isScoreChipVisible,
                   ),
+                  if (state.result.estimatedNote != null &&
+                      state.result.estimatedNote!.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    // TODO(question): Backend returns estimated_note. Currently displayed as a muted caption. Confirm with design.
+                    Text(
+                      state.result.estimatedNote!,
+                      style: AppTypography.caption.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.lg),
                   InfoCard(
                     title: AppStrings.whatHappensNowTitle,

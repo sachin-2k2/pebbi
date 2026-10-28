@@ -40,9 +40,15 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
   final AudioFeedbackService audioFeedback;
 
   /// Loads the placement set for [targetLanguageCode].
-  Future<void> loadPlacement(String targetLanguageCode) async {
+  Future<void> loadPlacement(
+    String targetLanguageCode, {
+    String nativeLanguageCode = 'en',
+  }) async {
     state = state.copyWith(isLoading: true);
-    final exerciseSet = await repository.loadPlacementSet(targetLanguageCode);
+    final exerciseSet = await repository.loadPlacementSet(
+      targetLanguageCode,
+      nativeLanguageCode: nativeLanguageCode,
+    );
     state = ExerciseSessionState(
       mainExercises: exerciseSet.exercises,
       currentMainIndex: 0,

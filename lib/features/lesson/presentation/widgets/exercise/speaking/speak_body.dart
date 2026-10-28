@@ -58,9 +58,7 @@ class SpeakBody extends StatelessWidget {
           Text(
             AppStrings.speakTapMicPrompt,
             style: AppTypography.bodyMedium.copyWith(
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.textPrimary,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
@@ -84,9 +82,7 @@ class _RatherNotLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final linkColor = isDark
-        ? AppColors.darkTextMuted
-        : AppColors.textMuted;
+    final linkColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
 
     return Semantics(
       button: true,

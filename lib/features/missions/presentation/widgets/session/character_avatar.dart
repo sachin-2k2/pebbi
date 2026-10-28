@@ -8,11 +8,7 @@ import '../../../../../core/theme/app_palette.dart';
 /// - Reuses core [IconTile.emoji] with peach/coralTint background
 /// - Circular 44dp shape matching the design screenshot
 class CharacterAvatar extends StatelessWidget {
-  const CharacterAvatar({
-    super.key,
-    required this.emoji,
-    this.size = 44.0,
-  });
+  const CharacterAvatar({super.key, required this.emoji, this.size = 44.0});
 
   final String emoji;
   final double size;

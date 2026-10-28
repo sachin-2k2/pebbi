@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:peddi/core/theme/app_palette.dart';
 import 'package:peddi/core/theme/app_theme.dart';
 import 'package:peddi/features/onboarding/domain/accent_option.dart';
 import 'package:peddi/features/settings/presentation/widgets/appearance_section.dart';
-import 'package:peddi/features/settings/presentation/widgets/text_size_slider.dart';
 
 void main() {
   group('AppearanceSection & TextSizeSlider accent color tests', () {
@@ -73,7 +71,9 @@ void main() {
         expect(sliderTheme.data.thumbColor, equals(const Color(0xFF2DD4A4)));
 
         // 3. Tap Orange swatch
-        await tester.tap(find.bySemanticsLabel(RegExp('Orange, option 3 of 6')));
+        await tester.tap(
+          find.bySemanticsLabel(RegExp('Orange, option 3 of 6')),
+        );
         await tester.pumpAndSettle();
 
         slider = tester.widget<Slider>(find.byType(Slider));

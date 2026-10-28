@@ -95,12 +95,16 @@ class _SayInMyLanguageSheetState extends State<SayInMyLanguageSheet> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               AppStrings.sayInMyLanguageSubtitle,
-              style: AppTypography.bodyMedium.copyWith(color: palette.textMuted),
+              style: AppTypography.bodyMedium.copyWith(
+                color: palette.textMuted,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Container(
               decoration: BoxDecoration(
-                color: palette.isDark ? palette.surfaceVariant : palette.surfaceRaised,
+                color: palette.isDark
+                    ? palette.surfaceVariant
+                    : palette.surfaceRaised,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
                 border: Border.all(color: palette.outline, width: 1.0),
               ),
@@ -156,10 +160,17 @@ class _SayInMyLanguageSheetState extends State<SayInMyLanguageSheet> {
                       children: [
                         TextButton.icon(
                           onPressed: () => widget.onPlayAudio(_translatedText!),
-                          icon: Icon(Icons.volume_up_rounded, color: palette.brand, size: 18.0),
+                          icon: Icon(
+                            Icons.volume_up_rounded,
+                            color: palette.brand,
+                            size: 18.0,
+                          ),
                           label: Text(
                             AppStrings.sayInMyLanguageHearIt,
-                            style: TextStyle(color: palette.brand, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              color: palette.brand,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -170,7 +181,9 @@ class _SayInMyLanguageSheetState extends State<SayInMyLanguageSheet> {
                           textColor: palette.textOnBrand,
                           isFullWidth: false,
                           width: 140.0,
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                          ),
                           onPressed: () {
                             widget.onUseThis(_translatedText!);
                             Navigator.of(context).pop();

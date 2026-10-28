@@ -5,7 +5,7 @@ import 'speech_recognizer_service.dart';
 /// Real implementation of [SpeechRecognizerService] using `speech_to_text`.
 class SpeechToTextRecognizerService implements SpeechRecognizerService {
   SpeechToTextRecognizerService({stt.SpeechToText? speech})
-      : _speech = speech ?? stt.SpeechToText();
+    : _speech = speech ?? stt.SpeechToText();
 
   final stt.SpeechToText _speech;
   final StreamController<double> _soundLevelController =

@@ -55,7 +55,9 @@ class GoalsSheet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: palette.isDark ? palette.surfaceVariant : palette.surfaceRaised,
+                  color: palette.isDark
+                      ? palette.surfaceVariant
+                      : palette.surfaceRaised,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
                   border: Border.all(
                     color: goals[i].isDone ? palette.mint : palette.outline,

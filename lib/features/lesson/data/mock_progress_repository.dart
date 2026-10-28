@@ -38,10 +38,14 @@ class MockProgressRepository implements ProgressRepository {
   final Set<String> _processedEventIds = {};
 
   /// Outbox sync queue for offline sync.
-  final List<({String userId, String eventId, LessonResult result, DateTime queuedAt})>
+  final List<
+    ({String userId, String eventId, LessonResult result, DateTime queuedAt})
+  >
   _outbox = [];
 
-  List<({String userId, String eventId, LessonResult result, DateTime queuedAt})>
+  List<
+    ({String userId, String eventId, LessonResult result, DateTime queuedAt})
+  >
   get outbox => List.unmodifiable(_outbox);
 
   @override
@@ -63,7 +67,9 @@ class MockProgressRepository implements ProgressRepository {
     required LessonResult result,
     String? clientEventId,
   }) async {
-    final eventId = clientEventId ?? 'evt_${userId}_${stopId}_${result.completedAt.millisecondsSinceEpoch}';
+    final eventId =
+        clientEventId ??
+        'evt_${userId}_${stopId}_${result.completedAt.millisecondsSinceEpoch}';
 
     // Idempotency: return previously processed completion if event ID was already recorded
     final userMap = _userCompletions.putIfAbsent(userId, () => {});
@@ -75,7 +81,8 @@ class MockProgressRepository implements ProgressRepository {
 
     final scored = result.scoredItemCount;
     final firstTry = result.firstTryCorrectCount;
-    final allSkipped = result.itemRecords.isNotEmpty &&
+    final allSkipped =
+        result.itemRecords.isNotEmpty &&
         result.itemRecords.values.every((r) => r.skipped);
 
     // Mock placeholder star calculation
@@ -97,7 +104,8 @@ class MockProgressRepository implements ProgressRepository {
     }
 
     final phrases = customLearnedPhrases ?? _defaultPhrasesForStop(stopId);
-    final goal = customDailyGoal ??
+    final goal =
+        customDailyGoal ??
         const DailyGoalCompletion(status: DailyGoalStatus.done);
 
     final completion = LessonCompletion(

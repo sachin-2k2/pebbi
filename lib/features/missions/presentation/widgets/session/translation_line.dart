@@ -10,11 +10,7 @@ import '../../../../settings/presentation/providers/app_settings_provider.dart';
 /// - Shown only when captions are ON and translation text is provided
 /// - Animated opacity/size respecting Reduce Motion setting
 class TranslationLine extends ConsumerWidget {
-  const TranslationLine({
-    super.key,
-    required this.translation,
-    this.color,
-  });
+  const TranslationLine({super.key, required this.translation, this.color});
 
   final String? translation;
   final Color? color;

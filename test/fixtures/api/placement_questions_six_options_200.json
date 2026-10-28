@@ -1,0 +1,64 @@
+{
+  "available": true,
+  "native_language": "ml",
+  "target_language": "en",
+  "questions": [
+    {
+      "id": "q1",
+      "sort_order": 1,
+      "prompt": "Which one means 'Good morning'?",
+      "target_phrase": "Good morning",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🌅",
+          "label": "Sunrise",
+          "is_correct": true,
+          "pebbi_correct": "Spot on!",
+          "pebbi_wrong": "That was good morning!",
+          "fun_fact": "'Good morning' is used until noon."
+        },
+        {
+          "emoji": "🌙",
+          "label": "Moon",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "That means good night!",
+          "fun_fact": "Moon represents nighttime."
+        },
+        {
+          "emoji": "👋",
+          "label": "Wave",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "That means hello!",
+          "fun_fact": "Waving is a casual greeting."
+        },
+        {
+          "emoji": "☕",
+          "label": "Coffee",
+          "is_correct": false,
+          "pebbi_correct": "Great!",
+          "pebbi_wrong": "That means coffee!",
+          "fun_fact": "Coffee is often enjoyed in the morning."
+        },
+        {
+          "emoji": "🥞",
+          "label": "Pancakes",
+          "is_correct": false,
+          "pebbi_correct": "Yum!",
+          "pebbi_wrong": "Those are pancakes!",
+          "fun_fact": "Pancakes are breakfast food."
+        },
+        {
+          "emoji": "🥐",
+          "label": "Croissant",
+          "is_correct": false,
+          "pebbi_correct": "Tasty!",
+          "pebbi_wrong": "That is a croissant!",
+          "fun_fact": "A croissant is a pastry."
+        }
+      ]
+    }
+  ]
+}

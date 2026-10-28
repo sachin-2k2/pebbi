@@ -1,15 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/services/notification_scheduler_provider.dart';
 import '../../../../l10n/app_strings.dart';
-import '../../../onboarding/domain/age_band.dart';
-import '../../../onboarding/domain/reminder_time.dart';
 import '../../domain/auth_result.dart';
 import '../../domain/auth_session.dart';
 import '../../domain/email_validator.dart';
 import '../../domain/password_rules.dart';
-import '../../domain/user_profile.dart';
-import 'auth_provider.dart';
 import 'auth_session_provider.dart';
+import 'user_session_manager.dart';
 
 /// Form state for the login screen.
 ///
@@ -112,6 +109,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       return false;
     }
 
+    debugPrint('[LoginFormProvider] submitWithEmail called (email: "${email.trim()}")');
     state = state.copyWith(isSubmitting: true);
 
     try {
@@ -121,8 +119,11 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         password: password,
       );
 
+      if (!mounted) return false;
       return await _handleAuthResult(result);
-    } catch (_) {
+    } catch (e, stack) {
+      if (!mounted) return false;
+      debugPrint('[LoginFormProvider] 💥 Unexpected exception during login: $e\n$stack');
       state = state.copyWith(
         isSubmitting: false,
         generalError: AppStrings.authErrorUnknown,
@@ -142,8 +143,11 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       final repo = ref.read(authRepositoryProvider);
       final result = await repo.signInWithGoogle();
 
+      if (!mounted) return false;
       return await _handleAuthResult(result);
-    } catch (_) {
+    } catch (e, stack) {
+      if (!mounted) return false;
+      debugPrint('[LoginFormProvider] 💥 Unexpected exception during Google sign-in: $e\n$stack');
       state = state.copyWith(
         isSubmitting: false,
         generalError: AppStrings.authErrorUnknown,
@@ -154,8 +158,12 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
   Future<bool> _handleAuthResult(AuthResult result) async {
     switch (result) {
-      case AuthSuccess(:final session):
-        await _applyUserSwitch(session);
+      case AuthSuccess(:final session, :final profile):
+        debugPrint(
+          '[LoginFormProvider] ✅ Login successful: userId=${session.userId}, email=${session.email}',
+        );
+        await UserSessionManager.applyUserSwitch(ref, session, profile);
+        if (!mounted) return false;
         state = state.copyWith(
           isSubmitting: false,
           isSuccess: true,
@@ -164,92 +172,45 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         return true;
 
       case PasswordResetSuccess():
+        if (!mounted) return false;
         state = state.copyWith(isSubmitting: false);
         return false;
 
-      case AuthFailure(:final reason):
+      case RegisterOtpSent():
+        if (!mounted) return false;
+        state = state.copyWith(isSubmitting: false);
+        return false;
+
+      case AuthFailure(:final reason, :final message):
+        debugPrint(
+          '[LoginFormProvider] ❌ Login failed: reason=$reason, message=$message',
+        );
+        if (!mounted) return false;
         if (reason == AuthFailureReason.cancelled) {
           // User cancelled third-party OAuth: silently return to idle
           state = state.copyWith(isSubmitting: false);
           return false;
         }
 
-        final errorMsg = switch (reason) {
-          AuthFailureReason.invalidCredentials =>
-            AppStrings.authErrorInvalidCredentials,
-          AuthFailureReason.network => AppStrings.authErrorNetwork,
-          AuthFailureReason.tooManyAttempts =>
-            AppStrings.authErrorTooManyAttempts,
-          AuthFailureReason.accountDisabled =>
-            AppStrings.authErrorAccountDisabled,
-          _ => AppStrings.authErrorUnknown,
-        };
+        final errorMsg = (message != null && message.trim().isNotEmpty)
+            ? message
+            : switch (reason) {
+                AuthFailureReason.invalidCredentials =>
+                  AppStrings.authErrorInvalidCredentials,
+                AuthFailureReason.network => AppStrings.authErrorNetwork,
+                AuthFailureReason.tooManyAttempts =>
+                  AppStrings.authErrorTooManyAttempts,
+                AuthFailureReason.accountDisabled =>
+                  AppStrings.authErrorAccountDisabled,
+                _ => AppStrings.authErrorUnknown,
+              };
 
         state = state.copyWith(isSubmitting: false, generalError: errorMsg);
         return false;
     }
   }
 
-  /// Implements AGENTS.md §6 (User Isolation):
-  /// 1. Outbox flush stub.
-  /// 2. Guest progress merge.
-  /// 3. Updates currentUserProvider to authenticated userId.
-  /// 4. Cancels prior reminders and reschedules for new user.
-  /// 5. Registers push token.
-  /// 6. Streak is NOT counted.
-  Future<void> _applyUserSwitch(AuthSession session) async {
-    // 1. Stub for outbox flush before user switch
-    // TODO(question): Try to flush previous user outbox; if offline, keep in old user DB.
-
-    // 2. Guest progress migration
-    final currentProfile = ref.read(currentUserProvider);
-    final isGuest = currentProfile?.userId.startsWith('guest_') ?? true;
-    final guestId = currentProfile?.userId ?? 'guest_default';
-
-    if (isGuest) {
-      final repo = ref.read(authRepositoryProvider);
-      await repo.mergeGuestProgress(guestId: guestId, userId: session.userId);
-    }
-
-    // 3. Update single currentUserProvider driving all user-scoped data
-    final newProfile = currentProfile != null
-        ? currentProfile.copyWith(userId: session.userId)
-        : UserProfile(
-            userId: session.userId,
-            ageBand: AgeBand.adult,
-            explanationLanguageCode: 'en',
-            targetLanguageCode: 'es',
-            reasonIds: const {'travel'},
-            dailyGoalId: 'regular',
-            reminderTime: const ReminderTime(hour: 9, minute: 0),
-            selectedWeekdayNumbers: const {1, 2, 3, 4, 5},
-            remindersEnabled: true,
-            accentId: 'violet',
-            plan: 'free',
-            isOnboarded: true,
-          );
-
-    await ref.read(currentUserProvider.notifier).saveProfile(newProfile);
-
-    // 4. Cancel previous user's reminders and reschedule for new user
-    final scheduler = ref.read(notificationSchedulerProvider);
-    await scheduler.cancelAllReminders();
-
-    if (newProfile.remindersEnabled &&
-        newProfile.selectedWeekdayNumbers.isNotEmpty) {
-      await scheduler.scheduleWeeklyReminders(
-        hour: newProfile.reminderTime.hour,
-        minute: newProfile.reminderTime.minute,
-        weekdays: newProfile.selectedWeekdayNumbers,
-        title: AppStrings.reminderNotificationTitle,
-        body: AppStrings.reminderNotificationBody,
-      );
-    }
-
-    // 5. Register push notification token
-    final pushService = ref.read(pushTokenServiceProvider);
-    await pushService.registerToken(session.userId);
-  }
+  // Handled via UserSessionManager
 }
 
 /// Global provider for the login form notifier.

@@ -16,9 +16,11 @@ class RegisterBody extends StatelessWidget {
   const RegisterBody({
     super.key,
     required this.formState,
+    required this.nameController,
     required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
+    required this.nameFocusNode,
     required this.emailFocusNode,
     required this.passwordFocusNode,
     required this.confirmPasswordFocusNode,
@@ -30,9 +32,11 @@ class RegisterBody extends StatelessWidget {
   });
 
   final RegisterFormState formState;
+  final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
+  final FocusNode nameFocusNode;
   final FocusNode emailFocusNode;
   final FocusNode passwordFocusNode;
   final FocusNode confirmPasswordFocusNode;
@@ -62,6 +66,9 @@ class RegisterBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AuthCard(
+                    nameController: nameController,
+                    nameFocusNode: nameFocusNode,
+                    nameError: formState.nameError,
                     emailController: emailController,
                     passwordController: passwordController,
                     confirmPasswordController: confirmPasswordController,

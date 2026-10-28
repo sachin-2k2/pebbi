@@ -29,10 +29,16 @@ class _FakeTtsService implements TextToSpeechService {
   int speakCount = 0;
 
   @override
-  Future<bool> speak(String text, {required String locale, double? speechRate}) async {
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+    VoidCallback? onCompletion,
+  }) async {
     lastSpokenText = text;
     lastLocale = locale;
     speakCount++;
+    onCompletion?.call();
     return true;
   }
 
@@ -45,7 +51,7 @@ class _FakeTtsService implements TextToSpeechService {
 
 class _FakeCurrentUserNotifier extends CurrentUserNotifier {
   _FakeCurrentUserNotifier(UserProfile? initial)
-      : super(MockProfileRepository(), initial);
+    : super(MockProfileRepository(), initial);
 }
 
 UserProfile _createTestProfile(String id, {AgeBand ageBand = AgeBand.adult}) {
@@ -86,21 +92,23 @@ void main() {
         textToSpeechServiceProvider.overrideWithValue(fakeTts),
         progressRepositoryProvider.overrideWithValue(mockProgress),
         currentUserProvider.overrideWith(
-          (ref) => _FakeCurrentUserNotifier(profile ?? _createTestProfile('test_user')),
+          (ref) => _FakeCurrentUserNotifier(
+            profile ?? _createTestProfile('test_user'),
+          ),
         ),
         if (overrideCompletion != null)
-          lessonCompletionProvider(stopId).overrideWith(
-            (ref) => overrideCompletion,
-          ),
+          lessonCompletionProvider(
+            stopId,
+          ).overrideWith((ref) => overrideCompletion),
       ],
-      child: MaterialApp(
-        home: LessonCompleteScreen(stopId: stopId),
-      ),
+      child: MaterialApp(home: LessonCompleteScreen(stopId: stopId)),
     );
   }
 
   group('LessonCompleteScreen Presentation Tests', () {
-    testWidgets('Renders all visual components for 3-star completion', (tester) async {
+    testWidgets('Renders all visual components for 3-star completion', (
+      tester,
+    ) async {
       final completion = LessonCompletion(
         stopId: 'stop_test',
         starsEarned: 3,
@@ -144,7 +152,10 @@ void main() {
 
       // Header title & subtitle
       expect(find.text(AppStrings.lessonCompleteTitle), findsOneWidget);
-      expect(find.text(AppStrings.lessonCompleteSubtitleForStars(3)), findsOneWidget);
+      expect(
+        find.text(AppStrings.lessonCompleteSubtitleForStars(3)),
+        findsOneWidget,
+      );
 
       // Star row
       expect(find.byType(StarRow), findsOneWidget);
@@ -168,7 +179,10 @@ void main() {
       expect(find.text(AppStrings.goalDoneTitle), findsOneWidget);
 
       // Pinned Continue button
-      expect(find.widgetWithText(Button3D, AppStrings.continueButton), findsOneWidget);
+      expect(
+        find.widgetWithText(Button3D, AppStrings.continueButton),
+        findsOneWidget,
+      );
 
       // Audio feedback triggered once
       expect(fakeAudio.successCount, 1);
@@ -208,18 +222,55 @@ void main() {
       expect(fakeTts.lastLocale, 'es-ES');
     });
 
-    testWidgets('Displays +N more line when phrases exceed max 3 preview', (tester) async {
+    testWidgets('Displays +N more line when phrases exceed max 3 preview', (
+      tester,
+    ) async {
       final completion = LessonCompletion(
         stopId: 'stop_test',
         starsEarned: 2,
         scoredCount: 9,
         firstTryCorrectCount: 7,
         learnedPhrases: const [
-          LearnedPhrase(id: '1', emoji: '1', text: 'T1', meaning: 'M1', audioText: 'T1', audioLocale: 'es'),
-          LearnedPhrase(id: '2', emoji: '2', text: 'T2', meaning: 'M2', audioText: 'T2', audioLocale: 'es'),
-          LearnedPhrase(id: '3', emoji: '3', text: 'T3', meaning: 'M3', audioText: 'T3', audioLocale: 'es'),
-          LearnedPhrase(id: '4', emoji: '4', text: 'T4', meaning: 'M4', audioText: 'T4', audioLocale: 'es'),
-          LearnedPhrase(id: '5', emoji: '5', text: 'T5', meaning: 'M5', audioText: 'T5', audioLocale: 'es'),
+          LearnedPhrase(
+            id: '1',
+            emoji: '1',
+            text: 'T1',
+            meaning: 'M1',
+            audioText: 'T1',
+            audioLocale: 'es',
+          ),
+          LearnedPhrase(
+            id: '2',
+            emoji: '2',
+            text: 'T2',
+            meaning: 'M2',
+            audioText: 'T2',
+            audioLocale: 'es',
+          ),
+          LearnedPhrase(
+            id: '3',
+            emoji: '3',
+            text: 'T3',
+            meaning: 'M3',
+            audioText: 'T3',
+            audioLocale: 'es',
+          ),
+          LearnedPhrase(
+            id: '4',
+            emoji: '4',
+            text: 'T4',
+            meaning: 'M4',
+            audioText: 'T4',
+            audioLocale: 'es',
+          ),
+          LearnedPhrase(
+            id: '5',
+            emoji: '5',
+            text: 'T5',
+            meaning: 'M5',
+            audioText: 'T5',
+            audioLocale: 'es',
+          ),
         ],
         streakDays: 4,
         dailyGoal: const DailyGoalCompletion(status: DailyGoalStatus.done),
@@ -233,26 +284,27 @@ void main() {
       expect(find.text('+2 more'), findsOneWidget);
     });
 
-    testWidgets('Hides streak flame stat tile when streakDays is null (single goal tile layout)', (tester) async {
-      final completion = LessonCompletion(
-        stopId: 'stop_test',
-        starsEarned: 3,
-        scoredCount: 9,
-        firstTryCorrectCount: 9,
-        learnedPhrases: const [],
-        streakDays: null,
-        dailyGoal: const DailyGoalCompletion(status: DailyGoalStatus.done),
-      );
+    testWidgets(
+      'Hides streak flame stat tile when streakDays is null (single goal tile layout)',
+      (tester) async {
+        final completion = LessonCompletion(
+          stopId: 'stop_test',
+          starsEarned: 3,
+          scoredCount: 9,
+          firstTryCorrectCount: 9,
+          learnedPhrases: const [],
+          streakDays: null,
+          dailyGoal: const DailyGoalCompletion(status: DailyGoalStatus.done),
+        );
 
-      await tester.pumpWidget(createSubject(
-        overrideCompletion: completion,
-      ));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createSubject(overrideCompletion: completion));
+        await tester.pumpAndSettle();
 
-      // Only daily goal tile is shown, streak flame tile is omitted
-      expect(find.text('day streak'), findsNothing);
-      expect(find.text(AppStrings.goalDoneTitle), findsOneWidget);
-      expect(find.byType(CompletionStatTile), findsOneWidget);
-    });
+        // Only daily goal tile is shown, streak flame tile is omitted
+        expect(find.text('day streak'), findsNothing);
+        expect(find.text(AppStrings.goalDoneTitle), findsOneWidget);
+        expect(find.byType(CompletionStatTile), findsOneWidget);
+      },
+    );
   });
 }

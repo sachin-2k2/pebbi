@@ -26,10 +26,7 @@ import '../widgets/finish/learned_phrases_card.dart';
 /// Follows AGENTS.md §3: under 150 lines, build under 50 lines,
 /// thin composition delegating all UI pieces to dedicated widgets.
 class LessonCompleteScreen extends ConsumerStatefulWidget {
-  const LessonCompleteScreen({
-    super.key,
-    required this.stopId,
-  });
+  const LessonCompleteScreen({super.key, required this.stopId});
 
   final String stopId;
 
@@ -87,8 +84,9 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
         _onContinue(context);
       },
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.background,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.background,
         body: SafeArea(
           child: completionAsync.when(
             loading: () =>
@@ -109,9 +107,7 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
                           children: [
                             CompleteHero(starsEarned: completion.starsEarned),
                             const SizedBox(height: AppSpacing.sm),
-                            StarRow(
-                              starsEarned: completion.starsEarned,
-                            ),
+                            StarRow(starsEarned: completion.starsEarned),
                             const SizedBox(height: AppSpacing.xs),
                             FirstTryLine(
                               correctCount: completion.firstTryCorrectCount,
@@ -133,8 +129,8 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
                               dailyGoal: completion.dailyGoal,
                               showStreak:
                                   RewardsSafetyRules.shouldShowRewardsPressureElements(
-                                user?.ageBand,
-                              ),
+                                    user?.ageBand,
+                                  ),
                             ),
                             const SizedBox(height: AppSpacing.lg),
                           ],

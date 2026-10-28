@@ -25,9 +25,7 @@ class GoalsStrip extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.xs + 2.0,
       ),
-      decoration: BoxDecoration(
-        color: palette.surface,
-      ),
+      decoration: BoxDecoration(color: palette.surface),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -36,11 +34,7 @@ class GoalsStrip extends StatelessWidget {
           children: [
             for (int i = 0; i < goals.length; i++) ...[
               if (i > 0) const SizedBox(width: AppSpacing.sm),
-              GoalChip(
-                goal: goals[i],
-                index: i + 1,
-                total: goals.length,
-              ),
+              GoalChip(goal: goals[i], index: i + 1, total: goals.length),
             ],
           ],
         ),

@@ -1,0 +1,72 @@
+[
+  {
+    "code": "ml",
+    "name": "മലയാളം",
+    "english_name": "Malayalam",
+    "script_glyph": "മ",
+    "translations_reviewed": false
+  },
+  {
+    "code": "hi",
+    "name": "हिन्दी",
+    "english_name": "Hindi",
+    "script_glyph": "अ",
+    "translations_reviewed": false
+  },
+  {
+    "code": "ta",
+    "name": "தமிழ்",
+    "english_name": "Tamil",
+    "script_glyph": "த",
+    "translations_reviewed": false
+  },
+  {
+    "code": "te",
+    "name": "తెలుగు",
+    "english_name": "Telugu",
+    "script_glyph": "తె",
+    "translations_reviewed": false
+  },
+  {
+    "code": "kn",
+    "name": "ಕನ್ನಡ",
+    "english_name": "Kannada",
+    "script_glyph": "ಕ",
+    "translations_reviewed": false
+  },
+  {
+    "code": "es",
+    "name": "Español",
+    "english_name": "Spanish",
+    "script_glyph": "Ñ",
+    "translations_reviewed": false
+  },
+  {
+    "code": "ar",
+    "name": "العربية",
+    "english_name": "Arabic",
+    "script_glyph": "ع",
+    "translations_reviewed": false
+  },
+  {
+    "code": "fr",
+    "name": "Français",
+    "english_name": "French",
+    "script_glyph": "Ç",
+    "translations_reviewed": false
+  },
+  {
+    "code": "de",
+    "name": "Deutsch",
+    "english_name": "German",
+    "script_glyph": "Ä",
+    "translations_reviewed": false
+  },
+  {
+    "code": "en",
+    "name": "English",
+    "english_name": "English",
+    "script_glyph": "A",
+    "translations_reviewed": true
+  }
+]

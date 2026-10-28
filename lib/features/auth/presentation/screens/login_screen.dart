@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_strings.dart';
 import '../../domain/email_validator.dart';
 import '../providers/login_form_provider.dart';
 import '../widgets/login_body.dart';
@@ -12,10 +13,13 @@ import '../widgets/login_body.dart';
 /// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
 /// thin composition screen, zero password retention beyond disposal.
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key, this.returnTo});
+  const LoginScreen({super.key, this.returnTo, this.initialEmail});
 
   /// Optional route destination to return to after successful login.
   final String? returnTo;
+
+  /// Optional email address to prefill (e.g. after session expiry).
+  final String? initialEmail;
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -30,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
+    _emailController = TextEditingController(text: widget.initialEmail ?? '');
     _passwordController = TextEditingController();
     _emailFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
@@ -59,6 +63,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         final target = (returnTo != null && !returnTo.startsWith('/lesson'))
             ? returnTo
             : '/path';
+        debugPrint('[LoginScreen] 🚀 Login successful, navigating to $target');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppStrings.authSuccessLogin),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
         context.go(target);
       }
     });
@@ -93,6 +105,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _handleLogin() {
+    debugPrint(
+      '[LoginScreen] "Log in" tapped (email: "${_emailController.text.trim()}")',
+    );
     ref
         .read(loginFormProvider.notifier)
         .submitWithEmail(

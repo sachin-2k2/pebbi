@@ -26,28 +26,61 @@ class ExerciseProgressBar extends StatelessWidget {
     // Ensures a small visible cap is shown even at 0% per design spec
     final effectiveProgress = progress.clamp(minCapFactor, 1.0);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-      child: Container(
-        height: height,
-        color: palette.progressTrack,
-        child: TweenAnimationBuilder<double>(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          tween: Tween<double>(begin: minCapFactor, end: effectiveProgress),
-          builder: (context, value, _) {
-            return FractionallySizedBox(
-              alignment: AlignmentDirectional.centerStart,
-              widthFactor: value,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: palette.mint,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                ),
+    return SizedBox(
+      height: 12.0,
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+            child: Container(
+              height: height,
+              color: palette.progressTrack,
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                tween: Tween<double>(begin: minCapFactor, end: effectiveProgress),
+                builder: (context, value, _) {
+                  return FractionallySizedBox(
+                    alignment: AlignmentDirectional.centerStart,
+                    widthFactor: value,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: palette.mint,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+          TweenAnimationBuilder<double>(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            tween: Tween<double>(begin: minCapFactor, end: effectiveProgress),
+            builder: (context, value, _) {
+              return FractionallySizedBox(
+                alignment: AlignmentDirectional.centerStart,
+                widthFactor: value,
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Transform.rotate(
+                    angle: 0.785398, // 45 deg diamond
+                    child: Container(
+                      width: 7.5,
+                      height: 7.5,
+                      decoration: BoxDecoration(
+                        color: palette.mint,
+                        borderRadius: BorderRadius.circular(1.0),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

@@ -2,11 +2,7 @@
 ///
 /// Follows AGENTS.md §2.2: Pure Dart, zero Flutter imports.
 class Suggestion {
-  const Suggestion({
-    required this.id,
-    required this.text,
-    this.translation,
-  });
+  const Suggestion({required this.id, required this.text, this.translation});
 
   final String id;
   final String text;

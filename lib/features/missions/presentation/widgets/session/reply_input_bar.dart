@@ -44,10 +44,7 @@ class ReplyInputBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          SendButton(
-            isEnabled: canSend && isEnabled,
-            onPressed: onSend,
-          ),
+          SendButton(isEnabled: canSend && isEnabled, onPressed: onSend),
         ],
       ),
     );

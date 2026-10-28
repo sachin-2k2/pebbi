@@ -1,16 +1,8 @@
 /// Delivery state of a chat message.
-enum MessageDeliveryState {
-  sending,
-  sent,
-  failed,
-}
+enum MessageDeliveryState { sending, sent, failed }
 
 /// The author of a chat message in the role-play session.
-enum MessageAuthor {
-  character,
-  user,
-  system,
-}
+enum MessageAuthor { character, user, system }
 
 /// Domain representation of a single chat message in a mission role-play session.
 ///
@@ -82,13 +74,13 @@ class ChatMessage {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        clientTurnId,
-        author,
-        targetText,
-        translationText,
-        audioLocale,
-        correction,
-        deliveryState,
-      );
+    id,
+    clientTurnId,
+    author,
+    targetText,
+    translationText,
+    audioLocale,
+    correction,
+    deliveryState,
+  );
 }

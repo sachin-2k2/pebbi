@@ -65,7 +65,9 @@ class GoalChip extends StatelessWidget {
           vertical: AppSpacing.xs + 2.0,
         ),
         decoration: BoxDecoration(
-          color: palette.isDark ? palette.surfaceVariant : palette.surfaceRaised,
+          color: palette.isDark
+              ? palette.surfaceVariant
+              : palette.surfaceRaised,
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
           border: Border.all(
             color: isDone ? palette.mint : palette.outline,

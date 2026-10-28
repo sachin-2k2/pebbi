@@ -18,9 +18,13 @@ import 'package:peddi/features/auth/presentation/widgets/auth_card.dart';
 import 'package:peddi/features/auth/presentation/widgets/auth_header.dart';
 import 'package:peddi/features/auth/presentation/widgets/or_divider.dart';
 import 'package:peddi/features/auth/presentation/widgets/social_button.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:peddi/l10n/app_strings.dart';
 
 void main() {
+  setUp(() {
+    FlutterSecureStorage.setMockInitialValues({});
+  });
   Widget buildTestableScreen({
     MockAuthRepository? authRepo,
     MockProfileRepository? profileRepo,

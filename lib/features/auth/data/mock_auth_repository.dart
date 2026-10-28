@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../domain/auth_repository.dart';
 import '../domain/auth_result.dart';
 import '../domain/auth_session.dart';
@@ -59,12 +60,71 @@ class MockAuthRepository implements AuthRepository {
     return const PasswordResetSuccess();
   }
 
+  /// If true, registerWithEmail returns RegisterOtpSent requiring verifyOtp call.
+  bool simulateOtpFlow = false;
+
+  /// Verification attempts received.
+  int verifyOtpAttempts = 0;
+
   @override
   Future<AuthResult> registerWithEmail({
     required String email,
     required String password,
+    String? displayName,
+    Map<String, dynamic>? onboardingData,
   }) async {
     registerAttempts++;
+    debugPrint('[MockAuthRepository] ℹ️ registerWithEmail called (email: $email, simulateOtpFlow: $simulateOtpFlow)');
+    if (simulatedDelay > Duration.zero) {
+      await Future<void>.delayed(simulatedDelay);
+    }
+
+    if (forceFailureReason != null) {
+      debugPrint('[MockAuthRepository] ℹ️ forceFailureReason: $forceFailureReason');
+      return AuthFailure(forceFailureReason!);
+    }
+
+    // Explicit test trigger for already registered email
+    if (email.trim().toLowerCase() == 'alreadyregistered@example.com') {
+      debugPrint('[MockAuthRepository] ℹ️ Email alreadyregistered trigger hit');
+      return const AuthFailure(AuthFailureReason.emailAlreadyInUse);
+    }
+
+    if (simulateOtpFlow) {
+      debugPrint('[MockAuthRepository] ℹ️ simulateOtpFlow=true -> Returning RegisterOtpSent');
+      return RegisterOtpSent(
+        message: 'Verification code sent to ${email.trim()}',
+        expiresIn: '10 minutes',
+        email: email.trim(),
+      );
+    }
+
+    final userId = 'user_${email.trim().toLowerCase().hashCode.abs()}';
+    debugPrint('[MockAuthRepository] ℹ️ simulateOtpFlow=false -> Mocking immediate AuthSuccess for $userId (skips OTP, directly enters app)');
+    final session = AuthSession(
+      userId: userId,
+      email: email.trim(),
+      accessToken: 'mock_jwt_access_token_$userId',
+      refreshToken: 'mock_jwt_refresh_token_$userId',
+      createdAt: DateTime.now(),
+    );
+
+    _currentSession = session;
+    await _secureStore?.saveTokens(
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+      userId: session.userId,
+    );
+
+    return AuthSuccess(session);
+  }
+
+  @override
+  Future<AuthResult> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    verifyOtpAttempts++;
     if (simulatedDelay > Duration.zero) {
       await Future<void>.delayed(simulatedDelay);
     }
@@ -73,9 +133,12 @@ class MockAuthRepository implements AuthRepository {
       return AuthFailure(forceFailureReason!);
     }
 
-    // Explicit test trigger for already registered email
-    if (email.trim().toLowerCase() == 'alreadyregistered@example.com') {
-      return const AuthFailure(AuthFailureReason.emailAlreadyInUse);
+    if (otp == '000000') {
+      return const AuthFailure(AuthFailureReason.otpExpired, 'OTP expired. Please request a new one.');
+    }
+
+    if (otp != '123456' && otp.length != 6) {
+      return const AuthFailure(AuthFailureReason.invalidOtp, 'Invalid OTP. Please check and try again.');
     }
 
     final userId = 'user_${email.trim().toLowerCase().hashCode.abs()}';

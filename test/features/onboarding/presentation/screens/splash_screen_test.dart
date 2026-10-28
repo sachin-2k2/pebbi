@@ -32,7 +32,8 @@ void main() {
         ),
         GoRoute(
           path: '/path',
-          builder: (context, state) => const Scaffold(body: Text('Path Screen')),
+          builder: (context, state) =>
+              const Scaffold(body: Text('Path Screen')),
         ),
         GoRoute(
           path: '/welcome',
@@ -277,36 +278,35 @@ void main() {
       },
     );
 
-    testWidgets(
-      'art off -> short timeline (300ms) prevents 1-frame flash',
-      (tester) async {
-        final container = ProviderContainer(
-          overrides: [
-            splashCompletedProvider.overrideWith((ref) => false),
-            splashShouldShowArtProvider.overrideWith((ref) => false),
-            appStartupProvider.overrideWith((ref) => '/welcome'),
-          ],
-        );
-        addTearDown(container.dispose);
-        final router = createTestRouter();
+    testWidgets('art off -> short timeline (300ms) prevents 1-frame flash', (
+      tester,
+    ) async {
+      final container = ProviderContainer(
+        overrides: [
+          splashCompletedProvider.overrideWith((ref) => false),
+          splashShouldShowArtProvider.overrideWith((ref) => false),
+          appStartupProvider.overrideWith((ref) => '/welcome'),
+        ],
+      );
+      addTearDown(container.dispose);
+      final router = createTestRouter();
 
-        await tester.pumpWidget(
-          buildTestAppWithRouter(router: router, container: container),
-        );
-        await tester.pump();
+      await tester.pumpWidget(
+        buildTestAppWithRouter(router: router, container: container),
+      );
+      await tester.pump();
 
-        // At 100ms: startup is ready, but short timer (300ms) prevents 1-frame flash
-        await tester.pump(const Duration(milliseconds: 100));
-        expect(find.byType(SplashScreen), findsOneWidget);
-        expect(find.text('Welcome Screen'), findsNothing);
+      // At 100ms: startup is ready, but short timer (300ms) prevents 1-frame flash
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(SplashScreen), findsOneWidget);
+      expect(find.text('Welcome Screen'), findsNothing);
 
-        // At 350ms: short minimum time elapsed -> navigates immediately
-        await tester.pump(const Duration(milliseconds: 250));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 50));
-        expect(find.text('Welcome Screen'), findsOneWidget);
-      },
-    );
+      // At 350ms: short minimum time elapsed -> navigates immediately
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.text('Welcome Screen'), findsOneWidget);
+    });
 
     testWidgets(
       'reduceMotion -> static dashes with equal softer colour and short timeline (300ms)',
@@ -316,9 +316,8 @@ void main() {
             splashCompletedProvider.overrideWith((ref) => false),
             splashShouldShowArtProvider.overrideWith((ref) => true),
             appSettingsProvider.overrideWith(
-              (ref) => AppSettingsNotifier(
-                const AppSettings(reduceMotion: true),
-              ),
+              (ref) =>
+                  AppSettingsNotifier(const AppSettings(reduceMotion: true)),
             ),
             appStartupProvider.overrideWith((ref) => '/welcome'),
           ],
@@ -429,7 +428,9 @@ void main() {
           overrides: [
             splashCompletedProvider.overrideWith((ref) => false),
             splashShouldShowArtProvider.overrideWith((ref) => true),
-            appStartupProvider.overrideWith((ref) => Completer<String>().future),
+            appStartupProvider.overrideWith(
+              (ref) => Completer<String>().future,
+            ),
           ],
         );
         addTearDown(container.dispose);
@@ -447,7 +448,10 @@ void main() {
         // At 8.1s: safety timeout fires, showing SplashTimeoutView
         await tester.pump(const Duration(milliseconds: 1100));
         expect(find.byType(SplashTimeoutView), findsOneWidget);
-        expect(find.text('Starting up took longer than expected'), findsOneWidget);
+        expect(
+          find.text('Starting up took longer than expected'),
+          findsOneWidget,
+        );
         expect(find.text('Retry'), findsOneWidget);
         expect(find.text('Continue as guest'), findsOneWidget);
 

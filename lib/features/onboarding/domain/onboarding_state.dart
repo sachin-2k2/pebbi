@@ -18,6 +18,7 @@ class OnboardingState {
     this.ageBand,
     this.explanationLanguageCode = 'en',
     this.targetLanguageCode = 'es',
+    this.targetLanguageHasPlacement = true,
     this.selectedReasonIds = const {},
     this.selectedLevel,
     this.suggestedLevel,
@@ -45,6 +46,9 @@ class OnboardingState {
 
   /// Language the user wants to learn (default: 'es').
   final String targetLanguageCode;
+
+  /// Whether the target language supports a placement quiz (default: true).
+  final bool targetLanguageHasPlacement;
 
   /// Set of learning reason IDs selected in Step 5 (up to 3).
   final Set<String> selectedReasonIds;
@@ -94,6 +98,7 @@ class OnboardingState {
     AgeBand? ageBand,
     String? explanationLanguageCode,
     String? targetLanguageCode,
+    bool? targetLanguageHasPlacement,
     Set<String>? selectedReasonIds,
     LanguageLevel? selectedLevel,
     LanguageLevel? suggestedLevel,
@@ -117,6 +122,8 @@ class OnboardingState {
       explanationLanguageCode:
           explanationLanguageCode ?? this.explanationLanguageCode,
       targetLanguageCode: targetLanguageCode ?? this.targetLanguageCode,
+      targetLanguageHasPlacement:
+          targetLanguageHasPlacement ?? this.targetLanguageHasPlacement,
       selectedReasonIds: selectedReasonIds ?? this.selectedReasonIds,
       selectedLevel: selectedLevel ?? chosenLevel ?? this.selectedLevel,
       suggestedLevel: suggestedLevel ?? this.suggestedLevel,

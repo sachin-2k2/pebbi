@@ -43,7 +43,8 @@ class ChatMessageList extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      itemCount: messages.length +
+      itemCount:
+          messages.length +
           (areAllGoalsDone ? 1 : 0) +
           (isWaitingForCharacter ? 1 : 0),
       itemBuilder: (context, index) {

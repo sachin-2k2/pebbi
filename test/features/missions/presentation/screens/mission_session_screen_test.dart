@@ -179,100 +179,103 @@ void main() {
       expect(find.text(AppStrings.sessionFinishAndDebrief), findsOneWidget);
     });
 
-    testWidgets('tapping suggested reply sends it and triggers character turn', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'tapping suggested reply sends it and triggers character turn',
+      (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(createWidget());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createWidget());
+        await tester.pumpAndSettle();
 
-      // Tap suggestion "Un café, s'il vous plaît."
-      await tester.tap(find.text("Un café, s'il vous plaît."));
-      await tester.pumpAndSettle();
+        // Tap suggestion "Un café, s'il vous plaît."
+        await tester.tap(find.text("Un café, s'il vous plaît."));
+        await tester.pumpAndSettle();
 
-      // User bubble appears
-      expect(find.byType(UserBubble), findsOneWidget);
-      expect(find.text("Un café, s'il vous plaît."), findsWidgets);
+        // User bubble appears
+        expect(find.byType(UserBubble), findsOneWidget);
+        expect(find.text("Un café, s'il vous plaît."), findsWidgets);
 
-      // Character replied with turn 1 response
-      expect(
-        find.text('Très bien, un café ! Avec du lait ou sans lait ?'),
-        findsOneWidget,
-      );
-      expect(
-        find.text('Great, a coffee! With milk or without milk?'),
-        findsOneWidget,
-      );
+        // Character replied with turn 1 response
+        expect(
+          find.text('Très bien, un café ! Avec du lait ou sans lait ?'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Great, a coffee! With milk or without milk?'),
+          findsOneWidget,
+        );
 
-      // Goal 1 is now marked completed with checkmark icon
-      expect(find.byIcon(Icons.check_rounded), findsOneWidget);
+        // Goal 1 is now marked completed with checkmark icon
+        expect(find.byIcon(Icons.check_rounded), findsOneWidget);
 
-      // Suggestions updated for turn 2
-      expect(find.text("Avec du lait, s'il vous plaît."), findsOneWidget);
-      expect(find.text('Combien ça coûte ?'), findsOneWidget);
-    });
+        // Suggestions updated for turn 2
+        expect(find.text("Avec du lait, s'il vous plaît."), findsOneWidget);
+        expect(find.text('Combien ça coûte ?'), findsOneWidget);
+      },
+    );
 
-    testWidgets('typing custom text enables send button and sends user message', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'typing custom text enables send button and sends user message',
+      (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(createWidget());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createWidget());
+        await tester.pumpAndSettle();
 
-      // Enter text
-      final textField = find.byType(TextField);
-      await tester.enterText(textField, 'Un café noir, merci');
-      await tester.pumpAndSettle();
+        // Enter text
+        final textField = find.byType(TextField);
+        await tester.enterText(textField, 'Un café noir, merci');
+        await tester.pumpAndSettle();
 
-      // Tap send button
-      final sendButton = find.byIcon(Icons.near_me_rounded);
-      await tester.tap(sendButton);
-      await tester.pumpAndSettle();
+        // Tap send button
+        final sendButton = find.byIcon(Icons.near_me_rounded);
+        await tester.tap(sendButton);
+        await tester.pumpAndSettle();
 
-      // Verify user bubble
-      expect(find.text('Un café noir, merci'), findsOneWidget);
-    });
+        // Verify user bubble
+        expect(find.text('Un café noir, merci'), findsOneWidget);
+      },
+    );
 
-    testWidgets('all goals reached shows completion banner and debrief button', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'all goals reached shows completion banner and debrief button',
+      (tester) async {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(createWidget());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createWidget());
+        await tester.pumpAndSettle();
 
-      // Turn 1
-      await tester.tap(find.text("Un café, s'il vous plaît."));
-      await tester.pumpAndSettle();
+        // Turn 1
+        await tester.tap(find.text("Un café, s'il vous plaît."));
+        await tester.pumpAndSettle();
 
-      // Turn 2
-      await tester.tap(find.text("Avec du lait, s'il vous plaît."));
-      await tester.pumpAndSettle();
+        // Turn 2
+        await tester.tap(find.text("Avec du lait, s'il vous plaît."));
+        await tester.pumpAndSettle();
 
-      // Turn 3 (Final)
-      await tester.tap(find.text('Voici trois euros, merci !'));
-      await tester.pumpAndSettle();
+        // Turn 3 (Final)
+        await tester.tap(find.text('Voici trois euros, merci !'));
+        await tester.pumpAndSettle();
 
-      // Character finished dialogue
-      expect(
-        find.text('Merci beaucoup ! Bonne journée et à bientôt !'),
-        findsOneWidget,
-      );
+        // Character finished dialogue
+        expect(
+          find.text('Merci beaucoup ! Bonne journée et à bientôt !'),
+          findsOneWidget,
+        );
 
-      // All goals completed note visible
-      expect(find.text(AppStrings.sessionAllGoalsDone), findsOneWidget);
+        // All goals completed note visible
+        expect(find.text(AppStrings.sessionAllGoalsDone), findsOneWidget);
 
-      // Input replaced with debrief button
-      expect(find.text(AppStrings.sessionSeeDebrief), findsOneWidget);
-    });
+        // Input replaced with debrief button
+        expect(find.text(AppStrings.sessionSeeDebrief), findsOneWidget);
+      },
+    );
   });
 
   group('MissionSessionScreen - Audio and Media', () {
@@ -292,55 +295,57 @@ void main() {
       expect(fakeTtsService.lastLocale, 'fr-FR');
     });
 
-    testWidgets('autoplay audio plays initial message when enabled in settings', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        createWidget(settings: const AppSettings(autoplay: true)),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'autoplay audio plays initial message when enabled in settings',
+      (tester) async {
+        await tester.pumpWidget(
+          createWidget(settings: const AppSettings(autoplay: true)),
+        );
+        await tester.pumpAndSettle();
 
-      expect(fakeTtsService.lastSpokenText, contains('Bonjour ! Bienvenue'));
-      expect(fakeTtsService.lastLocale, 'fr-FR');
-    });
+        expect(fakeTtsService.lastSpokenText, contains('Bonjour ! Bienvenue'));
+        expect(fakeTtsService.lastLocale, 'fr-FR');
+      },
+    );
   });
 
   group('MissionSessionScreen - Sheets and Modals', () {
-    testWidgets('tapping Say it in my language opens sheet and populates draft', (
-      tester,
-    ) async {
-      await tester.pumpWidget(createWidget());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'tapping Say it in my language opens sheet and populates draft',
+      (tester) async {
+        await tester.pumpWidget(createWidget());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text(AppStrings.sessionSayInMyLanguage));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text(AppStrings.sessionSayInMyLanguage));
+        await tester.pumpAndSettle();
 
-      // Modal sheet is open
-      expect(find.byType(SayInMyLanguageSheet), findsOneWidget);
+        // Modal sheet is open
+        expect(find.byType(SayInMyLanguageSheet), findsOneWidget);
 
-      // Enter English phrase
-      final sheetField = find.descendant(
-        of: find.byType(SayInMyLanguageSheet),
-        matching: find.byType(TextField),
-      );
-      await tester.enterText(sheetField, 'Where is the restroom?');
-      await tester.pumpAndSettle();
+        // Enter English phrase
+        final sheetField = find.descendant(
+          of: find.byType(SayInMyLanguageSheet),
+          matching: find.byType(TextField),
+        );
+        await tester.enterText(sheetField, 'Where is the restroom?');
+        await tester.pumpAndSettle();
 
-      // Tap translate
-      await tester.tap(find.text(AppStrings.sayInMyLanguageTranslateButton));
-      await tester.pumpAndSettle();
+        // Tap translate
+        await tester.tap(find.text(AppStrings.sayInMyLanguageTranslateButton));
+        await tester.pumpAndSettle();
 
-      // Result shown
-      expect(find.text('Où sont les toilettes ?'), findsOneWidget);
+        // Result shown
+        expect(find.text('Où sont les toilettes ?'), findsOneWidget);
 
-      // Tap "Use this"
-      await tester.tap(find.text(AppStrings.sayInMyLanguageUseThis));
-      await tester.pumpAndSettle();
+        // Tap "Use this"
+        await tester.tap(find.text(AppStrings.sayInMyLanguageUseThis));
+        await tester.pumpAndSettle();
 
-      // Sheet closed and text copied into input bar
-      expect(find.byType(SayInMyLanguageSheet), findsNothing);
-      expect(find.text('Où sont les toilettes ?'), findsOneWidget);
-    });
+        // Sheet closed and text copied into input bar
+        expect(find.byType(SayInMyLanguageSheet), findsNothing);
+        expect(find.text('Où sont les toilettes ?'), findsOneWidget);
+      },
+    );
 
     testWidgets('tapping Help pill opens HelpSheet with 3 options', (
       tester,
@@ -398,7 +403,10 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(FinishPromptSheet), findsOneWidget);
-        expect(find.text(AppStrings.finishWithoutSpeakingTitle), findsOneWidget);
+        expect(
+          find.text(AppStrings.finishWithoutSpeakingTitle),
+          findsOneWidget,
+        );
         expect(find.text(AppStrings.leaveSessionKeepGoing), findsOneWidget);
         expect(find.text(AppStrings.leaveSessionLeave), findsOneWidget);
       },

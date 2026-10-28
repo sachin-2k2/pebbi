@@ -40,7 +40,8 @@ class _LanguageStepScreenState extends ConsumerState<LanguageStepScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCode = widget.initialCode;
+    final savedCode = ref.read(onboardingFlowProvider).explanationLanguageCode;
+    _selectedCode = savedCode.isNotEmpty ? savedCode : widget.initialCode;
     _searchController = TextEditingController();
   }
 
@@ -82,7 +83,8 @@ class _LanguageStepScreenState extends ConsumerState<LanguageStepScreen> {
       (l) => l.code == _selectedCode,
       orElse: () => allLanguages.first,
     );
-    final showNotice = !selectedLang.translationsReviewed;
+    final showNotice =
+        selectedLang.code != 'en' && !selectedLang.translationsReviewed;
     final disableAnim = MediaQuery.of(context).disableAnimations;
 
     return StepScaffold(

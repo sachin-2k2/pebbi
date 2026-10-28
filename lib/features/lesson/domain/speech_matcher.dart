@@ -30,8 +30,16 @@ abstract final class SpeechMatcher {
     String? locale,
     bool ignoreAccents = SpeakingConfig.ignoreAccents,
   }) {
-    final normTarget = normalize(target, locale: locale, ignoreAccents: ignoreAccents);
-    final normHypo = normalize(hypothesis, locale: locale, ignoreAccents: ignoreAccents);
+    final normTarget = normalize(
+      target,
+      locale: locale,
+      ignoreAccents: ignoreAccents,
+    );
+    final normHypo = normalize(
+      hypothesis,
+      locale: locale,
+      ignoreAccents: ignoreAccents,
+    );
 
     if (normTarget.isEmpty) return normHypo.isEmpty ? 1.0 : 0.0;
     if (normHypo.isEmpty) return 0.0;
@@ -42,7 +50,10 @@ abstract final class SpeechMatcher {
       return _characterSimilarity(normTarget, normHypo);
     }
 
-    final targetTokens = normTarget.split(' ').where((s) => s.isNotEmpty).toList();
+    final targetTokens = normTarget
+        .split(' ')
+        .where((s) => s.isNotEmpty)
+        .toList();
     final hypoTokens = normHypo.split(' ').where((s) => s.isNotEmpty).toList();
 
     if (targetTokens.isEmpty) return hypoTokens.isEmpty ? 1.0 : 0.0;

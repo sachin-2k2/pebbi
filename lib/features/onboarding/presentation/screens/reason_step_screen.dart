@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
+import '../../domain/onboarding_config.dart';
 import '../../domain/reason_selection_rules.dart';
 import '../providers/onboarding_flow_provider.dart';
 import '../widgets/backpack_hint.dart';
@@ -71,12 +72,18 @@ class _ReasonStepScreenState extends ConsumerState<ReasonStepScreen> {
     notifier.setReasonIds(_selectedIds);
     notifier.setStep(5);
 
-    // TODO(question): Minimum selection requirement (0 allowed for now per design).
-    // TODO(question): Track mapping ownership (reasons -> Everyday, Travel, Work, Life Abroad, Exams).
     if (widget.onContinue != null) {
       widget.onContinue!();
     } else {
-      context.go('/onboarding/setup/step-6');
+      final hasPlacement =
+          ref.read(onboardingFlowProvider).targetLanguageHasPlacement;
+      if (!hasPlacement) {
+        notifier.skipPlacementWithLevel(OnboardingConfig.defaultLowestLevel);
+        notifier.setStep(7);
+        context.go('/onboarding/setup/step-7');
+      } else {
+        context.go('/onboarding/setup/step-6');
+      }
     }
   }
 

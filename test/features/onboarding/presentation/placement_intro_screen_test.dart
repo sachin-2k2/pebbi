@@ -111,6 +111,7 @@ void main() {
         container
             .read(onboardingFlowProvider.notifier)
             .setTargetLanguageCode('fr');
+        await tester.pump(const Duration(milliseconds: 350));
         await tester.pumpAndSettle();
 
         expect(
@@ -122,6 +123,7 @@ void main() {
         container
             .read(onboardingFlowProvider.notifier)
             .setTargetLanguageCode('ja');
+        await tester.pump(const Duration(milliseconds: 350));
         await tester.pumpAndSettle();
 
         expect(

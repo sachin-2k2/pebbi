@@ -19,7 +19,7 @@ final shouldShowAdBannerProvider = Provider<bool>((ref) {
   final isOnline = ref.watch(isOnlineProvider);
 
   return AdRules.shouldShowAds(
-    ageBand: user?.ageBand ?? AgeBand.adult,
+    ageBand: user?.ageBand ?? AgeBand.band25_34,
     isPremium: user?.isPremium ?? false,
     isOnline: isOnline,
   );

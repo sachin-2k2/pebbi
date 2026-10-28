@@ -101,7 +101,7 @@ abstract final class StartMissionGate {
     }
 
     // 3. Child safety check
-    final ageBand = user?.ageBand ?? AgeBand.adult;
+    final ageBand = user?.ageBand ?? AgeBand.band25_34;
     if (!MissionAccessRules.shouldShowMissions(ageBand)) {
       return StartMissionOutcome.childSafetyBlocked();
     }

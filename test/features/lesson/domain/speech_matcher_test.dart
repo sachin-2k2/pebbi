@@ -8,7 +8,10 @@ void main() {
       const target = 'Muy bien, gracias';
       const hypothesis = 'Muy bien, gracias';
 
-      expect(SpeechMatcher.isMatch(target: target, hypothesis: hypothesis), isTrue);
+      expect(
+        SpeechMatcher.isMatch(target: target, hypothesis: hypothesis),
+        isTrue,
+      );
       expect(
         SpeechMatcher.similarityScore(target: target, hypothesis: hypothesis),
         equals(1.0),
@@ -75,7 +78,10 @@ void main() {
       const target = 'Muy bien, gracias';
       const hypothesis = 'Hasta luego y buenas noches';
 
-      expect(SpeechMatcher.isMatch(target: target, hypothesis: hypothesis), isFalse);
+      expect(
+        SpeechMatcher.isMatch(target: target, hypothesis: hypothesis),
+        isFalse,
+      );
       expect(
         SpeechMatcher.similarityScore(target: target, hypothesis: hypothesis),
         lessThan(SpeakingConfig.similarityThreshold),
@@ -86,7 +92,10 @@ void main() {
       const target = 'Muy bien, gracias';
       const hypothesis = '';
 
-      expect(SpeechMatcher.isMatch(target: target, hypothesis: hypothesis), isFalse);
+      expect(
+        SpeechMatcher.isMatch(target: target, hypothesis: hypothesis),
+        isFalse,
+      );
       expect(
         SpeechMatcher.similarityScore(target: target, hypothesis: hypothesis),
         equals(0.0),

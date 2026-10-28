@@ -53,12 +53,14 @@ class ConversationState {
 
   /// True when the user is permitted to type and send.
   bool get canSend =>
-      (status == ConversationStatus.userTurn || status == ConversationStatus.failed) &&
+      (status == ConversationStatus.userTurn ||
+          status == ConversationStatus.failed) &&
       draftText.trim().isNotEmpty;
 
   /// True when the user has sent at least one successful message.
-  bool get hasUserSpoken =>
-      messages.any((m) => m.isFromUser && m.deliveryState == MessageDeliveryState.sent);
+  bool get hasUserSpoken => messages.any(
+    (m) => m.isFromUser && m.deliveryState == MessageDeliveryState.sent,
+  );
 
   int get completedGoalsCount => goals.where((g) => g.isDone).length;
 
@@ -90,12 +92,15 @@ class ConversationState {
       characterRole: characterRole ?? this.characterRole,
       emoji: emoji ?? this.emoji,
       draftText: draftText ?? this.draftText,
-      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearErrorMessage
+          ? null
+          : (errorMessage ?? this.errorMessage),
       pendingClientTurnId: pendingClientTurnId ?? this.pendingClientTurnId,
       allGoalsDoneNotified: allGoalsDoneNotified ?? this.allGoalsDoneNotified,
       isFinished: isFinished ?? this.isFinished,
       debriefRef: debriefRef ?? this.debriefRef,
-      latestSpokenMessageId: latestSpokenMessageId ?? this.latestSpokenMessageId,
+      latestSpokenMessageId:
+          latestSpokenMessageId ?? this.latestSpokenMessageId,
     );
   }
 }

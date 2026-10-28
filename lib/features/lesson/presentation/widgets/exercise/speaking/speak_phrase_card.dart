@@ -54,9 +54,7 @@ class SpeakPhraseCard extends StatelessWidget {
           Text(
             phrase,
             style: AppTypography.screenTitle.copyWith(
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.textPrimary,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
               fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
@@ -76,9 +74,7 @@ class SpeakPhraseCard extends StatelessWidget {
           Text(
             meaning,
             style: AppTypography.bodyMedium.copyWith(
-              color: isDark
-                  ? AppColors.darkTextMuted
-                  : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),

@@ -17,7 +17,8 @@ class MissionSessionScreen extends ConsumerStatefulWidget {
   final SessionConfig config;
 
   @override
-  ConsumerState<MissionSessionScreen> createState() => _MissionSessionScreenState();
+  ConsumerState<MissionSessionScreen> createState() =>
+      _MissionSessionScreenState();
 }
 
 class _MissionSessionScreenState extends ConsumerState<MissionSessionScreen> {
@@ -61,7 +62,9 @@ class _MissionSessionScreenState extends ConsumerState<MissionSessionScreen> {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final state = ref.watch(missionSessionNotifierProvider(widget.config));
-    final notifier = ref.read(missionSessionNotifierProvider(widget.config).notifier);
+    final notifier = ref.read(
+      missionSessionNotifierProvider(widget.config).notifier,
+    );
     final isOffline = ref.watch(missionSessionIsOfflineProvider);
     final languageName = _resolveLanguageName(widget.config.targetLanguageCode);
 

@@ -12,7 +12,15 @@ import 'package:peddi/l10n/app_strings.dart';
 
 class _NoOpTtsService implements TextToSpeechService {
   @override
-  Future<bool> speak(String text, {required String locale, double? speechRate}) async => true;
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+    VoidCallback? onCompletion,
+  }) async {
+    onCompletion?.call();
+    return true;
+  }
 
   @override
   Future<void> stop() async {}
@@ -91,27 +99,31 @@ void main() {
 
   group('SpeakExercise Responsive Layouts', () {
     for (final size in targetSizes) {
-      testWidgets('renders cleanly on ${size.width}x${size.height} at scale 1.0',
-          (tester) async {
-        await tester.binding.setSurfaceSize(size);
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+      testWidgets(
+        'renders cleanly on ${size.width}x${size.height} at scale 1.0',
+        (tester) async {
+          await tester.binding.setSurfaceSize(size);
+          addTearDown(() => tester.binding.setSurfaceSize(null));
 
-        await tester.pumpWidget(buildTestWidget(size: size, textScale: 1.0));
-        await tester.pumpAndSettle();
+          await tester.pumpWidget(buildTestWidget(size: size, textScale: 1.0));
+          await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-      });
+          expect(tester.takeException(), isNull);
+        },
+      );
 
-      testWidgets('renders cleanly on ${size.width}x${size.height} at scale 2.0 (large text)',
-          (tester) async {
-        await tester.binding.setSurfaceSize(size);
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+      testWidgets(
+        'renders cleanly on ${size.width}x${size.height} at scale 2.0 (large text)',
+        (tester) async {
+          await tester.binding.setSurfaceSize(size);
+          addTearDown(() => tester.binding.setSurfaceSize(null));
 
-        await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
-        await tester.pumpAndSettle();
+          await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
+          await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-      });
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
 
     testWidgets('renders dark mode cleanly without overflow', (tester) async {
@@ -127,24 +139,26 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renders Screen B (Self-Check) without overflow at 360x640 scale 2.0',
-        (tester) async {
-      const size = Size(360, 640);
-      await tester.binding.setSurfaceSize(size);
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      'renders Screen B (Self-Check) without overflow at 360x640 scale 2.0',
+      (tester) async {
+        const size = Size(360, 640);
+        await tester.binding.setSurfaceSize(size);
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
+        await tester.pumpAndSettle();
 
-      // Navigate to Screen B (scroll to link in small viewport with large text)
-      await tester.scrollUntilVisible(
-        find.text(AppStrings.speakRatherNotAction),
-        100.0,
-      );
-      await tester.tap(find.text(AppStrings.speakRatherNotAction));
-      await tester.pumpAndSettle();
+        // Navigate to Screen B (scroll to link in small viewport with large text)
+        await tester.scrollUntilVisible(
+          find.text(AppStrings.speakRatherNotAction),
+          100.0,
+        );
+        await tester.tap(find.text(AppStrings.speakRatherNotAction));
+        await tester.pumpAndSettle();
 
-      expect(tester.takeException(), isNull);
-    });
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

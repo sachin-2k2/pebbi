@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/design_system/pebbi_mascot.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
-import '../../domain/age_band.dart';
+import '../../domain/age_band_config.dart';
 import '../../domain/onboarding_config.dart';
 import '../providers/onboarding_flow_provider.dart';
 import '../widgets/privacy_note_card.dart';
@@ -21,18 +21,25 @@ import '../widgets/year_picker_sheet.dart';
 /// Follows AGENTS.md §3 and §6:
 /// - Under 100 lines, build under 50 lines.
 /// - Raw birth year exists ONLY in this screen's local state.
-/// - ONLY the derived [AgeBand] is submitted to the notifier.
+/// - Under 13 is blocked: stores zero draft, disables continue, allows back.
 class AgeStepScreen extends ConsumerStatefulWidget {
   const AgeStepScreen({
     super.key,
     this.initialYear = OnboardingConfig.defaultBirthYear,
+    this.clock,
+    this.retryPolicy = ageGateRetryPolicy,
     this.onContinue,
     this.onBack,
   });
 
   final int initialYear;
+  final Clock? clock;
+  final AgeGateRetryPolicy retryPolicy;
   final VoidCallback? onContinue;
   final VoidCallback? onBack;
+
+  /// Session-level block flag for [AgeGateRetryPolicy.lockForSession].
+  static bool sessionBlocked = false;
 
   @override
   ConsumerState<AgeStepScreen> createState() => _AgeStepScreenState();
@@ -48,6 +55,11 @@ class _AgeStepScreenState extends ConsumerState<AgeStepScreen> {
   }
 
   Future<void> _pickYear() async {
+    if (AgeStepScreen.sessionBlocked &&
+        widget.retryPolicy == AgeGateRetryPolicy.lockForSession) {
+      return;
+    }
+
     final picked = await YearPickerSheet.show(
       context: context,
       selectedYear: _selectedYear,
@@ -58,7 +70,15 @@ class _AgeStepScreenState extends ConsumerState<AgeStepScreen> {
   }
 
   void _handleContinue() {
-    final band = AgeBand.fromBirthYear(_selectedYear);
+    final band = evaluateAgeBand(_selectedYear, clock: widget.clock);
+    if (band == null) {
+      // Under 13: strictly do not proceed or persist draft
+      if (widget.retryPolicy == AgeGateRetryPolicy.lockForSession) {
+        AgeStepScreen.sessionBlocked = true;
+      }
+      return;
+    }
+
     ref.read(onboardingFlowProvider.notifier).setAgeBand(band);
     ref.read(onboardingFlowProvider.notifier).setStep(2);
     if (widget.onContinue != null) {
@@ -80,9 +100,13 @@ class _AgeStepScreenState extends ConsumerState<AgeStepScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ageBand = AgeBand.fromBirthYear(_selectedYear);
-    final isChild = ageBand == AgeBand.child;
-    final mascotExpression = isChild
+    final band = evaluateAgeBand(_selectedYear, clock: widget.clock);
+    final isBlocked =
+        band == null ||
+        (AgeStepScreen.sessionBlocked &&
+            widget.retryPolicy == AgeGateRetryPolicy.lockForSession);
+
+    final mascotExpression = isBlocked
         ? PebbiExpression.protective
         : PebbiExpression.happy;
 
@@ -90,8 +114,8 @@ class _AgeStepScreenState extends ConsumerState<AgeStepScreen> {
       useIntrinsicHeight: true,
       header: StepProgressHeader(currentStep: 2, onBack: _handleBack),
       footer: StepFooterButton(
-        isEnabled: !isChild,
-        onPressed: isChild ? null : _handleContinue,
+        isEnabled: !isBlocked,
+        onPressed: isBlocked ? null : _handleContinue,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +130,7 @@ class _AgeStepScreenState extends ConsumerState<AgeStepScreen> {
           const SizedBox(height: AppSpacing.sm),
           YearOfBirthField(year: _selectedYear, onTap: _pickYear),
           const SizedBox(height: AppSpacing.lg),
-          PrivacyNoteCard(ageBand: ageBand),
+          PrivacyNoteCard(ageBand: isBlocked ? null : band),
           const Spacer(),
         ],
       ),

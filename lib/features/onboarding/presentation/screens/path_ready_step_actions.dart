@@ -27,10 +27,16 @@ abstract final class PathReadyStepActions {
     if (!context.mounted) return;
 
     if (success) {
-      // Clear in-progress onboarding draft
-      ref.read(onboardingFlowProvider.notifier).reset();
+      // Sync guest profile so active user session immediately has the chosen languages
+      final guestProfile = await profileRepo.getCurrentProfile();
+      if (guestProfile != null) {
+        await ref.read(currentUserProvider.notifier).saveProfile(guestProfile);
+      }
 
-      // Prompt sign-in, redirecting to Home Path screen upon authentication
+      if (!context.mounted) return;
+
+      // Prompt sign-in, redirecting to Home Path screen upon authentication.
+      // Onboarding state is preserved so registration uses the actual chosen languages.
       context.go('/login?returnTo=/path');
     } else {
       final error = ref.read(pathReadyProvider).saveErrorMessage;

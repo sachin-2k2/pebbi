@@ -49,15 +49,17 @@ class _StarRowState extends State<StarRow> with TickerProviderStateMixin {
     );
 
     _scaleAnimations = _controllers.map((c) {
-      return Tween<double>(begin: 0.2, end: 1.0).animate(
-        CurvedAnimation(parent: c, curve: Curves.easeOutBack),
-      );
+      return Tween<double>(
+        begin: 0.2,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: c, curve: Curves.easeOutBack));
     }).toList();
 
     _fadeAnimations = _controllers.map((c) {
-      return Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: c, curve: Curves.easeIn),
-      );
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: c, curve: Curves.easeIn));
     }).toList();
 
     _triggerAnimations();
@@ -91,7 +93,8 @@ class _StarRowState extends State<StarRow> with TickerProviderStateMixin {
     final filledColor = palette.gold;
     final emptyColor = palette.goldStarOutline;
 
-    final semanticsLabel = '${widget.starsEarned} of ${widget.totalStars} stars';
+    final semanticsLabel =
+        '${widget.starsEarned} of ${widget.totalStars} stars';
 
     return Semantics(
       label: semanticsLabel,

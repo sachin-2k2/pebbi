@@ -14,7 +14,15 @@ import 'package:peddi/features/onboarding/domain/reminder_time.dart';
 
 class _NoOpTtsService implements TextToSpeechService {
   @override
-  Future<bool> speak(String text, {required String locale, double? speechRate}) async => true;
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+    VoidCallback? onCompletion,
+  }) async {
+    onCompletion?.call();
+    return true;
+  }
 
   @override
   Future<void> stop() async {}
@@ -25,7 +33,7 @@ class _NoOpTtsService implements TextToSpeechService {
 
 class _FakeCurrentUserNotifier extends CurrentUserNotifier {
   _FakeCurrentUserNotifier(UserProfile? initial)
-      : super(MockProfileRepository(), initial);
+    : super(MockProfileRepository(), initial);
 }
 
 UserProfile _createTestProfile(String id) {
@@ -115,9 +123,9 @@ void main() {
         currentUserProvider.overrideWith(
           (ref) => _FakeCurrentUserNotifier(_createTestProfile('user_resp')),
         ),
-        lessonCompletionProvider('stop_responsive').overrideWith(
-          (ref) => completion ?? sampleCompletion,
-        ),
+        lessonCompletionProvider(
+          'stop_responsive',
+        ).overrideWith((ref) => completion ?? sampleCompletion),
       ],
       child: MaterialApp(
         locale: locale,
@@ -137,27 +145,31 @@ void main() {
 
   group('LessonCompleteScreen Responsive Layouts (AGENTS.md §4.8)', () {
     for (final size in targetSizes) {
-      testWidgets('renders cleanly on ${size.width}x${size.height} at scale 1.0',
-          (tester) async {
-        await tester.binding.setSurfaceSize(size);
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+      testWidgets(
+        'renders cleanly on ${size.width}x${size.height} at scale 1.0',
+        (tester) async {
+          await tester.binding.setSurfaceSize(size);
+          addTearDown(() => tester.binding.setSurfaceSize(null));
 
-        await tester.pumpWidget(buildTestWidget(size: size, textScale: 1.0));
-        await tester.pumpAndSettle();
+          await tester.pumpWidget(buildTestWidget(size: size, textScale: 1.0));
+          await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-      });
+          expect(tester.takeException(), isNull);
+        },
+      );
 
-      testWidgets('renders cleanly on ${size.width}x${size.height} at scale 2.0 (large text)',
-          (tester) async {
-        await tester.binding.setSurfaceSize(size);
-        addTearDown(() => tester.binding.setSurfaceSize(null));
+      testWidgets(
+        'renders cleanly on ${size.width}x${size.height} at scale 2.0 (large text)',
+        (tester) async {
+          await tester.binding.setSurfaceSize(size);
+          addTearDown(() => tester.binding.setSurfaceSize(null));
 
-        await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
-        await tester.pumpAndSettle();
+          await tester.pumpWidget(buildTestWidget(size: size, textScale: 2.0));
+          await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-      });
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
 
     testWidgets('renders cleanly in dark mode', (tester) async {

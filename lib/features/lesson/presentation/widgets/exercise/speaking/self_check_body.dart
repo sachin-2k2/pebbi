@@ -40,17 +40,12 @@ class SelfCheckBody extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: AppSpacing.xs),
-          const PebbiMascot(
-            size: 76.0,
-            expression: PebbiExpression.happy,
-          ),
+          const PebbiMascot(size: 76.0, expression: PebbiExpression.happy),
           const SizedBox(height: AppSpacing.md),
           Text(
             AppStrings.selfCheckTitle,
             style: AppTypography.cardTitle.copyWith(
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.textPrimary,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
               fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
@@ -59,9 +54,7 @@ class SelfCheckBody extends StatelessWidget {
           Text(
             subtitle,
             style: AppTypography.caption.copyWith(
-              color: isDark
-                  ? AppColors.darkTextMuted
-                  : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -73,10 +66,7 @@ class SelfCheckBody extends StatelessWidget {
             onHearAgain: onHearAgain,
           ),
           const SizedBox(height: AppSpacing.lg),
-          SelfCheckActions(
-            onSaidIt: onSaidIt,
-            onSkip: onSkip,
-          ),
+          SelfCheckActions(onSaidIt: onSaidIt, onSkip: onSkip),
           const SizedBox(height: AppSpacing.xl),
           const SpeakTipNote(),
           const SizedBox(height: AppSpacing.md),

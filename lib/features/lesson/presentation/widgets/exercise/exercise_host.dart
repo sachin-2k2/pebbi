@@ -81,6 +81,7 @@ class ExerciseHost extends StatelessWidget {
         selectedOptionId: selectedOptionId,
         removedOptionIds: removedOptionIds,
         isLocked: isLocked,
+        isPlayingAudio: isPlayingAudio,
         onOptionSelected: onOptionSelected,
         onHearIt: onHearIt,
       );

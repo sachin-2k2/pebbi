@@ -5,6 +5,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../app/router.dart';
 import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../providers/app_startup_provider.dart';
 import '../widgets/splash/splash_config.dart';
@@ -54,19 +55,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       );
     }
 
-    _entranceCtrl = AnimationController(
-      vsync: this,
-      duration: SplashConfig.entranceDuration,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          if (!kReleaseMode && SplashConfig.enableSplashTimingLogs) {
-            debugPrint(
-              '[SPLASH_TIMING] Entrance animation COMPLETED at ${DateTime.now().millisecondsSinceEpoch}',
-            );
+    _entranceCtrl =
+        AnimationController(
+          vsync: this,
+          duration: SplashConfig.entranceDuration,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            if (!kReleaseMode && SplashConfig.enableSplashTimingLogs) {
+              debugPrint(
+                '[SPLASH_TIMING] Entrance animation COMPLETED at ${DateTime.now().millisecondsSinceEpoch}',
+              );
+            }
+            _startHoldTimer();
           }
-          _startHoldTimer();
-        }
-      });
+        });
 
     _dashesCtrl = AnimationController(
       vsync: this,
@@ -160,6 +162,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         '[SPLASH_TIMING] Navigation to $route START at ${DateTime.now().millisecondsSinceEpoch}',
       );
     }
+    markSplashCompleted();
     ref.read(splashCompletedProvider.notifier).state = true;
     final router = GoRouter.maybeOf(context);
     if (router != null) {
@@ -180,7 +183,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final reduceMotion = ref.watch(reduceMotionProvider) ||
+    final reduceMotion =
+        ref.watch(reduceMotionProvider) ||
         MediaQuery.of(context).disableAnimations;
     final showArt = ref.watch(splashShouldShowArtProvider).value ?? true;
     _reduceMotion = reduceMotion;
@@ -189,9 +193,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (kDebugMode && SplashConfig.enableSplashTimingLogs) {
       final systemNoAnim = WidgetsBinding
-          .instance.platformDispatcher.accessibilityFeatures.disableAnimations;
+          .instance
+          .platformDispatcher
+          .accessibilityFeatures
+          .disableAnimations;
       if (systemNoAnim && !reduceMotion) {
-        debugPrint('[SPLASH] System animations disabled (animator_duration_scale=0)');
+        debugPrint(
+          '[SPLASH] System animations disabled (animator_duration_scale=0)',
+        );
       }
     }
 
@@ -225,10 +234,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 return SplashContent(
                   gradientOpacity: (t / SplashAnimationConfig.gradientFadeEnd)
                       .clamp(0.0, 1.0),
-                  wordmarkOpacity: ((t - SplashAnimationConfig.wordmarkFadeStart) /
-                          (SplashAnimationConfig.wordmarkFadeEnd -
-                              SplashAnimationConfig.wordmarkFadeStart))
-                      .clamp(0.0, 1.0),
+                  wordmarkOpacity:
+                      ((t - SplashAnimationConfig.wordmarkFadeStart) /
+                              (SplashAnimationConfig.wordmarkFadeEnd -
+                                  SplashAnimationConfig.wordmarkFadeStart))
+                          .clamp(0.0, 1.0),
                   wordmarkSlide: (1.0 - t) * 8.0,
                   decorationsOpacity:
                       ((t - SplashAnimationConfig.decorationsFadeStart) /

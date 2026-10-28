@@ -77,7 +77,9 @@ class UserBubble extends StatelessWidget {
                       message.targetText,
                       style: AppTypography.bodyMedium.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: isFailed ? palette.errorText : palette.textPrimary,
+                        color: isFailed
+                            ? palette.errorText
+                            : palette.textPrimary,
                         height: 1.35,
                       ),
                     ),
@@ -96,12 +98,17 @@ class UserBubble extends StatelessWidget {
                   padding: const EdgeInsets.only(right: AppSpacing.xs),
                   child: Text(
                     AppStrings.sessionMessageSending,
-                    style: AppTypography.caption.copyWith(color: palette.textMuted),
+                    style: AppTypography.caption.copyWith(
+                      color: palette.textMuted,
+                    ),
                   ),
                 ),
               if (isFailed)
                 Padding(
-                  padding: const EdgeInsets.only(top: 2.0, right: AppSpacing.xs),
+                  padding: const EdgeInsets.only(
+                    top: 2.0,
+                    right: AppSpacing.xs,
+                  ),
                   child: Wrap(
                     alignment: WrapAlignment.end,
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -118,23 +125,33 @@ class UserBubble extends StatelessWidget {
                       TextButton(
                         onPressed: onRetry,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xs,
+                          ),
                           minimumSize: const Size(48.0, 32.0),
                         ),
                         child: Text(
                           AppStrings.sessionRetrySend,
-                          style: TextStyle(color: palette.brand, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                            color: palette.brand,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       TextButton(
                         onPressed: onDelete,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xs,
+                          ),
                           minimumSize: const Size(48.0, 32.0),
                         ),
                         child: Text(
                           AppStrings.sessionDeleteFailedMessage,
-                          style: TextStyle(color: palette.textMuted, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: palette.textMuted,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],

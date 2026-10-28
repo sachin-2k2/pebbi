@@ -20,7 +20,7 @@ class AdRules {
     required bool isOnline,
   }) {
     if (isPremium) return false;
-    if (ageBand == AgeBand.child) return false;
+    if (ageBand.isMinorBand) return false;
     if (!isOnline) return false;
     return true;
   }

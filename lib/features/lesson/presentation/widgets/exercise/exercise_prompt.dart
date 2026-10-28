@@ -16,11 +16,13 @@ class ExercisePrompt extends StatelessWidget {
     required this.prompt,
     required this.onHearIt,
     this.title = AppStrings.pickThePictureTitle,
+    this.isPlayingAudio = false,
   });
 
   final String title;
   final String prompt;
   final VoidCallback onHearIt;
+  final bool isPlayingAudio;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,10 @@ class ExercisePrompt extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          HearItButton(onPressed: onHearIt),
+          HearItButton(
+            onPressed: onHearIt,
+            isPlaying: isPlayingAudio,
+          ),
         ],
       ),
     );

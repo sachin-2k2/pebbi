@@ -37,31 +37,37 @@ void main() {
       expect(goalInProgress.progressText, '1 of 2 lessons left');
     });
 
-    test('Star calculation awards 3 stars for >= 90% first-try accuracy', () async {
-      final repo = MockProgressRepository();
-      final result = LessonResult(
-        stopId: 'stop_1',
-        userId: 'u1',
-        totalItems: 10,
-        itemRecords: {
-          for (int i = 0; i < 9; i++)
-            'item_$i': ItemRecord(itemId: 'item_$i', firstTryCorrect: true),
-          'item_9': const ItemRecord(itemId: 'item_9', firstTryCorrect: false),
-        },
-        completedAt: DateTime.now(),
-      );
+    test(
+      'Star calculation awards 3 stars for >= 90% first-try accuracy',
+      () async {
+        final repo = MockProgressRepository();
+        final result = LessonResult(
+          stopId: 'stop_1',
+          userId: 'u1',
+          totalItems: 10,
+          itemRecords: {
+            for (int i = 0; i < 9; i++)
+              'item_$i': ItemRecord(itemId: 'item_$i', firstTryCorrect: true),
+            'item_9': const ItemRecord(
+              itemId: 'item_9',
+              firstTryCorrect: false,
+            ),
+          },
+          completedAt: DateTime.now(),
+        );
 
-      final completion = await repo.completeLesson(
-        userId: 'u1',
-        stopId: 'stop_1',
-        result: result,
-        clientEventId: 'evt_1',
-      );
+        final completion = await repo.completeLesson(
+          userId: 'u1',
+          stopId: 'stop_1',
+          result: result,
+          clientEventId: 'evt_1',
+        );
 
-      expect(completion.starsEarned, 3);
-      expect(completion.firstTryCorrectCount, 9);
-      expect(completion.scoredCount, 10);
-    });
+        expect(completion.starsEarned, 3);
+        expect(completion.firstTryCorrectCount, 9);
+        expect(completion.scoredCount, 10);
+      },
+    );
 
     test('Star calculation awards 2 stars for 60% to 89% accuracy', () async {
       final repo = MockProgressRepository();
@@ -113,81 +119,96 @@ void main() {
       expect(completion.starsEarned, 1);
     });
 
-    test('Star calculation awards 0 stars if all exercises are skipped', () async {
-      final repo = MockProgressRepository();
-      final result = LessonResult(
-        stopId: 'stop_4',
-        userId: 'u1',
-        totalItems: 3,
-        itemRecords: {
-          for (int i = 0; i < 3; i++)
-            'item_$i': ItemRecord(itemId: 'item_$i', skipped: true),
-        },
-        completedAt: DateTime.now(),
-      );
+    test(
+      'Star calculation awards 0 stars if all exercises are skipped',
+      () async {
+        final repo = MockProgressRepository();
+        final result = LessonResult(
+          stopId: 'stop_4',
+          userId: 'u1',
+          totalItems: 3,
+          itemRecords: {
+            for (int i = 0; i < 3; i++)
+              'item_$i': ItemRecord(itemId: 'item_$i', skipped: true),
+          },
+          completedAt: DateTime.now(),
+        );
 
-      final completion = await repo.completeLesson(
-        userId: 'u1',
-        stopId: 'stop_4',
-        result: result,
-        clientEventId: 'evt_4',
-      );
+        final completion = await repo.completeLesson(
+          userId: 'u1',
+          stopId: 'stop_4',
+          result: result,
+          clientEventId: 'evt_4',
+        );
 
-      expect(completion.starsEarned, 0);
-    });
+        expect(completion.starsEarned, 0);
+      },
+    );
 
-    test('completeLesson is strictly idempotent by stopId and clientEventId', () async {
-      final repo = MockProgressRepository();
-      final result = LessonResult(
-        stopId: 'stop_10',
-        userId: 'user_a',
-        totalItems: 5,
-        itemRecords: {
-          for (int i = 0; i < 5; i++)
-            'item_$i': ItemRecord(itemId: 'item_$i', firstTryCorrect: true),
-        },
-        completedAt: DateTime.now(),
-      );
+    test(
+      'completeLesson is strictly idempotent by stopId and clientEventId',
+      () async {
+        final repo = MockProgressRepository();
+        final result = LessonResult(
+          stopId: 'stop_10',
+          userId: 'user_a',
+          totalItems: 5,
+          itemRecords: {
+            for (int i = 0; i < 5; i++)
+              'item_$i': ItemRecord(itemId: 'item_$i', firstTryCorrect: true),
+          },
+          completedAt: DateTime.now(),
+        );
 
-      final first = await repo.completeLesson(
-        userId: 'user_a',
-        stopId: 'stop_10',
-        result: result,
-        clientEventId: 'event_uuid_100',
-      );
+        final first = await repo.completeLesson(
+          userId: 'user_a',
+          stopId: 'stop_10',
+          result: result,
+          clientEventId: 'event_uuid_100',
+        );
 
-      final second = await repo.completeLesson(
-        userId: 'user_a',
-        stopId: 'stop_10',
-        result: result,
-        clientEventId: 'event_uuid_100',
-      );
+        final second = await repo.completeLesson(
+          userId: 'user_a',
+          stopId: 'stop_10',
+          result: result,
+          clientEventId: 'event_uuid_100',
+        );
 
-      expect(identical(first, second), isTrue);
-      expect(repo.outbox.length, 1);
-    });
+        expect(identical(first, second), isTrue);
+        expect(repo.outbox.length, 1);
+      },
+    );
 
-    test('User isolation: progress of user_a does not leak to user_b', () async {
-      final repo = MockProgressRepository();
-      final resultA = LessonResult(
-        stopId: 'stop_common',
-        userId: 'user_a',
-        totalItems: 3,
-        itemRecords: {
-          'it_1': const ItemRecord(itemId: 'it_1', firstTryCorrect: true),
-        },
-        completedAt: DateTime.now(),
-      );
+    test(
+      'User isolation: progress of user_a does not leak to user_b',
+      () async {
+        final repo = MockProgressRepository();
+        final resultA = LessonResult(
+          stopId: 'stop_common',
+          userId: 'user_a',
+          totalItems: 3,
+          itemRecords: {
+            'it_1': const ItemRecord(itemId: 'it_1', firstTryCorrect: true),
+          },
+          completedAt: DateTime.now(),
+        );
 
-      await repo.completeLesson(
-        userId: 'user_a',
-        stopId: 'stop_common',
-        result: resultA,
-        clientEventId: 'evt_a',
-      );
+        await repo.completeLesson(
+          userId: 'user_a',
+          stopId: 'stop_common',
+          result: resultA,
+          clientEventId: 'evt_a',
+        );
 
-      expect(await repo.isStopCompleted(userId: 'user_a', stopId: 'stop_common'), isTrue);
-      expect(await repo.isStopCompleted(userId: 'user_b', stopId: 'stop_common'), isFalse);
-    });
+        expect(
+          await repo.isStopCompleted(userId: 'user_a', stopId: 'stop_common'),
+          isTrue,
+        );
+        expect(
+          await repo.isStopCompleted(userId: 'user_b', stopId: 'stop_common'),
+          isFalse,
+        );
+      },
+    );
   });
 }

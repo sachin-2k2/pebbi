@@ -163,6 +163,7 @@ class ForgotPasswordFormNotifier
           SemanticsService.announce(message, TextDirection.ltr);
 
         case AuthSuccess():
+        case RegisterOtpSent():
           // Should not happen for reset link requests, treat as success
           _startCooldown();
           state = state.copyWith(

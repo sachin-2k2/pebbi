@@ -20,11 +20,7 @@ class SpeakTipNote extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.auto_awesome_rounded,
-          size: 15.0,
-          color: color,
-        ),
+        Icon(Icons.auto_awesome_rounded, size: 15.0, color: color),
         const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Text(

@@ -46,8 +46,9 @@ abstract class SpeechRecognizerService {
 }
 
 /// Riverpod provider for the application [SpeechRecognizerService].
-final speechRecognizerServiceProvider =
-    Provider<SpeechRecognizerService>((ref) {
+final speechRecognizerServiceProvider = Provider<SpeechRecognizerService>((
+  ref,
+) {
   final service = SpeechToTextRecognizerService();
   ref.onDispose(() => service.dispose());
   return service;

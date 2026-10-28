@@ -2,18 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme/app_theme.dart';
+import '../features/onboarding/presentation/providers/onboarding_flow_provider.dart';
 import '../features/settings/domain/text_size_rules.dart';
 import '../features/settings/presentation/providers/app_settings_provider.dart';
 import 'router.dart';
 
-/// Root application widget for Pebbi.
+/// Root application widget for Pebbi with lifecycle observation for draft flushing.
 ///
 /// Follows AGENTS.md §2 (MaterialApp wiring), §4 (edge-to-edge system UI, scaling).
-class PebbiApp extends ConsumerWidget {
+class PebbiApp extends ConsumerStatefulWidget {
   const PebbiApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PebbiApp> createState() => _PebbiAppState();
+}
+
+class _PebbiAppState extends ConsumerState<PebbiApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      ref.read(onboardingFlowProvider.notifier).flushDraft();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final accentColor = ref.watch(accentColorProvider);
     final themeMode = ref.watch(themeModeProvider);
     final inAppScale = ref.watch(textScaleProvider);
@@ -38,8 +65,9 @@ class PebbiApp extends ConsumerWidget {
           statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
           systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness:
-              isDark ? Brightness.light : Brightness.dark,
+          systemNavigationBarIconBrightness: isDark
+              ? Brightness.light
+              : Brightness.dark,
           systemNavigationBarContrastEnforced: false,
         );
 

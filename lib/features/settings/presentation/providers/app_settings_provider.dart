@@ -133,4 +133,3 @@ final handPreferenceProvider = Provider<HandPreference>((ref) {
 final reduceMotionProvider = Provider<bool>((ref) {
   return ref.watch(appSettingsProvider.select((s) => s.reduceMotion));
 });
-

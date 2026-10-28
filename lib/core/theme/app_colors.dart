@@ -18,7 +18,9 @@ abstract final class AppColors {
   static const Color splashGradientTop = Color(0xFF6A49EF);
   static const Color splashGradientBottom = Color(0xFF5535BE);
   static const Color splashBackgroundSolid = Color(0xFF603FD7);
-  static const Color splashForegroundMuted = Color(0x80FFFFFF); // 50% opacity white
+  static const Color splashForegroundMuted = Color(
+    0x80FFFFFF,
+  ); // 50% opacity white
   static const Color splashDashLit = Color(0xF2FFFFFF); // ~95% opacity white
   static const Color splashDashDim = Color(0x61FFFFFF); // ~38% opacity white
 

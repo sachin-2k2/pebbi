@@ -40,10 +40,7 @@ enum DailyGoalStatus {
 
 /// Daily goal achievement data.
 class DailyGoalCompletion {
-  const DailyGoalCompletion({
-    required this.status,
-    this.progressText,
-  });
+  const DailyGoalCompletion({required this.status, this.progressText});
 
   final DailyGoalStatus status;
 

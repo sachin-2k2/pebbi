@@ -10,10 +10,7 @@ import '../../../../../l10n/app_strings.dart';
 /// - Informs user that goals are done without forcing the session to end
 /// - TODO(question: system note styling estimated with info palette tokens)
 class SystemNote extends StatelessWidget {
-  const SystemNote({
-    super.key,
-    this.text = AppStrings.sessionAllGoalsDone,
-  });
+  const SystemNote({super.key, this.text = AppStrings.sessionAllGoalsDone});
 
   final String text;
 
@@ -36,11 +33,7 @@ class SystemNote extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.check_circle_rounded,
-              color: palette.mint,
-              size: 16.0,
-            ),
+            Icon(Icons.check_circle_rounded, color: palette.mint, size: 16.0),
             const SizedBox(width: AppSpacing.xs + 2.0),
             Flexible(
               child: Text(

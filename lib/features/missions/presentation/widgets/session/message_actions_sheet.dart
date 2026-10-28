@@ -66,7 +66,9 @@ class _MessageActionsSheetState extends State<MessageActionsSheet> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               AppStrings.reportMessageSubtitle,
-              style: AppTypography.bodyMedium.copyWith(color: palette.textMuted),
+              style: AppTypography.bodyMedium.copyWith(
+                color: palette.textMuted,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             for (final r in reasons)
@@ -81,14 +83,18 @@ class _MessageActionsSheetState extends State<MessageActionsSheet> {
                         _selectedReason == r
                             ? Icons.radio_button_checked
                             : Icons.radio_button_off,
-                        color: _selectedReason == r ? palette.brand : palette.textMuted,
+                        color: _selectedReason == r
+                            ? palette.brand
+                            : palette.textMuted,
                         size: 22.0,
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
                           r,
-                          style: AppTypography.bodyMedium.copyWith(color: palette.textPrimary),
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: palette.textPrimary,
+                          ),
                         ),
                       ),
                     ],

@@ -25,9 +25,15 @@ class LearnedPhraseRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final rowBg = isDark ? AppColors.darkSurfaceVariant : const Color(0xFFF5F4FB);
-    final phraseColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final meaningColor = isDark ? AppColors.darkTextMuted : const Color(0xFF524F6B);
+    final rowBg = isDark
+        ? AppColors.darkSurfaceVariant
+        : const Color(0xFFF5F4FB);
+    final phraseColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.textPrimary;
+    final meaningColor = isDark
+        ? AppColors.darkTextMuted
+        : const Color(0xFF524F6B);
 
     final semanticsLabel = AppStrings.phraseRowSemantics(
       phrase: phrase.text,

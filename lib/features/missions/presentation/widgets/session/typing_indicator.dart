@@ -73,7 +73,9 @@ class _TypingIndicatorState extends ConsumerState<TypingIndicator>
                 builder: (context, child) {
                   final phase = (index * 0.25);
                   final progress = (_controller.value - phase) % 1.0;
-                  final scale = 0.6 + 0.5 * (1.0 - (progress - 0.5).abs() * 2).clamp(0.0, 1.0);
+                  final scale =
+                      0.6 +
+                      0.5 * (1.0 - (progress - 0.5).abs() * 2).clamp(0.0, 1.0);
                   return _buildDot(palette.brand, scale);
                 },
               );

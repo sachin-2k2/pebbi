@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/design_system/button_3d.dart';
+import '../../../../core/design_system/empty_state.dart';
 import '../../../../core/services/text_to_speech_service.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../domain/learnable_language.dart';
@@ -15,8 +18,8 @@ import '../widgets/step_title_block.dart';
 
 /// Onboarding Setup Step 4 of 11: "I want to learn...".
 ///
-/// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
-/// equal-height rows, responsive card grid, and TTS preview.
+/// Follows AGENTS.md §3 & §4: under 150 lines, build under 50 lines,
+/// equal-height rows, responsive card grid, TTS preview, and no-courses/offline handling.
 class LearnLanguageStepScreen extends ConsumerStatefulWidget {
   const LearnLanguageStepScreen({
     super.key,
@@ -36,16 +39,15 @@ class LearnLanguageStepScreen extends ConsumerStatefulWidget {
 
 class _LearnLanguageStepScreenState
     extends ConsumerState<LearnLanguageStepScreen> {
-  late String _selectedCode;
+  String _selectedCode = '';
   late final TextToSpeechService _ttsService;
 
   @override
   void initState() {
     super.initState();
     _ttsService = ref.read(textToSpeechServiceProvider);
-    _selectedCode =
-        widget.initialCode ??
-        ref.read(onboardingFlowProvider).targetLanguageCode;
+    final savedCode = ref.read(onboardingFlowProvider).targetLanguageCode;
+    _selectedCode = widget.initialCode ?? (savedCode.isNotEmpty ? savedCode : '');
   }
 
   @override
@@ -55,49 +57,34 @@ class _LearnLanguageStepScreenState
   }
 
   Future<void> _handleSelectLanguage(LearnableLanguage language) async {
-    if (!language.isAvailable) {
-      // TODO(question): Client has not confirmed coming soon card tap feedback.
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text(AppStrings.comingSoonFeedback),
-            duration: Duration(seconds: 1),
-          ),
-        );
-      return;
-    }
+    if (!language.isAvailable) return;
 
     HapticFeedback.lightImpact();
     setState(() => _selectedCode = language.code);
 
-    final success = await ref
-        .read(textToSpeechServiceProvider)
-        .speak(language.helloText, locale: language.ttsLocale);
-
-    if (!success && mounted) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text(AppStrings.voiceNotAvailable),
-            duration: Duration(seconds: 2),
-          ),
-        );
+    try {
+      await ref.read(textToSpeechServiceProvider).speak(
+            language.helloText,
+            locale: language.ttsLocale,
+          );
+    } catch (_) {
+      // Fail quietly if voice synthesis fails
     }
   }
 
-  void _handleContinue() {
-    final notifier = ref.read(onboardingFlowProvider.notifier);
-    notifier.setTargetLanguageCode(_selectedCode);
-    notifier.setStep(4);
+  void _handleContinue(List<LearnableLanguage> languages) {
+    if (_selectedCode.isEmpty) return;
+    final chosen = languages.firstWhere(
+      (l) => l.code == _selectedCode,
+      orElse: () => languages.first,
+    );
 
-    final explanationCode = ref
-        .read(onboardingFlowProvider)
-        .explanationLanguageCode;
-    if (_selectedCode == explanationCode) {
-      // TODO(question): Target language matches native explanation language from step 3.
-    }
+    final notifier = ref.read(onboardingFlowProvider.notifier);
+    notifier.setTargetLanguageCode(
+      chosen.code,
+      hasPlacement: chosen.hasPlacement,
+    );
+    notifier.setStep(4);
 
     if (widget.onContinue != null) {
       widget.onContinue!();
@@ -118,27 +105,98 @@ class _LearnLanguageStepScreenState
 
   @override
   Widget build(BuildContext context) {
-    final languages = ref.watch(learnableLanguagesProvider);
+    final nativeCode = ref.watch(
+      onboardingFlowProvider.select((s) => s.explanationLanguageCode),
+    );
+    final asyncVal = ref.watch(learnLanguagesProvider(nativeCode));
 
-    return StepScaffold(
-      header: StepProgressHeader(currentStep: 4, onBack: _handleBack),
-      footer: StepFooterButton(onPressed: _handleContinue),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const StepTitleBlock(
-            title: AppStrings.iWantToLearnTitle,
-            subtitle: AppStrings.iWantToLearnSubtitle,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          LearnLanguageGrid(
-            languages: languages,
-            selectedCode: _selectedCode,
-            onSelect: _handleSelectLanguage,
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-        ],
+    return asyncVal.when(
+      loading: () => StepScaffold(
+        header: StepProgressHeader(currentStep: 4, onBack: _handleBack),
+        body: const Center(child: CircularProgressIndicator.adaptive()),
       ),
+      error: (e, _) => StepScaffold(
+        header: StepProgressHeader(currentStep: 4, onBack: _handleBack),
+        body: EmptyState(
+          illustration: const Icon(
+            Icons.wifi_off_rounded,
+            size: 56.0,
+            color: AppColors.textMuted,
+          ),
+          title: "You're offline",
+          subtitle: 'Connect to the internet to see available courses.',
+          action: Button3D(
+            label: 'Retry',
+            onPressed: () =>
+                ref.read(learnLanguagesProvider(nativeCode).notifier).load(),
+          ),
+        ),
+      ),
+      data: (languages) {
+        final selectable = languages.where((l) => l.isAvailable).toList();
+        if (_selectedCode.isEmpty && selectable.length == 1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && _selectedCode.isEmpty) {
+              setState(() => _selectedCode = selectable.first.code);
+            }
+          });
+        } else if (_selectedCode.isNotEmpty &&
+            !selectable.any((l) => l.code == _selectedCode)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() =>
+                  _selectedCode = selectable.length == 1
+                      ? selectable.first.code
+                      : '');
+            }
+          });
+        }
+
+        if (selectable.isEmpty) {
+          return StepScaffold(
+            header: StepProgressHeader(currentStep: 4, onBack: _handleBack),
+            body: EmptyState(
+              illustration: const Icon(
+                Icons.school_outlined,
+                size: 56.0,
+                color: AppColors.textMuted,
+              ),
+              title: AppStrings.noCoursesTitle,
+              subtitle: 'No courses available for your spoken language yet.',
+              action: Button3D(
+                label: AppStrings.changeSpokenLanguageAction,
+                onPressed: _handleBack,
+              ),
+            ),
+          );
+        }
+
+        return StepScaffold(
+          header: StepProgressHeader(currentStep: 4, onBack: _handleBack),
+          footer: StepFooterButton(
+            isEnabled: _selectedCode.isNotEmpty,
+            onPressed: _selectedCode.isNotEmpty
+                ? () => _handleContinue(languages)
+                : null,
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const StepTitleBlock(
+                title: AppStrings.iWantToLearnTitle,
+                subtitle: AppStrings.iWantToLearnSubtitle,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              LearnLanguageGrid(
+                languages: languages,
+                selectedCode: _selectedCode,
+                onSelect: _handleSelectLanguage,
+              ),
+              const SizedBox(height: AppSpacing.xxl),
+            ],
+          ),
+        );
+      },
     );
   }
 }

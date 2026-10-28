@@ -1,5 +1,6 @@
 import '../domain/language_option.dart';
 import '../domain/language_repository.dart';
+import '../domain/learnable_language.dart';
 
 /// Mock implementation of [LanguageRepository] providing the 9 explanation languages.
 ///
@@ -68,6 +69,41 @@ class MockLanguageRepository implements LanguageRepository {
       translationsReviewed: false,
     ),
     LanguageOption(
+      code: 'ta',
+      nativeName: 'தமிழ்',
+      englishName: 'Tamil',
+      badgeGlyph: 'த',
+      translationsReviewed: false,
+    ),
+    LanguageOption(
+      code: 'te',
+      nativeName: 'తెలుగు',
+      englishName: 'Telugu',
+      badgeGlyph: 'తె',
+      translationsReviewed: false,
+    ),
+    LanguageOption(
+      code: 'kn',
+      nativeName: 'ಕನ್ನಡ',
+      englishName: 'Kannada',
+      badgeGlyph: 'ಕ',
+      translationsReviewed: false,
+    ),
+    LanguageOption(
+      code: 'de',
+      nativeName: 'Deutsch',
+      englishName: 'German',
+      badgeGlyph: 'Ä',
+      translationsReviewed: false,
+    ),
+    LanguageOption(
+      code: 'ja',
+      nativeName: '日本語',
+      englishName: 'Japanese',
+      badgeGlyph: 'あ',
+      translationsReviewed: false,
+    ),
+    LanguageOption(
       code: 'id',
       nativeName: 'Bahasa Indonesia',
       englishName: 'Indonesian',
@@ -78,4 +114,11 @@ class MockLanguageRepository implements LanguageRepository {
 
   @override
   List<LanguageOption> getExplanationLanguages() => defaultLanguages;
+
+  @override
+  Future<List<LanguageOption>> getNativeLanguages() async => defaultLanguages;
+
+  @override
+  Future<List<LearnableLanguage>> getLearnLanguages(String nativeCode) async =>
+      const [];
 }

@@ -33,10 +33,8 @@ class CharacterBubble extends StatelessWidget {
   void _showReportSheet(BuildContext context) {
     AdaptiveSheet.show<void>(
       context: context,
-      builder: (dialogCtx) => MessageActionsSheet(
-        messageId: message.id,
-        onReport: onReport,
-      ),
+      builder: (dialogCtx) =>
+          MessageActionsSheet(messageId: message.id, onReport: onReport),
     );
   }
 
@@ -93,9 +91,7 @@ class CharacterBubble extends StatelessWidget {
                   ],
                   Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ReplayButton(onPressed: onPlayAudio),
-                    ],
+                    children: [ReplayButton(onPressed: onPlayAudio)],
                   ),
                 ],
               ),

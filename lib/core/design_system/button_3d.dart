@@ -132,10 +132,12 @@ class _Button3DState extends State<Button3D> {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final defaultBg = widget.isSecondary ? palette.brandTint : palette.brand;
-    final defaultDepth =
-        widget.isSecondary ? palette.outline : palette.brandDepth;
-    final defaultFg =
-        widget.isSecondary ? palette.brandText : palette.textOnBrand;
+    final defaultDepth = widget.isSecondary
+        ? palette.outline
+        : palette.brandDepth;
+    final defaultFg = widget.isSecondary
+        ? palette.brandText
+        : palette.textOnBrand;
 
     final bg = widget.isEnabled
         ? (widget.backgroundColor ?? defaultBg)

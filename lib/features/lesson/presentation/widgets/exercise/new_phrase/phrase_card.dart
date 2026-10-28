@@ -65,9 +65,7 @@ class PhraseCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             meaning,
-            style: AppTypography.bodyLarge.copyWith(
-              color: palette.textMuted,
-            ),
+            style: AppTypography.bodyLarge.copyWith(color: palette.textMuted),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),

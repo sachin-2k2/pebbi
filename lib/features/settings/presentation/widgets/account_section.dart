@@ -30,17 +30,12 @@ class AccountSection extends StatelessWidget {
   bool get _isGuest =>
       userProfile == null || userProfile!.userId.startsWith('guest_');
 
-  Widget _buildIconBox(IconData icon, Color color, bool isDark) {
-    return Container(
-      width: 38.0,
-      height: 38.0,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-      ),
-      alignment: Alignment.center,
-      child: Icon(icon, size: 20.0, color: color),
-    );
+  String get _accountSubtitle {
+    final email = userProfile?.email?.trim();
+    if (email != null && email.isNotEmpty) {
+      return email;
+    }
+    return userProfile?.userId ?? '';
   }
 
   @override
@@ -50,26 +45,25 @@ class AccountSection extends StatelessWidget {
     return SettingsSectionCard(
       emoji: '🔑',
       title: AppStrings.settingsAccountTitle,
-      subtitle: AppStrings.settingsAccountSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (_isGuest) ...[
             SettingsInfoTile(
-              icon: _buildIconBox(
-                Icons.lock_outline_rounded,
-                AppColors.brandPurple,
-                isDark,
+              icon: _AccountIconBox(
+                icon: Icons.lock_outline_rounded,
+                color: AppColors.brandPurple,
+                isDark: isDark,
               ),
               title: AppStrings.settingsGuestModeTitle,
               subtitle: AppStrings.settingsGuestModeSubtitle,
             ),
             const SizedBox(height: AppSpacing.sm),
             SettingsInfoTile(
-              icon: _buildIconBox(
-                Icons.cloud_outlined,
-                AppColors.accentSky,
-                isDark,
+              icon: _AccountIconBox(
+                icon: Icons.cloud_outlined,
+                color: AppColors.accentSky,
+                isDark: isDark,
               ),
               title: AppStrings.settingsSignInTitle,
               subtitle: AppStrings.settingsSignInSubtitle,
@@ -79,15 +73,14 @@ class AccountSection extends StatelessWidget {
               ),
             ),
           ] else ...[
-            // Signed-in state TODO(question)
             SettingsInfoTile(
-              icon: _buildIconBox(
-                Icons.account_circle_outlined,
-                AppColors.brandPurple,
-                isDark,
+              icon: _AccountIconBox(
+                icon: Icons.account_circle_outlined,
+                color: AppColors.brandPurple,
+                isDark: isDark,
               ),
               title: AppStrings.settingsAccountSignedTitle,
-              subtitle: userProfile!.userId,
+              subtitle: _accountSubtitle,
               trailing: SettingsActionPill(
                 label: AppStrings.settingsLogOutAction,
                 onTap: onLogOut ?? () {},
@@ -96,10 +89,10 @@ class AccountSection extends StatelessWidget {
           ],
           const SizedBox(height: AppSpacing.sm),
           SettingsInfoTile(
-            icon: _buildIconBox(
-              Icons.workspace_premium_outlined,
-              AppColors.coral,
-              isDark,
+            icon: _AccountIconBox(
+              icon: Icons.workspace_premium_outlined,
+              color: AppColors.coral,
+              isDark: isDark,
             ),
             title: AppStrings.settingsFreePlanTitle,
             subtitle: AppStrings.settingsFreePlanSubtitle,
@@ -112,6 +105,32 @@ class AccountSection extends StatelessWidget {
           DestructiveTile(onTap: onResetProgress),
         ],
       ),
+    );
+  }
+}
+
+class _AccountIconBox extends StatelessWidget {
+  const _AccountIconBox({
+    required this.icon,
+    required this.color,
+    required this.isDark,
+  });
+
+  final IconData icon;
+  final Color color;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 38.0,
+      height: 38.0,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      ),
+      alignment: Alignment.center,
+      child: Icon(icon, size: 20.0, color: color),
     );
   }
 }

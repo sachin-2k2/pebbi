@@ -12,11 +12,7 @@ class SessionGoal {
   final String text;
   final bool isDone;
 
-  SessionGoal copyWith({
-    String? id,
-    String? text,
-    bool? isDone,
-  }) {
+  SessionGoal copyWith({String? id, String? text, bool? isDone}) {
     return SessionGoal(
       id: id ?? this.id,
       text: text ?? this.text,

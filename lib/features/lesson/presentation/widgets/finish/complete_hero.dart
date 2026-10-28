@@ -12,10 +12,7 @@ import '../../../../settings/presentation/providers/app_settings_provider.dart';
 /// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
 /// displays excited mascot with user accent color, large header title, and encouraging subtitle.
 class CompleteHero extends ConsumerWidget {
-  const CompleteHero({
-    super.key,
-    required this.starsEarned,
-  });
+  const CompleteHero({super.key, required this.starsEarned});
 
   final int starsEarned;
 

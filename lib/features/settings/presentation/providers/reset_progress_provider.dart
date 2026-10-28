@@ -30,7 +30,7 @@ abstract final class ResetProgressHandler {
     // 4. Initialize a clean guest profile
     final freshGuest = UserProfile(
       userId: 'guest_${DateTime.now().millisecondsSinceEpoch}',
-      ageBand: AgeBand.adult,
+      ageBand: AgeBand.band25_34,
       explanationLanguageCode: 'en',
       targetLanguageCode: 'es',
       reasonIds: const <String>{},

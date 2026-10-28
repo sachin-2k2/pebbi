@@ -11,6 +11,7 @@ import '../../onboarding/domain/reminder_time.dart';
 class UserProfile {
   const UserProfile({
     required this.userId,
+    this.email,
     required this.ageBand,
     required this.explanationLanguageCode,
     required this.targetLanguageCode,
@@ -30,6 +31,9 @@ class UserProfile {
 
   /// Distinct user identifier (e.g. `guest_local_user`).
   final String userId;
+
+  /// User email address if registered/authenticated.
+  final String? email;
 
   /// Privacy-safe age band. Raw birth year is strictly discarded.
   final AgeBand ageBand;
@@ -81,6 +85,8 @@ class UserProfile {
 
   UserProfile copyWith({
     String? userId,
+    String? email,
+    bool clearEmail = false,
     AgeBand? ageBand,
     String? explanationLanguageCode,
     String? targetLanguageCode,
@@ -100,6 +106,7 @@ class UserProfile {
   }) {
     return UserProfile(
       userId: userId ?? this.userId,
+      email: clearEmail ? null : (email ?? this.email),
       ageBand: ageBand ?? this.ageBand,
       explanationLanguageCode:
           explanationLanguageCode ?? this.explanationLanguageCode,
@@ -126,6 +133,7 @@ class UserProfile {
       other is UserProfile &&
           runtimeType == other.runtimeType &&
           userId == other.userId &&
+          email == other.email &&
           ageBand == other.ageBand &&
           explanationLanguageCode == other.explanationLanguageCode &&
           targetLanguageCode == other.targetLanguageCode &&
@@ -142,6 +150,7 @@ class UserProfile {
   @override
   int get hashCode => Object.hash(
     userId,
+    email,
     ageBand,
     explanationLanguageCode,
     targetLanguageCode,

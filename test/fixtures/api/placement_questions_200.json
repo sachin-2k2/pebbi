@@ -1,0 +1,335 @@
+{
+  "available": true,
+  "native_language": "ml",
+  "target_language": "en",
+  "questions": [
+    {
+      "id": "q1",
+      "sort_order": 1,
+      "prompt": "Which one means 'Good morning'?",
+      "target_phrase": "Good morning",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🌅",
+          "label": "Sunrise",
+          "is_correct": true,
+          "pebbi_correct": "Spot on!",
+          "pebbi_wrong": "That was good morning!",
+          "fun_fact": "'Good morning' is used until noon."
+        },
+        {
+          "emoji": "🌙",
+          "label": "Moon",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "That means good night!",
+          "fun_fact": "Moon represents nighttime."
+        },
+        {
+          "emoji": "👋",
+          "label": "Wave",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "That means hello!",
+          "fun_fact": "Waving is a casual greeting."
+        },
+        {
+          "emoji": "☕",
+          "label": "Coffee",
+          "is_correct": false,
+          "pebbi_correct": "Great!",
+          "pebbi_wrong": "That means coffee!",
+          "fun_fact": "Coffee is often enjoyed in the morning."
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "sort_order": 2,
+      "prompt": "Which one means 'Thank you'?",
+      "target_phrase": "Thank you",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🙏",
+          "label": "Folded hands",
+          "is_correct": true,
+          "pebbi_correct": "Excellent!",
+          "pebbi_wrong": "Folded hands expresses thanks!",
+          "fun_fact": "'Thank you' shows gratitude."
+        },
+        {
+          "emoji": "🚗",
+          "label": "Car",
+          "is_correct": false,
+          "pebbi_correct": "Yes!",
+          "pebbi_wrong": "That means car!",
+          "fun_fact": "Cars are for travel."
+        },
+        {
+          "emoji": "🍎",
+          "label": "Apple",
+          "is_correct": false,
+          "pebbi_correct": "Right!",
+          "pebbi_wrong": "That is an apple!",
+          "fun_fact": "Apples are delicious fruits."
+        },
+        {
+          "emoji": "🏠",
+          "label": "House",
+          "is_correct": false,
+          "pebbi_correct": "Super!",
+          "pebbi_wrong": "That means house!",
+          "fun_fact": "House is where we live."
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "sort_order": 3,
+      "prompt": "Which one means 'Water'?",
+      "target_phrase": "Water",
+      "pebbi_warning": "Common mistake: don't confuse with tea!",
+      "options": [
+        {
+          "emoji": "💧",
+          "label": "Water droplet",
+          "is_correct": true,
+          "pebbi_correct": "Well done!",
+          "pebbi_wrong": "Droplet means water!",
+          "fun_fact": "Water is essential for life."
+        },
+        {
+          "emoji": "🔥",
+          "label": "Fire",
+          "is_correct": false,
+          "pebbi_correct": "Okay!",
+          "pebbi_wrong": "That means fire!",
+          "fun_fact": "Fire gives warmth and light."
+        },
+        {
+          "emoji": "🍞",
+          "label": "Bread",
+          "is_correct": false,
+          "pebbi_correct": "Great!",
+          "pebbi_wrong": "That means bread!",
+          "fun_fact": "Bread is a staple food."
+        },
+        {
+          "emoji": "🌳",
+          "label": "Tree",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "That means tree!",
+          "fun_fact": "Trees provide shade."
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "sort_order": 4,
+      "prompt": "Which one means 'Please'?",
+      "target_phrase": "Please",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🤲",
+          "label": "Palms up",
+          "is_correct": true,
+          "pebbi_correct": "Polite and correct!",
+          "pebbi_wrong": "Palms up means please!",
+          "fun_fact": "Using 'please' makes requests polite."
+        },
+        {
+          "emoji": "🏃",
+          "label": "Runner",
+          "is_correct": false,
+          "pebbi_correct": "Okay!",
+          "pebbi_wrong": "That means run!",
+          "fun_fact": "Running is exercise."
+        },
+        {
+          "emoji": "🐱",
+          "label": "Cat",
+          "is_correct": false,
+          "pebbi_correct": "Fine!",
+          "pebbi_wrong": "That means cat!",
+          "fun_fact": "Cats are friendly pets."
+        },
+        {
+          "emoji": "🔑",
+          "label": "Key",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "That means key!",
+          "fun_fact": "Keys unlock doors."
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "sort_order": 5,
+      "prompt": "Which one means 'Yes'?",
+      "target_phrase": "Yes",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "👍",
+          "label": "Thumbs up",
+          "is_correct": true,
+          "pebbi_correct": "Exactly!",
+          "pebbi_wrong": "Thumbs up means yes!",
+          "fun_fact": "A simple thumbs up signals yes."
+        },
+        {
+          "emoji": "👎",
+          "label": "Thumbs down",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "That means no!",
+          "fun_fact": "Thumbs down means no."
+        },
+        {
+          "emoji": "⏰",
+          "label": "Clock",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "That is a clock!",
+          "fun_fact": "Clocks tell the time."
+        },
+        {
+          "emoji": "🎒",
+          "label": "Backpack",
+          "is_correct": false,
+          "pebbi_correct": "Sure!",
+          "pebbi_wrong": "That is a backpack!",
+          "fun_fact": "Backpacks carry books."
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "sort_order": 6,
+      "prompt": "Which one means 'Good night'?",
+      "target_phrase": "Good night",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🌙",
+          "label": "Crescent moon",
+          "is_correct": true,
+          "pebbi_correct": "Sweet dreams!",
+          "pebbi_wrong": "The moon means good night!",
+          "fun_fact": "Said before going to sleep."
+        },
+        {
+          "emoji": "☀️",
+          "label": "Sun",
+          "is_correct": false,
+          "pebbi_correct": "Fine!",
+          "pebbi_wrong": "The sun is for daytime!",
+          "fun_fact": "The sun shines in day."
+        },
+        {
+          "emoji": "✈️",
+          "label": "Airplane",
+          "is_correct": false,
+          "pebbi_correct": "Okay!",
+          "pebbi_wrong": "That is an airplane!",
+          "fun_fact": "Airplanes fly in the sky."
+        },
+        {
+          "emoji": "🍕",
+          "label": "Pizza",
+          "is_correct": false,
+          "pebbi_correct": "Yum!",
+          "pebbi_wrong": "That is delicious pizza!",
+          "fun_fact": "Pizza is a popular food."
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "sort_order": 7,
+      "prompt": "Which one means 'Help'?",
+      "target_phrase": "Help",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🆘",
+          "label": "SOS button",
+          "is_correct": true,
+          "pebbi_correct": "Right!",
+          "pebbi_wrong": "SOS means emergency help!",
+          "fun_fact": "SOS is recognized worldwide."
+        },
+        {
+          "emoji": "🎨",
+          "label": "Artist palette",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "That is painting!",
+          "fun_fact": "Palettes hold paint."
+        },
+        {
+          "emoji": "🎸",
+          "label": "Guitar",
+          "is_correct": false,
+          "pebbi_correct": "Cool!",
+          "pebbi_wrong": "That is a guitar!",
+          "fun_fact": "Guitars make music."
+        },
+        {
+          "emoji": "🚲",
+          "label": "Bicycle",
+          "is_correct": false,
+          "pebbi_correct": "Okay!",
+          "pebbi_wrong": "That is a bicycle!",
+          "fun_fact": "Bicycles have two wheels."
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "sort_order": 8,
+      "prompt": "Which one means 'Goodbye'?",
+      "target_phrase": "Goodbye",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "👋",
+          "label": "Waving hand",
+          "is_correct": true,
+          "pebbi_correct": "See you later!",
+          "pebbi_wrong": "Waving goodbye!",
+          "fun_fact": "'Goodbye' originated from 'God be with ye'."
+        },
+        {
+          "emoji": "🤝",
+          "label": "Handshake",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "Handshake is for greeting!",
+          "fun_fact": "Handshakes seal deals."
+        },
+        {
+          "emoji": "📚",
+          "label": "Books",
+          "is_correct": false,
+          "pebbi_correct": "Great!",
+          "pebbi_wrong": "Those are books!",
+          "fun_fact": "Books share knowledge."
+        },
+        {
+          "emoji": "☂️",
+          "label": "Umbrella",
+          "is_correct": false,
+          "pebbi_correct": "Dry!",
+          "pebbi_wrong": "That is an umbrella!",
+          "fun_fact": "Umbrellas keep you dry."
+        }
+      ]
+    }
+  ]
+}

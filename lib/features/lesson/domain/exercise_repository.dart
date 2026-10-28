@@ -6,7 +6,10 @@ import 'exercise_set.dart';
 /// Hides data source details (mock, local cache, or remote API).
 abstract interface class ExerciseRepository {
   /// Loads the placement quick check question set for [targetLanguageCode].
-  Future<ExerciseSet> loadPlacementSet(String targetLanguageCode);
+  Future<ExerciseSet> loadPlacementSet(
+    String targetLanguageCode, {
+    String nativeLanguageCode = 'en',
+  });
 
   /// Loads an exercise set for a specific curriculum lesson on the path.
   Future<ExerciseSet> loadLessonSet(String lessonId);

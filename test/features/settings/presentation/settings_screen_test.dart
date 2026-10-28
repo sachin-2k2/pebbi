@@ -201,5 +201,50 @@ void main() {
 
       expect(find.byType(ResetProgressDialog), findsNothing);
     });
+
+    testWidgets(
+      'AccountSection shows email and omits "works without an account" when signed in',
+      (tester) async {
+        tester.view.physicalSize = const Size(1080, 2400);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        const signedInProfile = UserProfile(
+          userId: '6ae1949fc2c6b58d06d9b6c1',
+          email: 'sachinsachin814k@gmail.com',
+          ageBand: AgeBand.adult,
+          explanationLanguageCode: 'en',
+          targetLanguageCode: 'ml',
+          reasonIds: {'travel'},
+          dailyGoalId: 'regular',
+          reminderTime: ReminderTime(hour: 19, minute: 0),
+          selectedWeekdayNumbers: {1, 2, 3, 4, 5, 6, 7},
+          remindersEnabled: true,
+          accentId: 'violet',
+          plan: 'free',
+          isOnboarded: true,
+          selectedLevel: LanguageLevel.little,
+        );
+
+        await tester.pumpWidget(createSubject(userProfile: signedInProfile));
+        await tester.pumpAndSettle();
+
+        final scrollFinder = find.byType(CustomScrollView);
+        await tester.drag(scrollFinder, const Offset(0, -1400));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AccountSection), findsOneWidget);
+        // Verify subtitle "works without an account" is NOT present anywhere
+        expect(
+          find.text("Pebbi works without an account while you're finding your feet."),
+          findsNothing,
+        );
+        // Verify user's email is displayed instead of raw ObjectId
+        expect(find.text('sachinsachin814k@gmail.com'), findsOneWidget);
+        expect(find.text('6ae1949fc2c6b58d06d9b6c1'), findsNothing);
+        expect(find.text(AppStrings.settingsLogOutAction), findsOneWidget);
+      },
+    );
   });
 }

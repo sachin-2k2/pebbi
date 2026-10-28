@@ -11,10 +11,18 @@ abstract interface class AuthRepository {
     required String password,
   });
 
-  /// Creates a new user account using email and password.
+  /// Initiates registration: validates details and sends email OTP.
   Future<AuthResult> registerWithEmail({
     required String email,
     required String password,
+    String? displayName,
+    Map<String, dynamic>? onboardingData,
+  });
+
+  /// Verifies the 6-digit email OTP code and finalizes account creation.
+  Future<AuthResult> verifyOtp({
+    required String email,
+    required String otp,
   });
 
   /// Initiates a password reset flow for the specified [email].

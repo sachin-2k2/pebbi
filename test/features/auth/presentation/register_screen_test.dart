@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:peddi/core/design_system/button_3d.dart';
 import 'package:peddi/core/services/fake_notification_scheduler.dart';
 import 'package:peddi/core/services/notification_scheduler_provider.dart';
@@ -19,6 +20,7 @@ import 'package:peddi/features/auth/presentation/widgets/auth_card.dart';
 import 'package:peddi/features/auth/presentation/widgets/auth_header.dart';
 import 'package:peddi/features/auth/presentation/widgets/confirm_password_field.dart';
 import 'package:peddi/features/auth/presentation/widgets/email_field.dart';
+import 'package:peddi/features/auth/presentation/widgets/name_field.dart';
 import 'package:peddi/features/auth/presentation/widgets/or_divider.dart';
 import 'package:peddi/features/auth/presentation/widgets/password_field.dart';
 import 'package:peddi/features/auth/presentation/widgets/social_button.dart';
@@ -27,6 +29,9 @@ import 'package:peddi/features/onboarding/domain/reminder_time.dart';
 import 'package:peddi/l10n/app_strings.dart';
 
 void main() {
+  setUp(() {
+    FlutterSecureStorage.setMockInitialValues({});
+  });
   Widget buildTestableScreen({
     MockAuthRepository? authRepo,
     MockProfileRepository? profileRepo,
@@ -86,6 +91,19 @@ void main() {
     );
   }
 
+  Future<void> enterFields(
+    WidgetTester tester, {
+    String name = 'Farsana',
+    required String email,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    await tester.enterText(find.byType(NameField), name);
+    await tester.enterText(find.byType(EmailField), email);
+    await tester.enterText(find.byType(PasswordField).first, password);
+    await tester.enterText(find.byType(ConfirmPasswordField), confirmPassword);
+  }
+
   Future<void> tapSubmit(WidgetTester tester) async {
     final buttonFinder = find.widgetWithText(
       Button3D,
@@ -114,6 +132,7 @@ void main() {
       expect(find.byType(AuthCard), findsOneWidget);
       expect(find.byType(SocialButton), findsOneWidget);
       expect(find.byType(OrDivider), findsOneWidget);
+      expect(find.byType(NameField), findsOneWidget);
       expect(find.byType(EmailField), findsOneWidget);
       expect(find.byType(PasswordField), findsNWidgets(2)); // Primary + Confirm
       expect(find.byType(ConfirmPasswordField), findsOneWidget);
@@ -123,6 +142,8 @@ void main() {
       expect(find.text(AppStrings.createAccountSubtitle), findsOneWidget);
       expect(find.text(AppStrings.continueWithGoogle), findsOneWidget);
       expect(find.text(AppStrings.orDivider), findsOneWidget);
+      expect(find.text(AppStrings.nameLabel), findsOneWidget);
+      expect(find.text(AppStrings.namePlaceholder), findsOneWidget);
       expect(find.text(AppStrings.emailLabel), findsOneWidget);
       expect(find.text(AppStrings.emailPlaceholder), findsOneWidget);
       expect(find.text(AppStrings.passwordLabel), findsOneWidget);
@@ -161,9 +182,14 @@ void main() {
       await tester.pumpAndSettle();
 
       final textFields = tester.widgetList<TextField>(find.byType(TextField));
-      expect(textFields.length, 3);
+      expect(textFields.length, 4);
 
-      final emailField = textFields.elementAt(0);
+      final nameField = textFields.elementAt(0);
+      expect(nameField.keyboardType, TextInputType.name);
+      expect(nameField.textInputAction, TextInputAction.next);
+      expect(nameField.autofillHints, contains(AutofillHints.name));
+
+      final emailField = textFields.elementAt(1);
       expect(emailField.keyboardType, TextInputType.emailAddress);
       expect(emailField.textInputAction, TextInputAction.next);
       expect(
@@ -172,12 +198,12 @@ void main() {
       );
       expect(emailField.textDirection, TextDirection.ltr);
 
-      final passwordField = textFields.elementAt(1);
+      final passwordField = textFields.elementAt(2);
       expect(passwordField.obscureText, isTrue);
       expect(passwordField.textInputAction, TextInputAction.next);
       expect(passwordField.autofillHints, contains(AutofillHints.newPassword));
 
-      final confirmField = textFields.elementAt(2);
+      final confirmField = textFields.elementAt(3);
       expect(confirmField.obscureText, isTrue);
       expect(confirmField.textInputAction, TextInputAction.done);
       expect(confirmField.autofillHints, contains(AutofillHints.newPassword));
@@ -194,20 +220,23 @@ void main() {
       expect(eyeIcons, findsNWidgets(2));
 
       // Tap first eye toggle (primary password)
+      await tester.ensureVisible(eyeIcons.first);
       await tester.tap(eyeIcons.first);
       await tester.pumpAndSettle();
 
       var textFields = tester.widgetList<TextField>(find.byType(TextField));
-      expect(textFields.elementAt(1).obscureText, isFalse);
-      expect(textFields.elementAt(2).obscureText, isTrue);
+      expect(textFields.elementAt(2).obscureText, isFalse);
+      expect(textFields.elementAt(3).obscureText, isTrue);
 
       // Tap second eye toggle (confirm password)
-      await tester.tap(find.byIcon(Icons.visibility_outlined));
+      final secondEye = find.byIcon(Icons.visibility_outlined);
+      await tester.ensureVisible(secondEye);
+      await tester.tap(secondEye);
       await tester.pumpAndSettle();
 
       textFields = tester.widgetList<TextField>(find.byType(TextField));
-      expect(textFields.elementAt(1).obscureText, isFalse);
       expect(textFields.elementAt(2).obscureText, isFalse);
+      expect(textFields.elementAt(3).obscureText, isFalse);
     });
   });
 
@@ -220,6 +249,7 @@ void main() {
 
         await tapSubmit(tester);
 
+        expect(find.text(AppStrings.authErrorNameEmpty), findsOneWidget);
         expect(find.text(AppStrings.authErrorEmailEmpty), findsOneWidget);
         expect(find.text(AppStrings.authErrorPasswordEmpty), findsNWidgets(2));
       },
@@ -231,9 +261,12 @@ void main() {
       await tester.pumpWidget(buildTestableScreen());
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'invalid-email');
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
+      await enterFields(
+        tester,
+        email: 'invalid-email',
+        password: 'password123',
+        confirmPassword: 'password123',
+      );
 
       await tapSubmit(tester);
 
@@ -246,9 +279,12 @@ void main() {
       await tester.pumpWidget(buildTestableScreen());
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'user@example.com');
-      await tester.enterText(find.byType(TextField).at(1), 'short');
-      await tester.enterText(find.byType(TextField).at(2), 'short');
+      await enterFields(
+        tester,
+        email: 'user@example.com',
+        password: 'short',
+        confirmPassword: 'short',
+      );
 
       await tapSubmit(tester);
 
@@ -261,9 +297,12 @@ void main() {
       await tester.pumpWidget(buildTestableScreen());
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'user@example.com');
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'mismatch456');
+      await enterFields(
+        tester,
+        email: 'user@example.com',
+        password: 'password123',
+        confirmPassword: 'mismatch456',
+      );
 
       await tapSubmit(tester);
 
@@ -277,12 +316,12 @@ void main() {
         await tester.pumpWidget(buildTestableScreen(authRepo: authRepo));
         await tester.pumpAndSettle();
 
-        await tester.enterText(
-          find.byType(TextField).at(0),
-          'alreadyregistered@example.com',
+        await enterFields(
+          tester,
+          email: 'alreadyregistered@example.com',
+          password: 'password123',
+          confirmPassword: 'password123',
         );
-        await tester.enterText(find.byType(TextField).at(1), 'password123');
-        await tester.enterText(find.byType(TextField).at(2), 'password123');
 
         await tapSubmit(tester);
 
@@ -302,9 +341,12 @@ void main() {
       await tester.pumpWidget(buildTestableScreen(authRepo: authRepo));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'user@example.com');
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
+      await enterFields(
+        tester,
+        email: 'user@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      );
 
       await tapSubmit(tester);
 
@@ -331,9 +373,12 @@ void main() {
       await tester.pumpWidget(buildTestableScreen(authRepo: authRepo));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'user@example.com');
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
+      await enterFields(
+        tester,
+        email: 'user@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      );
 
       final buttonFinder = find.widgetWithText(
         Button3D,
@@ -388,12 +433,12 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await tester.enterText(
-          find.byType(TextField).at(0),
-          'newuser@example.com',
+        await enterFields(
+          tester,
+          email: 'newuser@example.com',
+          password: 'password123',
+          confirmPassword: 'password123',
         );
-        await tester.enterText(find.byType(TextField).at(1), 'password123');
-        await tester.enterText(find.byType(TextField).at(2), 'password123');
 
         await tapSubmit(tester);
 
@@ -433,12 +478,12 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await tester.enterText(
-          find.byType(TextField).at(0),
-          'user@example.com',
+        await enterFields(
+          tester,
+          email: 'user@example.com',
+          password: 'password123',
+          confirmPassword: 'password123',
         );
-        await tester.enterText(find.byType(TextField).at(1), 'password123');
-        await tester.enterText(find.byType(TextField).at(2), 'password123');
 
         await tapSubmit(tester);
 
@@ -462,9 +507,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField).at(0), 'userA@example.com');
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
+      await enterFields(
+        tester,
+        email: 'userA@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      );
 
       await tapSubmit(tester);
 
@@ -484,12 +532,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byType(TextField).at(0),
-        'persisted@example.com',
+      await enterFields(
+        tester,
+        email: 'persisted@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
       );
-      await tester.enterText(find.byType(TextField).at(1), 'password123');
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
 
       await tapSubmit(tester);
 

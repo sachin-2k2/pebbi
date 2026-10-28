@@ -439,9 +439,11 @@ void main() {
       expect(find.text(AppStrings.selfCheckTitle), findsOneWidget);
 
       // Tap "I said it ✓" awards credit and reveals feedback panel
-      await tester.tap(find.text(
-        '${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}',
-      ));
+      await tester.tap(
+        find.text(
+          '${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}',
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Tap Continue finishes lesson

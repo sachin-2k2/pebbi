@@ -16,6 +16,7 @@ import '../features/onboarding/presentation/screens/learn_language_step_screen.d
 import '../features/lesson/presentation/screens/exercise_screen.dart';
 import '../features/onboarding/presentation/screens/placement_result_screen.dart';
 import '../features/onboarding/presentation/screens/placement_intro_screen.dart';
+import '../features/onboarding/presentation/screens/placement_quiz_screen.dart';
 import '../features/onboarding/presentation/screens/reason_step_screen.dart';
 import '../features/onboarding/presentation/screens/welcome_screen.dart';
 import '../features/onboarding/presentation/screens/splash_screen.dart';
@@ -24,6 +25,7 @@ import '../features/rewards/presentation/screens/rewards_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
+import '../features/auth/presentation/screens/verify_otp_screen.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/missions/domain/correction_style.dart';
 import '../features/missions/domain/mission_mode.dart';
@@ -40,29 +42,98 @@ import '../features/review/presentation/screens/practice_placeholder_screen.dart
 import '../features/rewards/presentation/screens/sticker_book_placeholder_screen.dart';
 import '../features/settings/presentation/screens/about_placeholder_screen.dart';
 import '../features/settings/presentation/screens/help_placeholder_screen.dart';
+import '../core/storage/token_storage.dart';
 import '../features/settings/presentation/screens/privacy_placeholder_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'rootNav',
 );
 
-/// Application router with responsive [AdaptiveShell] bottom tab & rail branches.
-final GoRouter appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/splash',
-  routes: [
-    GoRoute(
-      path: '/splash',
-      builder: (context, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: '/',
-      redirect: (context, state) => '/path',
-    ),
-    GoRoute(
-      path: '/welcome',
-      builder: (context, state) => const WelcomeScreen(),
-    ),
+/// Route redirect guard implementing Rule 6.
+///
+/// Follows Rule 6:
+/// - signed in: opening welcome, onboarding, register, code or login redirects to Path.
+///   Back must never return to those screens or to the splash.
+/// - not signed in: Path, other tabs and any signed-in screen redirect to the welcome flow.
+/// - after login or sign-up the user goes to Path and never back into onboarding.
+String? appRouterRedirect({
+  required String location,
+  required bool isSignedIn,
+  bool splashCompleted = true,
+  String? draftResumeRoute,
+}) {
+  if (location == '/splash') {
+    if (!splashCompleted) return null;
+    return isSignedIn ? '/path' : (draftResumeRoute ?? '/welcome');
+  }
+
+  final isAuthOrOnboarding = location == '/welcome' ||
+      location.startsWith('/onboarding') ||
+      location == '/login' ||
+      location == '/register' ||
+      location == '/verify-otp' ||
+      location == '/forgot-password';
+
+  if (isSignedIn) {
+    if (isAuthOrOnboarding) {
+      return '/path';
+    }
+    return null;
+  } else {
+    if (!isAuthOrOnboarding) {
+      return draftResumeRoute ?? '/welcome';
+    }
+    return null;
+  }
+}
+
+bool _isAppSplashCompleted = false;
+
+/// Whether the cold-start splash has finished for the current app process.
+bool get isAppSplashCompleted => _isAppSplashCompleted;
+
+/// Marks the splash as completed so route guards can redirect from /splash to /path or /welcome.
+void markSplashCompleted() {
+  _isAppSplashCompleted = true;
+}
+
+/// Resets the splash completion flag (e.g. for testing).
+void resetSplashCompleted() {
+  _isAppSplashCompleted = false;
+}
+
+/// Factory building the application [GoRouter] with Rule 6 redirect guard.
+GoRouter createAppRouter({
+  TokenStorage? tokenStorage,
+  GlobalKey<NavigatorState>? navigatorKey,
+  String initialLocation = '/splash',
+  bool? overrideSignedIn,
+  bool? splashCompleted,
+  String? draftResumeRoute,
+}) {
+  final storage = tokenStorage ?? globalTokenStorage;
+
+  return GoRouter(
+    navigatorKey: navigatorKey ?? _rootNavigatorKey,
+    initialLocation: initialLocation,
+    redirect: (context, state) {
+      final loc = state.matchedLocation;
+      final isSignedIn = overrideSignedIn ?? storage.isSignedIn;
+      final effectiveSplashCompleted = splashCompleted ?? _isAppSplashCompleted;
+      return appRouterRedirect(
+        location: loc,
+        isSignedIn: isSignedIn,
+        splashCompleted: effectiveSplashCompleted,
+        draftResumeRoute: draftResumeRoute,
+      );
+    },
+    routes: [
+      GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
+      GoRoute(path: '/', redirect: (context, state) => '/path'),
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
     GoRoute(
       path: '/onboarding/setup',
       redirect: (context, state) => '/onboarding/setup/step-2',
@@ -89,7 +160,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/onboarding/placement-quiz',
-      builder: (context, state) => const ExerciseScreen(),
+      builder: (context, state) => const PlacementQuizScreen(),
     ),
     GoRoute(
       path: '/onboarding/placement-results',
@@ -122,9 +193,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/lesson/:id/finish',
-      builder: (context, state) => LessonCompleteScreen(
-        stopId: state.pathParameters['id'] ?? '1',
-      ),
+      builder: (context, state) =>
+          LessonCompleteScreen(stopId: state.pathParameters['id'] ?? '1'),
     ),
     GoRoute(
       path: '/premium/options',
@@ -134,7 +204,8 @@ final GoRouter appRouter = GoRouter(
       path: '/login',
       builder: (context, state) {
         final returnTo = state.uri.queryParameters['returnTo'];
-        return LoginScreen(returnTo: returnTo);
+        final email = state.uri.queryParameters['email'];
+        return LoginScreen(returnTo: returnTo, initialEmail: email);
       },
     ),
     GoRoute(
@@ -142,6 +213,14 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final returnTo = state.uri.queryParameters['returnTo'];
         return RegisterScreen(returnTo: returnTo);
+      },
+    ),
+    GoRoute(
+      path: '/verify-otp',
+      builder: (context, state) {
+        final email = state.uri.queryParameters['email'] ?? '';
+        final returnTo = state.uri.queryParameters['returnTo'];
+        return VerifyOtpScreen(email: email, returnTo: returnTo);
       },
     ),
 
@@ -154,9 +233,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/missions/brief/:id',
-      builder: (context, state) => MissionBriefScreen(
-        missionId: state.pathParameters['id'] ?? '',
-      ),
+      builder: (context, state) =>
+          MissionBriefScreen(missionId: state.pathParameters['id'] ?? ''),
     ),
     GoRoute(
       path: '/missions/emergency-phrasebook',
@@ -172,7 +250,8 @@ final GoRouter appRouter = GoRouter(
         final topicId = state.uri.queryParameters['topicId'] ?? '';
         final style = state.uri.queryParameters['style'] ?? 'gentle';
         final config = state.extra as SessionConfig?;
-        final effectiveConfig = config ??
+        final effectiveConfig =
+            config ??
             SessionConfig(
               missionId: topicId.isEmpty ? 'order_coffee' : topicId,
               mode: MissionMode.chat,
@@ -284,3 +363,7 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+}
+
+/// Global GoRouter application instance.
+final GoRouter appRouter = createAppRouter();

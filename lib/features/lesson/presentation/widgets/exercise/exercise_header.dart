@@ -42,10 +42,7 @@ class ExerciseHeader extends StatelessWidget {
             child: Material(
               color: palette.surface,
               shape: CircleBorder(
-                side: BorderSide(
-                  color: palette.outline,
-                  width: 1.0,
-                ),
+                side: BorderSide(color: palette.outline, width: 1.0),
               ),
               clipBehavior: Clip.antiAlias,
               child: InkWell(

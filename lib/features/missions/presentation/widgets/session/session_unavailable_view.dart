@@ -32,13 +32,17 @@ class SessionUnavailableView extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   AppStrings.sessionLanguageUnavailableTitle,
-                  style: AppTypography.screenTitle.copyWith(color: palette.textPrimary),
+                  style: AppTypography.screenTitle.copyWith(
+                    color: palette.textPrimary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   AppStrings.sessionLanguageUnavailableBody(targetLanguageName),
-                  style: AppTypography.bodyMedium.copyWith(color: palette.textMuted),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: palette.textMuted,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],

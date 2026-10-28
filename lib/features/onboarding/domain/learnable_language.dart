@@ -12,6 +12,9 @@ class LearnableLanguage {
     required this.helloText,
     required this.ttsLocale,
     this.difficulty,
+    this.status = 'available',
+    this.hasLessons = true,
+    this.hasPlacement = true,
   });
 
   /// ISO 639-1 language code (e.g. 'es', 'fr', 'de').
@@ -40,6 +43,15 @@ class LearnableLanguage {
 
   /// Learning difficulty rating from 1 (easiest) to 3 (hardest). Null for coming soon.
   final int? difficulty;
+
+  /// API status: 'available' or 'coming_soon'.
+  final String status;
+
+  /// Whether lessons are available for this language pair.
+  final bool hasLessons;
+
+  /// Whether placement quiz is supported for this language.
+  final bool hasPlacement;
 
   @override
   bool operator ==(Object other) =>

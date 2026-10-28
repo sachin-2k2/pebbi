@@ -60,17 +60,15 @@ class PhraseTokenWidget extends StatelessWidget {
                       token.text,
                       style: AppTypography.display.copyWith(
                         fontWeight: FontWeight.w800,
-                        color: isSaved ? palette.brandText : palette.textPrimary,
+                        color: isSaved
+                            ? palette.brandText
+                            : palette.textPrimary,
                       ),
                     ),
                   ),
                   if (isSaved) ...[
                     const SizedBox(width: AppSpacing.xxs),
-                    Icon(
-                      Icons.star_rounded,
-                      size: 16.0,
-                      color: palette.brand,
-                    ),
+                    Icon(Icons.star_rounded, size: 16.0, color: palette.brand),
                   ],
                 ],
               ),

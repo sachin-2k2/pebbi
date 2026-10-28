@@ -9,6 +9,7 @@ import '../../../onboarding/domain/language_level.dart';
 import '../../../onboarding/domain/language_option.dart';
 import '../../../onboarding/domain/level_info.dart';
 import 'explanation_language_sheet.dart';
+import '../screens/settings_screen_actions.dart';
 import 'settings_picker_tile.dart';
 import 'settings_section_card.dart';
 import 'settings_toggle_tile.dart';
@@ -39,6 +40,12 @@ class CoursesSection extends StatelessWidget {
   final ValueChanged<bool> onShowHelperLineChanged;
 
   static const List<Map<String, String>> availableLanguages = [
+    {'code': 'en', 'name': 'English'},
+    {'code': 'ml', 'name': 'മലയാളം'},
+    {'code': 'hi', 'name': 'हिन्दी'},
+    {'code': 'ta', 'name': 'தமிழ்'},
+    {'code': 'te', 'name': 'తెలుగు'},
+    {'code': 'kn', 'name': 'ಕನ್ನಡ'},
     {'code': 'es', 'name': 'Español'},
     {'code': 'fr', 'name': 'Français'},
     {'code': 'de', 'name': 'Deutsch'},
@@ -58,6 +65,20 @@ class CoursesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final expLang = _activeExplanationOption;
     final showNotice = !expLang.translationsReviewed;
+    final containsActive = availableLanguages.any(
+      (l) => l['code'] == selectedTargetLanguageCode,
+    );
+    final displayedLanguages = containsActive
+        ? availableLanguages
+        : [
+            ...availableLanguages,
+            {
+              'code': selectedTargetLanguageCode,
+              'name': SettingsScreenActions.resolveTargetLanguage(
+                selectedTargetLanguageCode,
+              ).nativeName,
+            },
+          ];
 
     return SettingsSectionCard(
       emoji: '🌍',
@@ -70,7 +91,7 @@ class CoursesSection extends StatelessWidget {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: [
-              for (final lang in availableLanguages)
+              for (final lang in displayedLanguages)
                 SelectablePillChip(
                   label: lang['name']!,
                   isSelected: selectedTargetLanguageCode == lang['code'],

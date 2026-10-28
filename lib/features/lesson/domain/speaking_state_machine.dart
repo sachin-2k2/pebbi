@@ -29,8 +29,8 @@ class SpeakingStateMachine {
   SpeakingStateMachine({
     SpeakFlowState initial = SpeakFlowState.ready,
     SelfCheckReason? selfCheckReason,
-  })  : _flowState = initial,
-        _selfCheckReason = selfCheckReason;
+  }) : _flowState = initial,
+       _selfCheckReason = selfCheckReason;
 
   SpeakFlowState _flowState;
   SelfCheckReason? _selfCheckReason;

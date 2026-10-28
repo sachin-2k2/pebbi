@@ -115,7 +115,7 @@ void main() {
         // Verify state strictly contains AgeBand.adult and NO raw year
         final state = container.read(onboardingFlowProvider);
         expect(state.currentStep, equals(2));
-        expect(state.ageBand, equals(AgeBand.adult));
+        expect(state.ageBand, equals(AgeBand.band18_24));
       },
     );
 
@@ -142,12 +142,7 @@ void main() {
         expect(find.byIcon(Icons.shield_outlined), findsOneWidget);
 
         // 3. Child notice text is displayed
-        expect(
-          find.textContaining(
-            'Pebbi is for ages 13 and up. Ask a grown-up to set this up with you',
-          ),
-          findsOneWidget,
-        );
+        expect(find.text(PrivacyNoteCard.under13BlockedCopy), findsOneWidget);
 
         // 4. Continue button is disabled (turns grey, isEnabled == false)
         final continueButton = tester.widget<Button3D>(find.byType(Button3D));

@@ -20,7 +20,7 @@ class SettingsHeader extends StatelessWidget {
     required this.levelInfo,
     this.initialName,
     required this.onNameSaved,
-    this.ageBand = AgeBand.adult,
+    this.ageBand = AgeBand.band25_34,
   });
 
   final LearnableLanguage targetLanguage;

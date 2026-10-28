@@ -29,10 +29,16 @@ class _FakeTtsService implements TextToSpeechService {
   int stopCount = 0;
 
   @override
-  Future<bool> speak(String text, {required String locale, double? speechRate}) async {
+  Future<bool> speak(
+    String text, {
+    required String locale,
+    double? speechRate,
+    VoidCallback? onCompletion,
+  }) async {
     lastSpokenText = text;
     lastLocale = locale;
     speakCount++;
+    onCompletion?.call();
     return true;
   }
 
@@ -45,7 +51,6 @@ class _FakeTtsService implements TextToSpeechService {
   void dispose() {}
 }
 
-
 class _FakeAppSettingsNotifier extends AppSettingsNotifier {
   _FakeAppSettingsNotifier(AppSettings initial) {
     state = initial;
@@ -54,7 +59,7 @@ class _FakeAppSettingsNotifier extends AppSettingsNotifier {
 
 class _FakeCurrentUserNotifier extends CurrentUserNotifier {
   _FakeCurrentUserNotifier(UserProfile? initial)
-      : super(MockProfileRepository(), initial);
+    : super(MockProfileRepository(), initial);
 }
 
 UserProfile _createTestProfile(String id, {AgeBand ageBand = AgeBand.adult}) {
@@ -120,9 +125,7 @@ void main() {
           (ref) => _FakeCurrentUserNotifier(user),
         ),
       ],
-      child: const MaterialApp(
-        home: ExerciseScreen(stopId: 'stop_test'),
-      ),
+      child: const MaterialApp(home: ExerciseScreen(stopId: 'stop_test')),
     );
   }
 
@@ -135,15 +138,15 @@ void main() {
       fakeTts = _FakeTtsService();
     });
 
-    testWidgets('renders Screen A with phrase card, dots, mic, and tip note',
-        (tester) async {
+    testWidgets('renders Screen A with phrase card, dots, mic, and tip note', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
+      await tester.pumpWidget(
+        createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(SpeakBody), findsOneWidget);
@@ -161,10 +164,9 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
+      await tester.pumpWidget(
+        createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(AppStrings.hearIt));
@@ -175,65 +177,68 @@ void main() {
       expect(fakeTts.lastLocale, equals('es-ES'));
     });
 
-    testWidgets('tapping mic starts listening and matched speech awards credit',
-        (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 844));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      'tapping mic starts listening and matched speech awards credit',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 844));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+        );
+        await tester.pumpAndSettle();
 
-      // Tap mic
-      await tester.tap(find.byType(MicButton));
-      await tester.pump();
+        // Tap mic
+        await tester.tap(find.byType(MicButton));
+        await tester.pump();
 
-      expect(fakeRecognizer.isListening, isTrue);
+        expect(fakeRecognizer.isListening, isTrue);
 
-      // Simulate recognized speech
-      fakeRecognizer.simulateSpeech('Muy bien gracias');
-      await tester.pumpAndSettle();
+        // Simulate recognized speech
+        fakeRecognizer.simulateSpeech('Muy bien gracias');
+        await tester.pumpAndSettle();
 
-      // FeedbackPanel appears
-      expect(find.byType(FeedbackPanel), findsOneWidget);
-      expect(find.text(AppStrings.continueExercise), findsOneWidget);
-    });
+        // FeedbackPanel appears
+        expect(find.byType(FeedbackPanel), findsOneWidget);
+        expect(find.text(AppStrings.continueExercise), findsOneWidget);
+      },
+    );
 
-    testWidgets('tapping "rather not speak" transitions to Screen B (Self-Check)',
-        (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 844));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      'tapping "rather not speak" transitions to Screen B (Self-Check)',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 844));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text(AppStrings.speakRatherNotAction));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text(AppStrings.speakRatherNotAction));
+        await tester.pumpAndSettle();
 
-      expect(find.byType(SelfCheckBody), findsOneWidget);
-      expect(find.text(AppStrings.selfCheckTitle), findsOneWidget);
-      expect(find.text(AppStrings.selfCheckSubUserChose), findsOneWidget);
-      expect(find.text('Hear it again'), findsOneWidget);
-      expect(
-        find.text('${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}'),
-        findsOneWidget,
-      );
-      expect(find.text(AppStrings.selfCheckSkipAction), findsOneWidget);
-    });
+        expect(find.byType(SelfCheckBody), findsOneWidget);
+        expect(find.text(AppStrings.selfCheckTitle), findsOneWidget);
+        expect(find.text(AppStrings.selfCheckSubUserChose), findsOneWidget);
+        expect(find.text('Hear it again'), findsOneWidget);
+        expect(
+          find.text(
+            '${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text(AppStrings.selfCheckSkipAction), findsOneWidget);
+      },
+    );
 
     testWidgets('on Screen B: "Hear it again" plays TTS', (tester) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
+      await tester.pumpWidget(
+        createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text(AppStrings.speakRatherNotAction));
@@ -246,75 +251,85 @@ void main() {
       expect(fakeTts.lastSpokenText, equals('Muy bien, gracias'));
     });
 
-    testWidgets('on Screen B: "I said it ✓" awards half credit and triggers FeedbackPanel',
-        (tester) async {
+    testWidgets(
+      'on Screen B: "I said it ✓" awards half credit and triggers FeedbackPanel',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 844));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        await tester.pumpWidget(
+          createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(AppStrings.speakRatherNotAction));
+        await tester.pumpAndSettle();
+
+        await tester.tap(
+          find.text(
+            '${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}',
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(FeedbackPanel), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'on Screen B: "Skip for now" skips without penalty and finishes',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 844));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        await tester.pumpWidget(
+          createSubject(recognizer: fakeRecognizer, tts: fakeTts),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(AppStrings.speakRatherNotAction));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(AppStrings.selfCheckSkipAction));
+        await tester.pumpAndSettle();
+
+        // Since it's the last item in the set, session finishes
+        expect(find.byType(FeedbackPanel), findsNothing);
+      },
+    );
+
+    testWidgets('speaking disabled in Settings automatically opens Screen B', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(AppStrings.speakRatherNotAction));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(
-        '${AppStrings.selfCheckSaidItAction}  ${AppStrings.selfCheckHalfCreditLabel}',
-      ));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(FeedbackPanel), findsOneWidget);
-    });
-
-    testWidgets('on Screen B: "Skip for now" skips without penalty and finishes',
-        (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 844));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-      ));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(AppStrings.speakRatherNotAction));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text(AppStrings.selfCheckSkipAction));
-      await tester.pumpAndSettle();
-
-      // Since it's the last item in the set, session finishes
-      expect(find.byType(FeedbackPanel), findsNothing);
-    });
-
-    testWidgets('speaking disabled in Settings automatically opens Screen B',
-        (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 844));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-        settings: const AppSettings(speakingPracticeEnabled: false),
-      ));
+      await tester.pumpWidget(
+        createSubject(
+          recognizer: fakeRecognizer,
+          tts: fakeTts,
+          settings: const AppSettings(speakingPracticeEnabled: false),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(SelfCheckBody), findsOneWidget);
       expect(find.text(AppStrings.selfCheckSubSettingOff), findsOneWidget);
     });
 
-    testWidgets('child safety policy automatically opens Screen B',
-        (tester) async {
+    testWidgets('child safety policy automatically opens Screen B', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(390, 844));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(createSubject(
-        recognizer: fakeRecognizer,
-        tts: fakeTts,
-        user: _createTestProfile('u_child', ageBand: AgeBand.child),
-      ));
+      await tester.pumpWidget(
+        createSubject(
+          recognizer: fakeRecognizer,
+          tts: fakeTts,
+          user: _createTestProfile('u_child', ageBand: AgeBand.child),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(SelfCheckBody), findsOneWidget);

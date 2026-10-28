@@ -261,8 +261,7 @@ abstract final class SampleLessons {
           audioLocale: 'es-ES',
           sttLocale: 'es-ES',
           correctAnswerText: 'Muy bien, gracias',
-          feedbackSuccessText:
-              '“Muy bien, gracias” means I\'m well, thank you',
+          feedbackSuccessText: '“Muy bien, gracias” means I\'m well, thank you',
           explanationText:
               'Say "Muy bien, gracias" clearly into your microphone.',
         ),

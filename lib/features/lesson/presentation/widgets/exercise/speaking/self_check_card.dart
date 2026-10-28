@@ -46,9 +46,7 @@ class SelfCheckCard extends StatelessWidget {
           Text(
             phrase,
             style: AppTypography.cardTitle.copyWith(
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.textPrimary,
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
               fontWeight: FontWeight.w800,
             ),
             textAlign: TextAlign.center,
@@ -68,9 +66,7 @@ class SelfCheckCard extends StatelessWidget {
           Text(
             meaning,
             style: AppTypography.caption.copyWith(
-              color: isDark
-                  ? AppColors.darkTextMuted
-                  : AppColors.textMuted,
+              color: isDark ? AppColors.darkTextMuted : AppColors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),

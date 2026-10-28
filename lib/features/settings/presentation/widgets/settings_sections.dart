@@ -5,6 +5,7 @@ import '../../../../core/services/audio_feedback_service.dart';
 import '../../../onboarding/domain/age_band.dart';
 import '../../../onboarding/domain/language_level.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/providers/user_session_manager.dart';
 import '../../../onboarding/domain/level_info.dart';
 import '../../../onboarding/domain/reminder_time.dart';
 import '../providers/app_settings_provider.dart';
@@ -63,7 +64,7 @@ class SettingsSections {
         levelInfo: levelInfo,
         initialName: user?.firstName ?? settings.firstName,
         onNameSaved: (n) => SettingsScreenActions.handleNameSaved(ref, user, n),
-        ageBand: user?.ageBand ?? AgeBand.adult,
+        ageBand: user?.ageBand ?? AgeBand.band25_34,
       ),
       courses: CoursesSection(
         selectedTargetLanguageCode: user?.targetLanguageCode ?? 'es',
@@ -137,7 +138,7 @@ class SettingsSections {
         onSeeOptions: () => context.push('/premium/options'),
         onResetProgress: () =>
             SettingsScreenActions.handleResetProgress(context, ref),
-        onLogOut: () => ref.read(currentUserProvider.notifier).logout(),
+        onLogOut: () => UserSessionManager.executeLogout(ref, context),
       ),
       more: MoreSection(
         onPrivacyTap: () => context.push('/settings/privacy'),

@@ -66,8 +66,12 @@ abstract final class AppStrings {
       'This is the language of explanations and hints.';
   static const String searchLanguagesPlaceholder = 'Search languages';
   static const String noLanguagesFound = 'No languages found';
+  // TODO(question): Confirm exact client copy for AI translation review disclaimer
   static const String translationsPendingNotice =
-      'Lesson translations are English at launch while native reviewers check the rest — your choice is saved and used for Pebbi\'s explanations and mission feedback.';
+      'Lessons are translated by AI for now and may contain mistakes while native speakers review them.';
+  // TODO(question): Confirm exact client copy for no courses empty state
+  static const String noCoursesTitle = 'No courses for your language yet';
+  static const String changeSpokenLanguageAction = 'Change spoken language';
   static String languageChipSemantics(String language, bool isSelected) =>
       isSelected ? '$language, selected' : language;
 
@@ -283,8 +287,7 @@ abstract final class AppStrings {
       'Speaking exercise\n(coming next)';
   static const String speakTitle = 'Say it out loud';
   static const String speakTapMicPrompt = 'Tap the mic and say the sentence';
-  static const String speakRatherNotAction =
-      "I'd rather not speak right now";
+  static const String speakRatherNotAction = "I'd rather not speak right now";
   static const String speakRatherNotActionSemantics =
       "I'd rather not speak right now, switch to self-check";
   static const String speakTipNote = 'Speak, or skip — nothing is lost';
@@ -315,8 +318,7 @@ abstract final class AppStrings {
       'Play phrase pronunciation again';
   static const String selfCheckSaidItAction = 'I said it ✓';
   static const String selfCheckHalfCreditLabel = '(half credit)';
-  static const String selfCheckSaidItSemantics =
-      'I said it, earn half credit';
+  static const String selfCheckSaidItSemantics = 'I said it, earn half credit';
   static const String selfCheckSkipAction = 'Skip for now';
   static const String selfCheckSkipSemantics =
       'Skip this speaking exercise without penalty';
@@ -375,8 +377,7 @@ abstract final class AppStrings {
   static String phraseRowSemantics({
     required String phrase,
     required String meaning,
-  }) =>
-      '$phrase. $meaning. Double tap to hear it.';
+  }) => '$phrase. $meaning. Double tap to hear it.';
 
   static String lessonCompleteAnnouncement({
     required int stars,
@@ -740,11 +741,16 @@ abstract final class AppStrings {
   static const String authErrorAccountDisabled =
       'This account has been disabled.';
   static const String authErrorUnknown = 'Unable to log in. Please try again.';
+  static const String authSuccessLogin = 'Logged in successfully';
+  static const String authSuccessRegister = 'Account created successfully';
 
   // Auth Screen: Register ("Create your account")
   static const String createAccountTitle = 'Create your account';
   static const String createAccountSubtitle =
       'Your streak, stars and phrasebook on every device';
+  static const String nameLabel = 'Full name';
+  static const String namePlaceholder = 'e.g. John Doe';
+  static const String authErrorNameEmpty = 'Please enter your name';
   static const String confirmPasswordLabel = 'Confirm password';
   static const String createAccountAction = 'Create account';
   static const String creatingAccountProcessing =
@@ -876,8 +882,7 @@ abstract final class AppStrings {
   static String phraseSemantics({
     required String phrase,
     required String meaning,
-  }) =>
-      '$phrase. $meaning. Double tap to hear it.';
+  }) => '$phrase. $meaning. Double tap to hear it.';
   static const String playbackStartedAnnouncement = 'Unit playback started';
   static const String playbackCompletedAnnouncement = 'Unit playback completed';
 
@@ -1382,8 +1387,6 @@ abstract final class AppStrings {
 
   // Settings Account Card
   static const String settingsAccountTitle = 'Account';
-  static const String settingsAccountSubtitle =
-      "Pebbi works without an account while you're finding your feet.";
   static const String settingsGuestModeTitle = 'Guest mode';
   static const String settingsGuestModeSubtitle =
       'Your streak, stars and phrasebook live on this device.';
@@ -1456,11 +1459,11 @@ abstract final class AppStrings {
   static const String captionsSwitchLabel = 'Captions always on';
   static const String voiceDisabledSpeakingOff =
       'Speaking practice is off in Settings';
-  static const String voiceDisabledAge = 'Voice is unavailable for this account';
+  static const String voiceDisabledAge =
+      'Voice is unavailable for this account';
   static const String voiceDisabledRecognizer =
       'Speech recognition is not available for this language';
-  static const String voiceDisabledScene =
-      'This scene does not support voice';
+  static const String voiceDisabledScene = 'This scene does not support voice';
   static const String voicePermissionFallback =
       'Microphone permission denied. Switched to Chat.';
   static const String missionNotFound = 'Mission not found';
@@ -1481,16 +1484,16 @@ abstract final class AppStrings {
   // Role-Play Session Strings
   static String sessionCharacterOnline(String role) => '$role · online';
   static const String sessionHelpButtonLabel = 'Help';
-  static const String sessionHelpButtonSemantics = 'Help options and scene tips';
+  static const String sessionHelpButtonSemantics =
+      'Help options and scene tips';
   static String sessionGoalChipSemantics(
     int index,
     int total,
     String text,
     bool isDone,
-  ) =>
-      isDone
-          ? 'Goal $index of $total: $text, completed.'
-          : 'Goal $index of $total: $text, not completed.';
+  ) => isDone
+      ? 'Goal $index of $total: $text, completed.'
+      : 'Goal $index of $total: $text, not completed.';
   static String sessionGoalCompletedAnnouncement(String text) =>
       '$text goal completed!';
   static String sessionGoalsSummaryChip(int completed, int total) =>
@@ -1519,20 +1522,18 @@ abstract final class AppStrings {
     String name,
     String text,
     String? translation,
-  ) =>
-      translation != null
-          ? '$name says: $text. Meaning: $translation. Double tap to hear it.'
-          : '$name says: $text. Double tap to hear it.';
+  ) => translation != null
+      ? '$name says: $text. Meaning: $translation. Double tap to hear it.'
+      : '$name says: $text. Double tap to hear it.';
   static String sessionUserMessageSemantics(
     String text,
     String? translation,
     bool isFailed,
-  ) =>
-      isFailed
-          ? 'You said: $text, not sent. Double tap to retry.'
-          : (translation != null
-              ? 'You said: $text. Meaning: $translation.'
-              : 'You said: $text.');
+  ) => isFailed
+      ? 'You said: $text, not sent. Double tap to retry.'
+      : (translation != null
+            ? 'You said: $text. Meaning: $translation.'
+            : 'You said: $text.');
 
   static const String sessionSayInMyLanguage = 'Say it in my language';
   static const String sessionCaptionsOn = 'captions on';
@@ -1577,7 +1578,8 @@ abstract final class AppStrings {
   static const String reportReasonInappropriate = 'Inappropriate or offensive';
   static const String reportReasonInaccurate =
       'Grammatically inaccurate or confusing';
-  static const String reportReasonOffTopic = 'Completely off-topic for the scene';
+  static const String reportReasonOffTopic =
+      'Completely off-topic for the scene';
   static const String reportReasonOther = 'Other problem';
   static const String reportSubmit = 'Submit report';
   static const String reportSuccessNotice =
@@ -1595,4 +1597,3 @@ abstract final class AppStrings {
   static const String sessionGenericErrorNotice =
       'Could not send message. Please check your connection and tap retry.';
 }
-

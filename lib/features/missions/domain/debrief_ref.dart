@@ -16,8 +16,9 @@ class DebriefRef {
   final List<String> completedGoalIds;
   final int totalGoals;
 
-  double get completionRatio =>
-      totalGoals == 0 ? 0.0 : (completedGoalIds.length / totalGoals).clamp(0.0, 1.0);
+  double get completionRatio => totalGoals == 0
+      ? 0.0
+      : (completedGoalIds.length / totalGoals).clamp(0.0, 1.0);
 
   @override
   bool operator ==(Object other) =>
@@ -30,10 +31,5 @@ class DebriefRef {
           totalGoals == other.totalGoals;
 
   @override
-  int get hashCode => Object.hash(
-        sessionId,
-        missionId,
-        turnsCount,
-        totalGoals,
-      );
+  int get hashCode => Object.hash(sessionId, missionId, turnsCount, totalGoals);
 }

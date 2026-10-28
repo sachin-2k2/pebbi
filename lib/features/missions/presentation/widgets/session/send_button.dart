@@ -6,11 +6,7 @@ import '../../../../../l10n/app_strings.dart';
 ///
 /// Follows AGENTS.md §4.6 & §8: 48dp minimum touch target.
 class SendButton extends StatelessWidget {
-  const SendButton({
-    super.key,
-    required this.onPressed,
-    this.isEnabled = true,
-  });
+  const SendButton({super.key, required this.onPressed, this.isEnabled = true});
 
   final VoidCallback onPressed;
   final bool isEnabled;
@@ -24,7 +20,9 @@ class SendButton extends StatelessWidget {
       enabled: isEnabled,
       label: AppStrings.sendMessage,
       child: Material(
-        color: isEnabled ? palette.brand : palette.brand.withValues(alpha: 0.85),
+        color: isEnabled
+            ? palette.brand
+            : palette.brand.withValues(alpha: 0.85),
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),

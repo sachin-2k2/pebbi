@@ -305,7 +305,7 @@ void main() {
           // Re-assign listener to track any stray calls
           final deadSequencer = UnitGuideSequencer(
             phrases: [p1],
-            speakDelegate: (_, __) async => true,
+            speakDelegate: (_, onComplete) async => true,
             stopSpeechDelegate: () async {},
             onStateChanged: (_) => stateChangesAfterDispose++,
           )..dispose();
@@ -356,7 +356,7 @@ void main() {
       final stateHistory = <SequencerStatus>[];
       final sequencer = UnitGuideSequencer(
         phrases: const [],
-        speakDelegate: (_, __) async => true,
+        speakDelegate: (_, onComplete) async => true,
         stopSpeechDelegate: () async {},
         onStateChanged: (s) => stateHistory.add(s.status),
       );

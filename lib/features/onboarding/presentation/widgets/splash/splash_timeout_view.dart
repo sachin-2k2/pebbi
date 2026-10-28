@@ -59,10 +59,7 @@ class SplashTimeoutView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                Button3D(
-                  label: 'Retry',
-                  onPressed: onRetry,
-                ),
+                Button3D(label: 'Retry', onPressed: onRetry),
                 const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   onPressed: onContinueGuest,

@@ -72,7 +72,8 @@ class SessionExpandedLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final isWaiting = state.status == ConversationStatus.starting ||
+    final isWaiting =
+        state.status == ConversationStatus.starting ||
         state.status == ConversationStatus.waitingForCharacter ||
         state.status == ConversationStatus.sending;
 
@@ -95,11 +96,15 @@ class SessionExpandedLayout extends StatelessWidget {
                     children: [
                       Text(
                         state.characterName,
-                        style: AppTypography.screenTitle.copyWith(color: palette.textPrimary),
+                        style: AppTypography.screenTitle.copyWith(
+                          color: palette.textPrimary,
+                        ),
                       ),
                       Text(
                         AppStrings.sessionCharacterOnline(state.characterRole),
-                        style: AppTypography.caption.copyWith(color: palette.textMuted),
+                        style: AppTypography.caption.copyWith(
+                          color: palette.textMuted,
+                        ),
                       ),
                     ],
                   ),
@@ -116,7 +121,8 @@ class SessionExpandedLayout extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               itemCount: state.goals.length,
-              separatorBuilder: (_, index) => const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (_, index) =>
+                  const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, i) {
                 final g = state.goals[i];
                 return Container(
@@ -195,13 +201,18 @@ class SessionExpandedLayout extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Container(
           color: palette.surface,
-          padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
+          padding: const EdgeInsets.only(
+            top: AppSpacing.sm,
+            bottom: AppSpacing.xs,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (state.isFinished)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: Button3D(
                     label: AppStrings.sessionSeeDebrief,
                     backgroundColor: palette.mint,
@@ -221,7 +232,8 @@ class SessionExpandedLayout extends StatelessWidget {
                   controller: textController,
                   targetLanguageCode: config.targetLanguageCode,
                   targetLanguageName: targetLanguageName,
-                  isEnabled: state.status == ConversationStatus.userTurn ||
+                  isEnabled:
+                      state.status == ConversationStatus.userTurn ||
                       state.status == ConversationStatus.failed,
                   canSend: state.canSend,
                   onChanged: onTextChanged,

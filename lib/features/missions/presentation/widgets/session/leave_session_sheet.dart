@@ -60,9 +60,7 @@ class LeaveSessionSheet extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                minimumSize: const Size(48.0, 48.0),
-              ),
+              style: TextButton.styleFrom(minimumSize: const Size(48.0, 48.0)),
               child: Text(
                 AppStrings.leaveSessionLeave,
                 style: AppTypography.bodyMedium.copyWith(

@@ -41,7 +41,31 @@ class FlutterTtsService implements TextToSpeechService {
     if (_initialized) return;
     _tts.setSpeechRate(0.45);
     _tts.setPitch(1.0);
+    _tts.awaitSpeakCompletion(true);
     _initialized = true;
+  }
+
+  /// Strips emojis and parenthesized transliterations so TTS doesn't read both.
+  static String cleanAudioText(String text) {
+    if (text.trim().isEmpty) return text;
+    final withoutEmojis = text.replaceAll(
+      RegExp(
+        r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]',
+        unicode: true,
+      ),
+      '',
+    );
+    final withoutParens = withoutEmojis
+        .replaceAll(RegExp(r'\s*\([^)]*\)'), '')
+        .replaceAll(RegExp(r'\s*\[[^\]]*\]'), '')
+        .trim();
+    if (withoutParens.isNotEmpty) return withoutParens;
+    return withoutEmojis
+        .replaceAll('(', '')
+        .replaceAll(')', '')
+        .replaceAll('[', '')
+        .replaceAll(']', '')
+        .trim();
   }
 
   @override
@@ -68,7 +92,8 @@ class FlutterTtsService implements TextToSpeechService {
       } else {
         await _tts.setSpeechRate(0.45);
       }
-      final result = await _tts.speak(text);
+      final cleanText = cleanAudioText(text);
+      final result = await _tts.speak(cleanText);
       return result == 1;
     } catch (e) {
       debugPrint('TTS: Error speaking text for $locale: $e');
@@ -94,12 +119,7 @@ class FlutterTtsService implements TextToSpeechService {
 }
 
 /// Simulation behavior modes for [FakeSpeechService] in test suites.
-enum FakeTtsMode {
-  normal,
-  error,
-  neverCompleting,
-  lateCompletion,
-}
+enum FakeTtsMode { normal, error, neverCompleting, lateCompletion }
 
 /// In-memory fake implementation of [TextToSpeechService] for unit and widget tests.
 class FakeSpeechService implements TextToSpeechService {
@@ -122,6 +142,7 @@ class FakeSpeechService implements TextToSpeechService {
   String? lastLocale;
   double? lastSpeechRate;
   bool isSpeaking = false;
+  int get speakCallCount => spokenHistory.length;
   int stopCallCount = 0;
 
   @override
@@ -142,11 +163,12 @@ class FakeSpeechService implements TextToSpeechService {
       return false;
     }
 
-    lastSpokenText = text;
+    final cleaned = FlutterTtsService.cleanAudioText(text);
+    lastSpokenText = cleaned;
     lastLocale = locale;
     lastSpeechRate = speechRate;
     isSpeaking = true;
-    spokenHistory.add((text: text, locale: locale, speechRate: speechRate));
+    spokenHistory.add((text: cleaned, locale: locale, speechRate: speechRate));
 
     if (mode == FakeTtsMode.normal && onCompletion != null) {
       if (completionDelay == Duration.zero) {
@@ -179,3 +201,5 @@ final textToSpeechServiceProvider = Provider<TextToSpeechService>((ref) {
   ref.onDispose(() => service.dispose());
   return service;
 });
+
+typedef FakeTextToSpeechService = FakeSpeechService;

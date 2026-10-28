@@ -55,8 +55,9 @@ class ExerciseBottomBar extends StatelessWidget {
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
           ),
-          child:
-              mode == BottomBarMode.gotIt ? _buildGotIt(palette) : _buildCheck(),
+          child: mode == BottomBarMode.gotIt
+              ? _buildGotIt(palette)
+              : _buildCheck(),
         ),
       ),
     );

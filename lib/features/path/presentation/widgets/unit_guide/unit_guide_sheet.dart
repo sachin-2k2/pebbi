@@ -129,7 +129,8 @@ class _UnitGuideSheetState extends ConsumerState<UnitGuideSheet>
                   UnitGuidePlayerOverlay(
                     phrase: player.currentPhrase!,
                     currentIndex: player.currentIndex,
-                    totalPhrases: guideAsync.valueOrNull?.keyPhrases.length ?? 0,
+                    totalPhrases:
+                        guideAsync.valueOrNull?.keyPhrases.length ?? 0,
                     onStopPressed: () => _player.stop(),
                   ),
               ],
@@ -142,8 +143,8 @@ class _UnitGuideSheetState extends ConsumerState<UnitGuideSheet>
 
   void _handleListen(List<GuidePhrase> phrases) =>
       ref.read(unitGuidePlayerProvider).isPlaying
-          ? _player.stop()
-          : _player.playUnit(phrases);
+      ? _player.stop()
+      : _player.playUnit(phrases);
 
   void _handlePhraseTap(GuidePhrase phrase) => _player.playSinglePhrase(phrase);
 }

@@ -70,7 +70,8 @@ class SessionBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final isKeyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
-    final isWaiting = state.status == ConversationStatus.starting ||
+    final isWaiting =
+        state.status == ConversationStatus.starting ||
         state.status == ConversationStatus.waitingForCharacter ||
         state.status == ConversationStatus.sending;
 
@@ -119,13 +120,18 @@ class SessionBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Container(
           color: palette.surface,
-          padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
+          padding: const EdgeInsets.only(
+            top: AppSpacing.sm,
+            bottom: AppSpacing.xs,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (state.isFinished)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: Button3D(
                     label: AppStrings.sessionSeeDebrief,
                     backgroundColor: palette.mint,
@@ -145,7 +151,8 @@ class SessionBody extends StatelessWidget {
                   controller: textController,
                   targetLanguageCode: config.targetLanguageCode,
                   targetLanguageName: targetLanguageName,
-                  isEnabled: state.status == ConversationStatus.userTurn ||
+                  isEnabled:
+                      state.status == ConversationStatus.userTurn ||
                       state.status == ConversationStatus.failed,
                   canSend: state.canSend,
                   onChanged: onTextChanged,

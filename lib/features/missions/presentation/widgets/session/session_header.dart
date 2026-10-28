@@ -37,9 +37,7 @@ class SessionHeader extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.sm,
       ),
-      decoration: BoxDecoration(
-        color: palette.surface,
-      ),
+      decoration: BoxDecoration(color: palette.surface),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -86,7 +84,9 @@ class SessionHeader extends StatelessWidget {
                               const SizedBox(width: AppSpacing.xs),
                               Flexible(
                                 child: Text(
-                                  AppStrings.sessionCharacterOnline(characterRole),
+                                  AppStrings.sessionCharacterOnline(
+                                    characterRole,
+                                  ),
                                   style: AppTypography.caption.copyWith(
                                     color: palette.textMuted,
                                     fontWeight: FontWeight.w600,

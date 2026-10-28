@@ -88,7 +88,7 @@ class PathReadyNotifier extends StateNotifier<PathReadyState> {
 
       final profile = UserProfile(
         userId: guestId,
-        ageBand: answers.ageBand ?? AgeBand.adult,
+        ageBand: answers.ageBand ?? AgeBand.band25_34,
         explanationLanguageCode: answers.explanationLanguageCode,
         targetLanguageCode: answers.targetLanguageCode,
         reasonIds: answers.selectedReasonIds,

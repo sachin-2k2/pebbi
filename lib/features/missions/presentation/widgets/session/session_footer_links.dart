@@ -49,13 +49,11 @@ class SessionFooterLinks extends StatelessWidget {
         minimumSize: const Size(48.0, 48.0),
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
       ),
-      icon: Icon(
-        Icons.subtitles_rounded,
-        size: 16.0,
-        color: palette.textMuted,
-      ),
+      icon: Icon(Icons.subtitles_rounded, size: 16.0, color: palette.textMuted),
       label: Text(
-        captionsOn ? AppStrings.sessionCaptionsOn : AppStrings.sessionCaptionsOff,
+        captionsOn
+            ? AppStrings.sessionCaptionsOn
+            : AppStrings.sessionCaptionsOff,
         style: AppTypography.caption.copyWith(
           color: palette.textMuted,
           fontWeight: FontWeight.w700,
@@ -88,11 +86,7 @@ class SessionFooterLinks extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: AppSpacing.xs,
           runSpacing: AppSpacing.xs,
-          children: [
-            sayInMyLanguageLink,
-            captionsToggle,
-            finishLink,
-          ],
+          children: [sayInMyLanguageLink, captionsToggle, finishLink],
         ),
       ),
     );

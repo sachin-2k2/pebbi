@@ -5,8 +5,13 @@ import 'package:peddi/app/app.dart';
 import 'package:peddi/app/router.dart';
 import 'package:peddi/features/path/presentation/widgets/top_pills.dart';
 import 'package:peddi/l10n/app_strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
+
   testWidgets(
     'PebbiApp smoke test: boots to Welcome, skips to Setup, and navigates Path/Missions',
     (tester) async {
@@ -15,6 +20,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(const ProviderScope(child: PebbiApp()));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
       await tester.pumpAndSettle();
 
       // Verify initial route is WelcomeScreen

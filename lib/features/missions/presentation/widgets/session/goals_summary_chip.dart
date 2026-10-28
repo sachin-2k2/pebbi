@@ -50,12 +50,17 @@ class GoalsSummaryChip extends StatelessWidget {
                       ? Icons.check_circle_rounded
                       : Icons.flag_rounded,
                   size: 16.0,
-                  color: completedCount == totalCount ? palette.mint : palette.brand,
+                  color: completedCount == totalCount
+                      ? palette.mint
+                      : palette.brand,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Flexible(
                   child: Text(
-                    AppStrings.sessionGoalsSummaryChip(completedCount, totalCount),
+                    AppStrings.sessionGoalsSummaryChip(
+                      completedCount,
+                      totalCount,
+                    ),
                     style: AppTypography.labelMedium.copyWith(
                       color: palette.textPrimary,
                       fontWeight: FontWeight.w700,

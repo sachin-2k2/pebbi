@@ -6,10 +6,16 @@ import 'nav_destination_item.dart';
 
 /// Bottom tab bar for compact screens with theme-aware background and active pill.
 class AppTabBar extends StatelessWidget {
-  const AppTabBar({super.key, required this.currentIndex, required this.onTap});
+  const AppTabBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+    this.includeBottomSafeArea = true,
+  });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool includeBottomSafeArea;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,7 @@ class AppTabBar extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
+        bottom: includeBottomSafeArea,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
@@ -61,7 +68,9 @@ class _TabBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final color = isSelected ? palette.tabBarSelected : palette.tabBarUnselected;
+    final color = isSelected
+        ? palette.tabBarSelected
+        : palette.tabBarUnselected;
 
     return Semantics(
       button: true,

@@ -13,10 +13,12 @@ class HearItButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.label = AppStrings.hearIt,
+    this.isPlaying = false,
   });
 
   final VoidCallback onPressed;
   final String label;
+  final bool isPlaying;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class HearItButton extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
         child: InkWell(
-          onTap: onPressed,
+          onTap: isPlaying ? null : onPressed,
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
           child: Container(
             constraints: const BoxConstraints(

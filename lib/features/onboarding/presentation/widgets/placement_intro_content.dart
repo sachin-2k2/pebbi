@@ -25,7 +25,24 @@ class PlacementIntroContent extends ConsumerWidget {
       (lang) => lang.code == onboardingState.targetLanguageCode,
       orElse: () => null,
     );
-    final languageName = targetLang?.englishName ?? 'Spanish';
+    final String languageName;
+    if (targetLang != null && (targetLang.englishName as String).isNotEmpty) {
+      languageName = targetLang.englishName as String;
+    } else {
+      switch (onboardingState.targetLanguageCode) {
+        case 'ml':
+          languageName = 'Malayalam';
+          break;
+        case 'en':
+          languageName = 'English';
+          break;
+        case 'es':
+          languageName = 'Spanish';
+          break;
+        default:
+          languageName = onboardingState.targetLanguageCode.toUpperCase();
+      }
+    }
     final subtitle = AppStrings.placementIntroSubtitle(
       language: languageName,
       questionsCount: OnboardingConfig.placementQuestionsCount,

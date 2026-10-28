@@ -41,7 +41,9 @@ class SuggestionCard extends StatelessWidget {
               vertical: 13.0,
             ),
             decoration: BoxDecoration(
-              color: palette.isDark ? palette.surfaceVariant : palette.brandTint,
+              color: palette.isDark
+                  ? palette.surfaceVariant
+                  : palette.brandTint,
               borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
               border: Border.all(color: palette.brand, width: 1.5),
             ),

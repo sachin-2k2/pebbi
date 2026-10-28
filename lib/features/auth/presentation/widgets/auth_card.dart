@@ -6,6 +6,7 @@ import '../../../../l10n/app_strings.dart';
 import 'confirm_password_field.dart';
 import 'email_field.dart';
 import 'general_error_banner.dart';
+import 'name_field.dart';
 import 'or_divider.dart';
 import 'password_field.dart';
 import 'social_button.dart';
@@ -17,6 +18,9 @@ class AuthCard extends StatelessWidget {
   const AuthCard({
     super.key,
     this.child,
+    this.nameController,
+    this.nameFocusNode,
+    this.nameError,
     this.emailController,
     this.passwordController,
     this.isPasswordObscured = false,
@@ -42,6 +46,9 @@ class AuthCard extends StatelessWidget {
   });
 
   final Widget? child;
+  final TextEditingController? nameController;
+  final FocusNode? nameFocusNode;
+  final String? nameError;
   final TextEditingController? emailController;
   final TextEditingController? passwordController;
   final bool isPasswordObscured;
@@ -100,6 +107,16 @@ class AuthCard extends StatelessWidget {
           ],
           if (generalError != null && generalError!.isNotEmpty) ...[
             GeneralErrorBanner(message: generalError!),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          if (nameController != null) ...[
+            NameField(
+              controller: nameController!,
+              focusNode: nameFocusNode,
+              errorMessage: nameError,
+              enabled: !isSubmitting,
+              onFieldSubmitted: (_) => emailFocusNode?.requestFocus(),
+            ),
             const SizedBox(height: AppSpacing.md),
           ],
           if (emailController != null)

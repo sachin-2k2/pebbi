@@ -59,7 +59,8 @@ class SessionScreenContent extends ConsumerWidget {
           characterName: state.characterName,
         ),
         onPlayAudio: notifier.playMessageAudio,
-        onReport: (r) => notifier.reportMessage(messageId: 'char_msg', reason: r),
+        onReport: (r) =>
+            notifier.reportMessage(messageId: 'char_msg', reason: r),
         onRetry: notifier.retryFailedMessage,
         onDelete: notifier.deleteFailedMessage,
         onSelectSuggestion: notifier.sendUserMessage,
@@ -105,7 +106,8 @@ class SessionScreenContent extends ConsumerWidget {
             characterName: state.characterName,
           ),
           onPlayAudio: notifier.playMessageAudio,
-          onReport: (r) => notifier.reportMessage(messageId: 'char_msg', reason: r),
+          onReport: (r) =>
+              notifier.reportMessage(messageId: 'char_msg', reason: r),
           onRetry: notifier.retryFailedMessage,
           onDelete: notifier.deleteFailedMessage,
           onSelectSuggestion: notifier.sendUserMessage,
@@ -150,7 +152,8 @@ class SessionScreenContent extends ConsumerWidget {
           characterName: state.characterName,
         ),
         onPlayAudio: notifier.playMessageAudio,
-        onReport: (r) => notifier.reportMessage(messageId: 'char_msg', reason: r),
+        onReport: (r) =>
+            notifier.reportMessage(messageId: 'char_msg', reason: r),
         onRetry: notifier.retryFailedMessage,
         onDelete: notifier.deleteFailedMessage,
         onSelectSuggestion: notifier.sendUserMessage,

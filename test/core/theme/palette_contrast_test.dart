@@ -46,10 +46,7 @@ void main() {
           palette.warningText,
           palette.warningSurface,
         ),
-        'infoText on infoSurface': (
-          palette.infoText,
-          palette.infoSurface,
-        ),
+        'infoText on infoSurface': (palette.infoText, palette.infoSurface),
         'chipSelectedText on chipSelectedFill': (
           palette.chipSelectedText,
           palette.chipSelectedFill,
@@ -115,10 +112,7 @@ void main() {
           palette.warningText,
           palette.warningSurface,
         ),
-        'infoText on infoSurface': (
-          palette.infoText,
-          palette.infoSurface,
-        ),
+        'infoText on infoSurface': (palette.infoText, palette.infoSurface),
         'chipSelectedText on chipSelectedFill': (
           palette.chipSelectedText,
           palette.chipSelectedFill,

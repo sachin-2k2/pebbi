@@ -2,8 +2,10 @@ import 'dart:convert';
 import '../domain/exercise_mode.dart';
 import '../domain/exercise_repository.dart';
 import '../domain/exercise_set.dart';
+import '../../onboarding/data/mock_placement_repository.dart';
 import 'dtos/exercise_dto.dart';
 import 'mappers/exercise_mapper.dart';
+import 'mappers/placement_exercise_mapper.dart';
 
 /// Mock implementation of [ExerciseRepository] providing realistic placement check data.
 ///
@@ -12,9 +14,28 @@ class MockExerciseRepository implements ExerciseRepository {
   const MockExerciseRepository();
 
   @override
-  Future<ExerciseSet> loadPlacementSet(String targetLanguageCode) async {
+  Future<ExerciseSet> loadPlacementSet(
+    String targetLanguageCode, {
+    String nativeLanguageCode = 'en',
+  }) async {
     // Simulated micro-delay for realistic async behaviour
     await Future<void>.delayed(const Duration(milliseconds: 10));
+
+    final target = targetLanguageCode.toLowerCase().trim();
+    if (target == 'ml' || target == 'en') {
+      const mockPlacement = MockPlacementRepository();
+      final questionSet = await mockPlacement.getQuestions(
+        nativeLanguage: nativeLanguageCode,
+        targetLanguage: targetLanguageCode,
+      );
+      if (questionSet.sortedValidQuestions.isNotEmpty) {
+        return PlacementExerciseMapper.toExerciseSet(
+          questionSet: questionSet,
+          targetLanguageCode: targetLanguageCode,
+          nativeLanguageCode: nativeLanguageCode,
+        );
+      }
+    }
 
     final rawList = jsonDecode(_kPlacementQuestionsJson) as List<dynamic>;
     final exercises = rawList

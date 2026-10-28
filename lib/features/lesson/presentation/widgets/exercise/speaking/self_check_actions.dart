@@ -21,9 +21,7 @@ class SelfCheckActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final skipColor = isDark
-        ? AppColors.darkTextMuted
-        : AppColors.textMuted;
+    final skipColor = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

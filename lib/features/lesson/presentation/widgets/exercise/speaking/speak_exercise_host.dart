@@ -57,8 +57,9 @@ class _SpeakExerciseHostState extends ConsumerState<SpeakExerciseHost> {
 
   Future<void> _onHearIt() async {
     await _stopListeningQuietly();
-    await ref.read(textToSpeechServiceProvider).speak(
-        widget.exercise.phrase, locale: widget.exercise.audioLocale);
+    await ref
+        .read(textToSpeechServiceProvider)
+        .speak(widget.exercise.phrase, locale: widget.exercise.audioLocale);
   }
 
   Future<void> _stopListeningQuietly() async {
@@ -89,7 +90,9 @@ class _SpeakExerciseHostState extends ConsumerState<SpeakExerciseHost> {
     setState(() => _sm.startListening());
     _timeoutTimer = Timer(SpeakingConfig.maxListeningDuration, () async {
       await recognizer.stop();
-      if (mounted && _sm.isListening) setState(() => _sm.toSelfCheck(SelfCheckReason.notHeard));
+      if (mounted && _sm.isListening) {
+        setState(() => _sm.toSelfCheck(SelfCheckReason.notHeard));
+      }
     });
 
     await recognizer.listen(
@@ -109,7 +112,9 @@ class _SpeakExerciseHostState extends ConsumerState<SpeakExerciseHost> {
         } else if (isFinal) {
           _timeoutTimer?.cancel();
           await recognizer.stop();
-          if (mounted) setState(() => _sm.toSelfCheck(SelfCheckReason.notHeard));
+          if (mounted) {
+            setState(() => _sm.toSelfCheck(SelfCheckReason.notHeard));
+          }
         }
       },
     );
@@ -122,12 +127,16 @@ class _SpeakExerciseHostState extends ConsumerState<SpeakExerciseHost> {
 
   void _onSaidIt() {
     setState(() => _sm.onSelfCheckConfirmed());
-    ref.read(exerciseSessionProvider.notifier).onSelfCheckConfirmed(reason: _sm.selfCheckReason);
+    ref
+        .read(exerciseSessionProvider.notifier)
+        .onSelfCheckConfirmed(reason: _sm.selfCheckReason);
   }
 
   void _onSkip() {
     setState(() => _sm.onSkipped());
-    ref.read(exerciseSessionProvider.notifier).onSpeakSkipped(reason: _sm.selfCheckReason);
+    ref
+        .read(exerciseSessionProvider.notifier)
+        .onSpeakSkipped(reason: _sm.selfCheckReason);
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/text_to_speech_service.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../domain/exercise.dart';
+import '../../../onboarding/presentation/providers/onboarding_flow_provider.dart';
 import '../providers/exercise_session_notifier.dart';
 import '../providers/lesson_providers.dart';
 import '../providers/lesson_settings_provider.dart';
@@ -18,13 +19,15 @@ import 'exercise_screen_navigation.dart';
 class ExerciseScreen extends ConsumerStatefulWidget {
   const ExerciseScreen({
     super.key,
-    this.targetLanguageCode = 'es',
+    this.targetLanguageCode,
+    this.nativeLanguageCode,
     this.stopId,
     this.finishRoute,
     this.onCompleted,
   });
 
-  final String targetLanguageCode;
+  final String? targetLanguageCode;
+  final String? nativeLanguageCode;
   final String? stopId;
   final String? finishRoute;
   final VoidCallback? onCompleted;
@@ -44,7 +47,16 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
       if (widget.stopId != null) {
         notifier.loadLesson(widget.stopId!);
       } else {
-        notifier.loadPlacement(widget.targetLanguageCode);
+        final ob = ref.read(onboardingFlowProvider);
+        final target = (widget.targetLanguageCode?.isNotEmpty ?? false)
+            ? widget.targetLanguageCode!
+            : (ob.targetLanguageCode.isNotEmpty ? ob.targetLanguageCode : 'es');
+        final native = (widget.nativeLanguageCode?.isNotEmpty ?? false)
+            ? widget.nativeLanguageCode!
+            : (ob.explanationLanguageCode.isNotEmpty
+                ? ob.explanationLanguageCode
+                : 'en');
+        notifier.loadPlacement(target, nativeLanguageCode: native);
       }
     });
   }
@@ -70,12 +82,22 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
   void _handleExit() =>
       ExerciseScreenNavigation.handleExit(context, stopId: widget.stopId);
 
+  @override
+  void dispose() {
+    ref.read(textToSpeechServiceProvider).stop();
+    super.dispose();
+  }
+
   Future<void> _handlePlayAudio(Exercise exercise) async {
+    if (_isPlayingAudio) return;
     setState(() => _isPlayingAudio = true);
-    await ref
-        .read(textToSpeechServiceProvider)
-        .speak(exercise.audioText, locale: exercise.audioLocale);
-    if (mounted) setState(() => _isPlayingAudio = false);
+    try {
+      await ref
+          .read(textToSpeechServiceProvider)
+          .speak(exercise.audioText, locale: exercise.audioLocale);
+    } finally {
+      if (mounted) setState(() => _isPlayingAudio = false);
+    }
   }
 
   @override
@@ -90,9 +112,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     if (state.isLoading || exercise == null) {
       return Scaffold(
         backgroundColor: palette.background,
-        body: Center(
-          child: CircularProgressIndicator(color: palette.brand),
-        ),
+        body: Center(child: CircularProgressIndicator(color: palette.brand)),
       );
     }
 

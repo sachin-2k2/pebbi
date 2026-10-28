@@ -31,7 +31,9 @@ class LearnedPhrasesCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkSurface : AppColors.surface;
     final border = isDark ? AppColors.darkBorder : AppColors.borderLight;
-    final titleColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+    final titleColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.textPrimary;
 
     final visiblePhrases = phrases
         .take(CompletionConfig.maxLearnedPhrasesDisplayed)

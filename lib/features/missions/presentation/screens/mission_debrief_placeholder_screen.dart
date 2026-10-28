@@ -31,17 +31,25 @@ class MissionDebriefPlaceholderScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('🎉', style: TextStyle(fontSize: 48.0), textAlign: TextAlign.center),
+                const Text(
+                  '🎉',
+                  style: TextStyle(fontSize: 48.0),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Debrief Placeholder',
-                  style: AppTypography.screenTitle.copyWith(color: palette.textPrimary),
+                  style: AppTypography.screenTitle.copyWith(
+                    color: palette.textPrimary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'TODO(question: Full debrief screen is not yet designed)',
-                  style: AppTypography.bodyMedium.copyWith(color: palette.textMuted),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: palette.textMuted,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 if (debrief != null) ...[
@@ -50,14 +58,22 @@ class MissionDebriefPlaceholderScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: palette.surface,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusCard,
+                      ),
                       border: Border.all(color: palette.outline),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Session: ${debrief.sessionId}', style: AppTypography.caption),
-                        Text('Turns count: ${debrief.turnsCount}', style: AppTypography.bodyMedium),
+                        Text(
+                          'Session: ${debrief.sessionId}',
+                          style: AppTypography.caption,
+                        ),
+                        Text(
+                          'Turns count: ${debrief.turnsCount}',
+                          style: AppTypography.bodyMedium,
+                        ),
                         Text(
                           'Goals completed: ${debrief.completedGoalIds.length} of ${debrief.totalGoals}',
                           style: AppTypography.bodyMedium,

@@ -75,7 +75,9 @@ class SelectablePillChip extends StatelessWidget {
 
     final defaultBorder =
         borderColor ??
-        (isSelected ? palette.chipSelectedBorder : palette.chipUnselectedBorder);
+        (isSelected
+            ? palette.chipSelectedBorder
+            : palette.chipUnselectedBorder);
 
     return Semantics(
       button: true,

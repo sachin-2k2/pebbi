@@ -15,6 +15,7 @@ class PlacementResult {
     required this.totalQuestions,
     this.praisePhrases = const [],
     this.streakDay,
+    this.estimatedNote,
   });
 
   /// Evaluates and constructs [PlacementResult] from session exercises and recorded results.
@@ -73,6 +74,9 @@ class PlacementResult {
   /// Day number for streak chip, or null if no streak is awarded.
   final int? streakDay;
 
+  /// Optional estimated note from the placement API (e.g. "Estimated: Starter").
+  final String? estimatedNote;
+
   /// Whether the score chip ("{firstTry}/{total} first try") should be visible.
   ///
   /// TODO(question): The placement intro promised "No scores, no shaming" and
@@ -93,6 +97,7 @@ class PlacementResult {
     int? totalQuestions,
     List<String>? praisePhrases,
     int? streakDay,
+    String? estimatedNote,
   }) {
     return PlacementResult(
       suggestedLevel: suggestedLevel ?? this.suggestedLevel,
@@ -101,6 +106,7 @@ class PlacementResult {
       totalQuestions: totalQuestions ?? this.totalQuestions,
       praisePhrases: praisePhrases ?? this.praisePhrases,
       streakDay: streakDay ?? this.streakDay,
+      estimatedNote: estimatedNote ?? this.estimatedNote,
     );
   }
 
@@ -114,6 +120,7 @@ class PlacementResult {
           firstTryCorrect == other.firstTryCorrect &&
           totalQuestions == other.totalQuestions &&
           streakDay == other.streakDay &&
+          estimatedNote == other.estimatedNote &&
           _listEquals(praisePhrases, other.praisePhrases);
 
   @override
@@ -123,6 +130,7 @@ class PlacementResult {
     firstTryCorrect,
     totalQuestions,
     streakDay,
+    estimatedNote,
     Object.hashAll(praisePhrases),
   );
 

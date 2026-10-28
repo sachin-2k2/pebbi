@@ -34,7 +34,8 @@ class MockConversationRepository implements ConversationRepository {
   final Map<String, int> _sessionTurnCounters = {};
   final Map<String, Set<String>> _sessionCompletedGoals = {};
   final Map<String, TurnResult> _idempotentCache = {};
-  final List<({String sessionId, String messageId, String reason})> reportedMessages = [];
+  final List<({String sessionId, String messageId, String reason})>
+  reportedMessages = [];
 
   void reset() {
     _sessionTurnCounters.clear();
@@ -62,7 +63,8 @@ class MockConversationRepository implements ConversationRepository {
       throw MissionLanguageUnavailableException(targetLang);
     }
 
-    final sessionId = 'sess_${config.missionId}_${DateTime.now().millisecondsSinceEpoch}';
+    final sessionId =
+        'sess_${config.missionId}_${DateTime.now().millisecondsSinceEpoch}';
     _sessionTurnCounters[sessionId] = 0;
     _sessionCompletedGoals[sessionId] = <String>{};
 
@@ -87,9 +89,21 @@ class MockConversationRepository implements ConversationRepository {
           timestamp: DateTime.now(),
         ),
         suggestions: const [
-          Suggestion(id: 's1', text: 'Un café, por favor.', translation: 'A coffee, please.'),
-          Suggestion(id: 's2', text: 'Un chocolate caliente, por favor.', translation: 'A hot chocolate, please.'),
-          Suggestion(id: 's3', text: 'Un té, por favor.', translation: 'A tea, please.'),
+          Suggestion(
+            id: 's1',
+            text: 'Un café, por favor.',
+            translation: 'A coffee, please.',
+          ),
+          Suggestion(
+            id: 's2',
+            text: 'Un chocolate caliente, por favor.',
+            translation: 'A hot chocolate, please.',
+          ),
+          Suggestion(
+            id: 's3',
+            text: 'Un té, por favor.',
+            translation: 'A tea, please.',
+          ),
         ],
       );
     }
@@ -114,9 +128,21 @@ class MockConversationRepository implements ConversationRepository {
         timestamp: DateTime.now(),
       ),
       suggestions: const [
-        Suggestion(id: 's1', text: "Un café, s'il vous plaît.", translation: 'A coffee, please.'),
-        Suggestion(id: 's2', text: "Un chocolat chaud, s'il vous plaît.", translation: 'A hot chocolate, please.'),
-        Suggestion(id: 's3', text: "Un thé, s'il vous plaît.", translation: 'A tea, please.'),
+        Suggestion(
+          id: 's1',
+          text: "Un café, s'il vous plaît.",
+          translation: 'A coffee, please.',
+        ),
+        Suggestion(
+          id: 's2',
+          text: "Un chocolat chaud, s'il vous plaît.",
+          translation: 'A hot chocolate, please.',
+        ),
+        Suggestion(
+          id: 's3',
+          text: "Un thé, s'il vous plaît.",
+          translation: 'A tea, please.',
+        ),
       ],
     );
   }
@@ -148,7 +174,10 @@ class MockConversationRepository implements ConversationRepository {
     final turnIndex = _sessionTurnCounters[sessionId] ?? 0;
     final nextTurn = turnIndex + 1;
     _sessionTurnCounters[sessionId] = nextTurn;
-    final completed = _sessionCompletedGoals.putIfAbsent(sessionId, () => <String>{});
+    final completed = _sessionCompletedGoals.putIfAbsent(
+      sessionId,
+      () => <String>{},
+    );
 
     final targetLang = config.targetLanguageCode;
     final isFrench = targetLang == 'fr';
@@ -172,14 +201,38 @@ class MockConversationRepository implements ConversationRepository {
         ),
         suggestions: isFrench
             ? const [
-                Suggestion(id: 's2_1', text: "Avec du lait, s'il vous plaît.", translation: 'With milk, please.'),
-                Suggestion(id: 's2_2', text: "Sans lait, s'il vous plaît.", translation: 'Without milk, please.'),
-                Suggestion(id: 's2_3', text: 'Combien ça coûte ?', translation: 'How much does it cost?'),
+                Suggestion(
+                  id: 's2_1',
+                  text: "Avec du lait, s'il vous plaît.",
+                  translation: 'With milk, please.',
+                ),
+                Suggestion(
+                  id: 's2_2',
+                  text: "Sans lait, s'il vous plaît.",
+                  translation: 'Without milk, please.',
+                ),
+                Suggestion(
+                  id: 's2_3',
+                  text: 'Combien ça coûte ?',
+                  translation: 'How much does it cost?',
+                ),
               ]
             : const [
-                Suggestion(id: 's2_1', text: 'Con leche, por favor.', translation: 'With milk, please.'),
-                Suggestion(id: 's2_2', text: 'Sin leche, por favor.', translation: 'Without milk, please.'),
-                Suggestion(id: 's2_3', text: '¿Cuánto cuesta?', translation: 'How much does it cost?'),
+                Suggestion(
+                  id: 's2_1',
+                  text: 'Con leche, por favor.',
+                  translation: 'With milk, please.',
+                ),
+                Suggestion(
+                  id: 's2_2',
+                  text: 'Sin leche, por favor.',
+                  translation: 'Without milk, please.',
+                ),
+                Suggestion(
+                  id: 's2_3',
+                  text: '¿Cuánto cuesta?',
+                  translation: 'How much does it cost?',
+                ),
               ],
       );
     } else if (nextTurn == 2) {
@@ -188,7 +241,9 @@ class MockConversationRepository implements ConversationRepository {
       result = TurnResult(
         completedGoalIds: ['g1', 'g2'],
         correction: config.correctionStyle.id == 'live'
-            ? (isFrench ? "Un café au lait, s'il vous plaît" : 'Un café con leche, por favor')
+            ? (isFrench
+                  ? "Un café au lait, s'il vous plaît"
+                  : 'Un café con leche, por favor')
             : null,
         characterMessage: ChatMessage(
           id: 'msg_char_${sessionId}_$nextTurn',
@@ -202,14 +257,38 @@ class MockConversationRepository implements ConversationRepository {
         ),
         suggestions: isFrench
             ? const [
-                Suggestion(id: 's3_1', text: 'Voici trois euros, merci !', translation: 'Here is three euros, thank you!'),
-                Suggestion(id: 's3_2', text: 'Puis-je payer par carte ?', translation: 'Can I pay by card?'),
-                Suggestion(id: 's3_3', text: 'Merci beaucoup !', translation: 'Thank you very much!'),
+                Suggestion(
+                  id: 's3_1',
+                  text: 'Voici trois euros, merci !',
+                  translation: 'Here is three euros, thank you!',
+                ),
+                Suggestion(
+                  id: 's3_2',
+                  text: 'Puis-je payer par carte ?',
+                  translation: 'Can I pay by card?',
+                ),
+                Suggestion(
+                  id: 's3_3',
+                  text: 'Merci beaucoup !',
+                  translation: 'Thank you very much!',
+                ),
               ]
             : const [
-                Suggestion(id: 's3_1', text: 'Aquí tiene tres euros, ¡gracias!', translation: 'Here is three euros, thank you!'),
-                Suggestion(id: 's3_2', text: '¿Puedo pagar con tarjeta?', translation: 'Can I pay by card?'),
-                Suggestion(id: 's3_3', text: '¡Muchas gracias!', translation: 'Thank you very much!'),
+                Suggestion(
+                  id: 's3_1',
+                  text: 'Aquí tiene tres euros, ¡gracias!',
+                  translation: 'Here is three euros, thank you!',
+                ),
+                Suggestion(
+                  id: 's3_2',
+                  text: '¿Puedo pagar con tarjeta?',
+                  translation: 'Can I pay by card?',
+                ),
+                Suggestion(
+                  id: 's3_3',
+                  text: '¡Muchas gracias!',
+                  translation: 'Thank you very much!',
+                ),
               ],
       );
     } else {
@@ -224,7 +303,8 @@ class MockConversationRepository implements ConversationRepository {
           targetText: isFrench
               ? 'Merci beaucoup ! Bonne journée et à bientôt !'
               : '¡Muchas gracias! ¡Que tengas un buen día y hasta pronto!',
-          translationText: 'Thank you very much! Have a nice day and see you soon!',
+          translationText:
+              'Thank you very much! Have a nice day and see you soon!',
           audioLocale: locale,
           timestamp: DateTime.now(),
         ),
@@ -268,7 +348,11 @@ class MockConversationRepository implements ConversationRepository {
     required String reason,
   }) async {
     await Future<void>.delayed(simulatedLatency);
-    reportedMessages.add((sessionId: sessionId, messageId: messageId, reason: reason));
+    reportedMessages.add((
+      sessionId: sessionId,
+      messageId: messageId,
+      reason: reason,
+    ));
   }
 
   @override

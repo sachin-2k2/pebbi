@@ -1,0 +1,82 @@
+{
+  "available": true,
+  "native_language": "ml",
+  "target_language": "en",
+  "questions": [
+    {
+      "id": "q3",
+      "sort_order": 3,
+      "prompt": "Third Question",
+      "target_phrase": "Water",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "💧",
+          "label": "Water",
+          "is_correct": true,
+          "pebbi_correct": "Correct!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "H2O"
+        },
+        {
+          "emoji": "🔥",
+          "label": "Fire",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "Fire"
+        }
+      ]
+    },
+    {
+      "id": "q1",
+      "sort_order": 1,
+      "prompt": "First Question",
+      "target_phrase": "Good morning",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🌅",
+          "label": "Sunrise",
+          "is_correct": true,
+          "pebbi_correct": "Correct!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "Morning"
+        },
+        {
+          "emoji": "🌙",
+          "label": "Moon",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "Night"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "sort_order": 2,
+      "prompt": "Second Question",
+      "target_phrase": "Thank you",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🙏",
+          "label": "Thanks",
+          "is_correct": true,
+          "pebbi_correct": "Correct!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "Thanks"
+        },
+        {
+          "emoji": "🚗",
+          "label": "Car",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "Wrong!",
+          "fun_fact": "Vehicle"
+        }
+      ]
+    }
+  ]
+}

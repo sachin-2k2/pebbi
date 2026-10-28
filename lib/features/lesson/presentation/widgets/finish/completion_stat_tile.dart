@@ -27,8 +27,12 @@ class CompletionStatTile extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkSurface : AppColors.surface;
     final border = isDark ? AppColors.darkBorder : AppColors.borderLight;
-    final titleColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final labelColor = isDark ? AppColors.darkTextMuted : const Color(0xFF524F6B);
+    final titleColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.textPrimary;
+    final labelColor = isDark
+        ? AppColors.darkTextMuted
+        : const Color(0xFF524F6B);
 
     return Semantics(
       label: semanticLabel,
@@ -45,9 +49,7 @@ class CompletionStatTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ExcludeSemantics(
-              child: Icon(icon, color: iconColor, size: 26.0),
-            ),
+            ExcludeSemantics(child: Icon(icon, color: iconColor, size: 26.0)),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(

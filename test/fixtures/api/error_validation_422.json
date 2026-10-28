@@ -1,0 +1,14 @@
+{
+  "detail": [
+    {
+      "loc": ["body", "password"],
+      "msg": "password 'P@ssword999' is too weak for account victim@example.com",
+      "type": "value_error"
+    },
+    {
+      "loc": ["body", "email"],
+      "msg": "email victim@example.com contains invalid characters",
+      "type": "value_error"
+    }
+  ]
+}

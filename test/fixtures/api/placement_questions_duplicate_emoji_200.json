@@ -1,0 +1,73 @@
+{
+  "available": true,
+  "native_language": "ml",
+  "target_language": "en",
+  "questions": [
+    {
+      "id": "q1_bad",
+      "sort_order": 1,
+      "prompt": "Which one means 'Good morning'?",
+      "target_phrase": "Good morning",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🌅",
+          "label": "Sunrise 1",
+          "is_correct": true,
+          "pebbi_correct": "Spot on!",
+          "pebbi_wrong": "That was good morning!",
+          "fun_fact": "Morning sun."
+        },
+        {
+          "emoji": "🌅",
+          "label": "Sunrise 2",
+          "is_correct": false,
+          "pebbi_correct": "Good!",
+          "pebbi_wrong": "Duplicate sunrise!",
+          "fun_fact": "Duplicate emoji."
+        },
+        {
+          "emoji": "🌙",
+          "label": "Moon",
+          "is_correct": false,
+          "pebbi_correct": "Nice!",
+          "pebbi_wrong": "Nighttime!",
+          "fun_fact": "Moon."
+        },
+        {
+          "emoji": "☕",
+          "label": "Coffee",
+          "is_correct": false,
+          "pebbi_correct": "Great!",
+          "pebbi_wrong": "Coffee!",
+          "fun_fact": "Drink."
+        }
+      ]
+    },
+    {
+      "id": "q2_good",
+      "sort_order": 2,
+      "prompt": "Which one means 'Thank you'?",
+      "target_phrase": "Thank you",
+      "pebbi_warning": null,
+      "options": [
+        {
+          "emoji": "🙏",
+          "label": "Folded hands",
+          "is_correct": true,
+          "pebbi_correct": "Excellent!",
+          "pebbi_wrong": "Folded hands!",
+          "fun_fact": "Thanks."
+        },
+        {
+          "emoji": "🚗",
+          "label": "Car",
+          "is_correct": false,
+          "pebbi_correct": "Yes!",
+          "pebbi_wrong": "Car!",
+          "fun_fact": "Vehicle."
+        }
+      ]
+    }
+  ]
+}

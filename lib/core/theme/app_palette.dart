@@ -233,8 +233,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   Color get playingRowFill => brandTint;
   Color get playingRowBorder => isDark ? const Color(0xFFA78BFA) : brand;
   Color get playingRowText => textPrimary;
-  Color get playingRowMutedText =>
-      isDark ? textMuted : const Color(0xFF4C4668);
+  Color get playingRowMutedText => isDark ? textMuted : const Color(0xFF4C4668);
 
   /// Creates a Light mode palette instance.
   factory AppPalette.light([Color accentColor = AppColors.brandPurple]) {
@@ -838,16 +837,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
         other.splashForegroundMuted,
         t,
       )!,
-      splashDashLit: Color.lerp(
-        splashDashLit,
-        other.splashDashLit,
-        t,
-      )!,
-      splashDashDim: Color.lerp(
-        splashDashDim,
-        other.splashDashDim,
-        t,
-      )!,
+      splashDashLit: Color.lerp(splashDashLit, other.splashDashLit, t)!,
+      splashDashDim: Color.lerp(splashDashDim, other.splashDashDim, t)!,
     );
   }
 }

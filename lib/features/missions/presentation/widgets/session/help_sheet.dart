@@ -90,7 +90,10 @@ class HelpSheet extends StatelessWidget {
                       color: palette.textPrimary,
                     ),
                   ),
-                  trailing: Icon(Icons.chevron_right_rounded, color: palette.textMuted),
+                  trailing: Icon(
+                    Icons.chevron_right_rounded,
+                    color: palette.textMuted,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
                     side: BorderSide(color: palette.outline),
