@@ -20,7 +20,7 @@ class ApiConfig {
              const String.fromEnvironment(
                'API_BASE_URL',
                defaultValue:
-                   'https://deals-state-starsmerchant-cream.trycloudflare.com',
+                   'https://antivirus-pretty-nursery-receptors.trycloudflare.com',
              ),
        ),
        placementApiMode =
@@ -39,7 +39,7 @@ class ApiConfig {
        lessonApiMode =
            lessonApiMode ??
            ApiMode.fromString(
-             const String.fromEnvironment('LESSON_API', defaultValue: 'mock'),
+             const String.fromEnvironment('LESSON_API', defaultValue: 'real'),
            ) {
     if (isRelease && !this.baseUrl.startsWith('https://')) {
       throw StateError(

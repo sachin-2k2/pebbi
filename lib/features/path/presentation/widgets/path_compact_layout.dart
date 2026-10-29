@@ -136,7 +136,7 @@ class PathCompactLayout extends ConsumerWidget {
     if (node.isLocked) {
       showLockedNodeSheet(context, node);
     } else if (node.isCurrent) {
-      context.push('/lesson/1');
+      context.push('/lesson/${node.id}');
     } else {
       _showPlaceholder(context, 'Practice ${node.title}');
     }

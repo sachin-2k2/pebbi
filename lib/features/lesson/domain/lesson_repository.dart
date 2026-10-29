@@ -5,5 +5,9 @@ import 'lesson_set.dart';
 /// Follows AGENTS.md §2.1 & §2.2: Pure Dart, zero Flutter imports.
 abstract interface class LessonRepository {
   /// Loads the [LessonSet] associated with the given curriculum [stopId].
-  Future<LessonSet> loadLesson(String stopId);
+  Future<LessonSet> loadLesson(
+    String stopId, {
+    String? nativeLanguage,
+    String? learningLanguage,
+  });
 }

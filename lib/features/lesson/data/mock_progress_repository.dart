@@ -66,6 +66,7 @@ class MockProgressRepository implements ProgressRepository {
     required String stopId,
     required LessonResult result,
     String? clientEventId,
+    List<LearnedPhrase>? learnedPhrases,
   }) async {
     final eventId =
         clientEventId ??
@@ -103,7 +104,7 @@ class MockProgressRepository implements ProgressRepository {
       }
     }
 
-    final phrases = customLearnedPhrases ?? _defaultPhrasesForStop(stopId);
+    final phrases = learnedPhrases ?? customLearnedPhrases ?? _defaultPhrasesForStop(stopId);
     final goal =
         customDailyGoal ??
         const DailyGoalCompletion(status: DailyGoalStatus.done);
@@ -211,6 +212,36 @@ class MockProgressRepository implements ProgressRepository {
           audioText: 'صباح الخير',
           audioLocale: 'ar-SA',
           isRtl: true,
+        ),
+      ];
+    }
+
+    if (stopId.contains('ml') || stopId.contains('malayalam') || stopId.contains('daily-starter')) {
+      return const [
+        LearnedPhrase(
+          id: 'ml_1',
+          emoji: '👋',
+          text: 'നമസ്കാരം',
+          meaning: 'Hello',
+          audioText: 'നമസ്കാരം',
+          audioLocale: 'ml-IN',
+          helperLine: 'Greeting in Malayalam',
+        ),
+        LearnedPhrase(
+          id: 'ml_2',
+          emoji: '🌅',
+          text: 'സുപ്രഭാതം',
+          meaning: 'Good morning',
+          audioText: 'സുപ്രഭാതം',
+          audioLocale: 'ml-IN',
+        ),
+        LearnedPhrase(
+          id: 'ml_3',
+          emoji: '🙏',
+          text: 'നന്ദി',
+          meaning: 'Thank you',
+          audioText: 'നന്ദി',
+          audioLocale: 'ml-IN',
         ),
       ];
     }

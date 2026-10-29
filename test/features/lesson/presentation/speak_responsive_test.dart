@@ -33,7 +33,11 @@ class _FakeLessonRepository implements LessonRepository {
   _FakeLessonRepository(this.lesson);
   final LessonSet lesson;
   @override
-  Future<LessonSet> loadLesson(String stopId) async => lesson;
+  Future<LessonSet> loadLesson(
+    String stopId, {
+    String? nativeLanguage,
+    String? learningLanguage,
+  }) async => lesson;
 }
 
 void main() {

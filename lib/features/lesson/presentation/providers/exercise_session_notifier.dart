@@ -2,7 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/audio_feedback_service.dart';
 import '../../../review/domain/phrase.dart';
 import '../../../review/domain/phrase_repository.dart';
+import '../../data/dtos/submit_lesson_dto.dart';
 import '../../data/mock_lesson_repository.dart';
+import '../../data/remote_lesson_repository.dart';
+import '../../domain/lesson_completion.dart';
 import '../../domain/answer_checker.dart';
 import '../../domain/exercise.dart';
 import '../../domain/exercise_repository.dart';
@@ -57,10 +60,18 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
   }
 
   /// Loads a curriculum lesson set for [stopId].
-  Future<void> loadLesson(String stopId) async {
+  Future<void> loadLesson(
+    String stopId, {
+    String? nativeLanguageCode,
+    String? targetLanguageCode,
+  }) async {
     state = state.copyWith(isLoading: true);
     final repo = lessonRepository ?? const MockLessonRepository();
-    final lessonSet = await repo.loadLesson(stopId);
+    final lessonSet = await repo.loadLesson(
+      stopId,
+      nativeLanguage: nativeLanguageCode,
+      learningLanguage: targetLanguageCode,
+    );
     state = ExerciseSessionState(
       mainExercises: lessonSet.items,
       currentMainIndex: 0,
@@ -568,7 +579,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
     if (state.status == ExerciseStatus.completed) return;
     state = state.copyWith(status: ExerciseStatus.completed);
 
-    if (state.stopId != null && progressRepository != null) {
+    if (state.stopId != null) {
       final lessonResult = LessonResult(
         stopId: state.stopId!,
         userId: userId,
@@ -576,18 +587,74 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
         itemRecords: state.itemRecords,
         completedAt: DateTime.now(),
       );
-      progressRepository!.saveLessonProgress(
-        userId: userId,
-        result: lessonResult,
-      );
-      final eventId =
-          'evt_${userId}_${state.stopId}_${DateTime.now().millisecondsSinceEpoch}';
-      progressRepository!.completeLesson(
-        userId: userId,
-        stopId: state.stopId!,
-        result: lessonResult,
-        clientEventId: eventId,
-      );
+
+      final learnedPhrases = state.mainExercises
+          .whereType<NewPhraseCardExercise>()
+          .map((ex) => LearnedPhrase(
+                id: ex.id,
+                emoji: ex.picture,
+                text: ex.phrase,
+                meaning: ex.meaning,
+                audioText: ex.audioText,
+                audioLocale: ex.audioLocale,
+              ))
+          .toList();
+
+      if (progressRepository != null) {
+        progressRepository!.saveLessonProgress(
+          userId: userId,
+          result: lessonResult,
+        );
+        final eventId =
+            'evt_${userId}_${state.stopId}_${DateTime.now().millisecondsSinceEpoch}';
+        progressRepository!.completeLesson(
+          userId: userId,
+          stopId: state.stopId!,
+          result: lessonResult,
+          clientEventId: eventId,
+          learnedPhrases: learnedPhrases.isNotEmpty ? learnedPhrases : null,
+        );
+      }
+
+      if (lessonRepository is RemoteLessonRepository) {
+        final remoteRepo = lessonRepository as RemoteLessonRepository;
+        final answers = <SubmitLessonAnswerItemDto>[];
+        for (final ex in state.mainExercises) {
+          // Strictly skip teach cards and non-question synthetic items
+          if (ex is NewPhraseCardExercise || ex.id.endsWith('_dialogue')) {
+            continue;
+          }
+
+          final res = state.results[ex.id];
+          String chosen = '';
+          if (ex is ChooseMeaningExercise) {
+            final opt = ex.options
+                .where((o) =>
+                    o.id == (res?.selectedOptionId ?? state.selectedOptionId))
+                .firstOrNull;
+            chosen = opt?.text ?? res?.selectedOptionId ?? ex.correctAnswerText;
+          } else if (ex is PickPictureExercise) {
+            final opt = ex.options
+                .where((o) =>
+                    o.id == (res?.selectedOptionId ?? state.selectedOptionId))
+                .firstOrNull;
+            chosen = opt?.spokenLabel ?? opt?.imageRef ?? ex.correctAnswerText;
+          } else if (ex is SpeakExercise) {
+            chosen = ex.phrase;
+          } else {
+            chosen = ex.correctAnswerText;
+          }
+          answers.add(SubmitLessonAnswerItemDto(
+            questionId: ex.id,
+            chosenAnswer: chosen,
+          ));
+        }
+
+        remoteRepo.submitLesson(
+          lessonId: state.stopId!,
+          answers: answers,
+        );
+      }
     }
   }
 }

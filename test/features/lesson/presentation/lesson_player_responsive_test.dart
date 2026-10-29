@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:peddi/core/network/api_config.dart';
+import 'package:peddi/core/network/api_mode.dart';
 import 'package:peddi/core/services/audio_feedback_service.dart';
 import 'package:peddi/core/services/text_to_speech_service.dart';
 import 'package:peddi/core/theme/app_theme.dart';
+import 'package:peddi/features/lesson/data/mock_lesson_repository.dart';
+import 'package:peddi/features/lesson/presentation/providers/lesson_providers.dart';
 import 'package:peddi/features/lesson/presentation/screens/exercise_screen.dart';
 
 void main() {
@@ -12,8 +16,17 @@ void main() {
     late FakeAudioFeedbackService fakeAudio;
 
     setUp(() {
+      ApiConfig.setTestInstance(ApiConfig(
+        lessonApiMode: ApiMode.mock,
+        placementApiMode: ApiMode.mock,
+        authApiMode: ApiMode.mock,
+      ));
       fakeSpeech = FakeSpeechService();
       fakeAudio = FakeAudioFeedbackService();
+    });
+
+    tearDown(() {
+      ApiConfig.setTestInstance(null);
     });
 
     Widget createScreen({
@@ -26,6 +39,7 @@ void main() {
         overrides: [
           textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
           audioFeedbackServiceProvider.overrideWithValue(fakeAudio),
+          lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
         ],
         child: MaterialApp(
           theme: theme ?? AppTheme.light(),

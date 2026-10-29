@@ -10,7 +10,14 @@ class MockLessonRepository implements LessonRepository {
   const MockLessonRepository();
 
   @override
-  Future<LessonSet> loadLesson(String stopId) async {
+  Future<LessonSet> loadLesson(
+    String stopId, {
+    String? nativeLanguage,
+    String? learningLanguage,
+  }) async {
+    if (learningLanguage == 'ml') {
+      return SampleLessonVariants.malayalamLesson(stopId: stopId);
+    }
     if (stopId == 'arabic_1') {
       return SampleLessonVariants.arabicLesson();
     }

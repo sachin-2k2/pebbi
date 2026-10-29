@@ -20,6 +20,7 @@ abstract interface class ProgressRepository {
     required String stopId,
     required LessonResult result,
     String? clientEventId,
+    List<LearnedPhrase>? learnedPhrases,
   });
 
   /// Retrieves the cached [LessonCompletion] for [stopId] and [userId], if previously completed.

@@ -1,13 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/network/api_mode.dart';
 import '../../../../core/services/audio_feedback_service.dart';
 import '../../../../core/services/speech_recognizer_service.dart';
 import '../../../../core/services/speech_to_text_recognizer_service.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/providers/session_expired_handler.dart';
 import '../../../review/presentation/providers/review_provider.dart';
 import '../../../onboarding/presentation/providers/placement_repository_provider.dart';
 import '../../data/mock_lesson_repository.dart';
 import '../../data/mock_progress_repository.dart';
 import '../../data/placement_integrated_exercise_repository.dart';
+import '../../data/remote_lesson_repository.dart';
 import '../../domain/answer_checker.dart';
 import '../../domain/exercise_repository.dart';
 import '../../domain/lesson_repository.dart';
@@ -23,6 +28,16 @@ final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
 
 /// Provider for [LessonRepository] (used for curriculum lessons).
 final lessonRepositoryProvider = Provider<LessonRepository>((ref) {
+  final config = ApiConfig.instance;
+  if (config.lessonApiMode == ApiMode.real) {
+    final client = ref.watch(apiClientProvider);
+    return RemoteLessonRepository(
+      apiClient: client,
+      onSessionExpired: (userId) {
+        ref.read(sessionExpiredHandlerProvider).handleExpiredSession(userId);
+      },
+    );
+  }
   return const MockLessonRepository();
 });
 

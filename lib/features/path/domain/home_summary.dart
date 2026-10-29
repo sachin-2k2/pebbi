@@ -5,8 +5,8 @@ class HomeSummary {
   const HomeSummary({
     this.language = 'Español',
     this.languageGlyph = 'Ñ',
-    this.streakCount = 1,
-    this.starsCount = 10,
+    this.streakCount = 0,
+    this.starsCount = 0,
     this.dueCount = 0,
     this.hasAnyPhrases = true,
     this.levelName = 'Little mode',

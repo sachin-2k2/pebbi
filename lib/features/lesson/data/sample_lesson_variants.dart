@@ -3,6 +3,7 @@ import '../domain/lesson_set.dart';
 import '../domain/match_pair_item.dart';
 import '../domain/phrase_token.dart';
 import '../domain/picture_option.dart';
+import '../domain/text_option.dart';
 
 /// Test variants for curriculum lessons (redo rounds, RTL Arabic, long phrases).
 ///
@@ -148,6 +149,112 @@ abstract final class SampleLessonVariants {
           correctAnswerText: 'こんにちは、元気ですか？',
           feedbackSuccessText: '素晴らしい！',
           explanationText: '「こんにちは、元気ですか？」とはっきり発音してください。',
+        ),
+      ],
+    );
+  }
+
+  /// Malayalam curriculum lesson variant for learning Malayalam with English explanations.
+  static LessonSet malayalamLesson({String stopId = '1'}) {
+    return LessonSet(
+      id: 'lesson_malayalam_$stopId',
+      stopId: stopId,
+      title: 'First Greetings (ആദ്യ അഭിവാദ്യങ്ങൾ)',
+      items: const [
+        NewPhraseCardExercise(
+          id: 'ml_item_1',
+          phrase: 'നമസ്കാരം',
+          tokens: [
+            PhraseToken(id: 'ml_tok_1', text: 'നമസ്കാരം', meaning: 'Hello'),
+          ],
+          meaning: 'Hello',
+          picture: '👋',
+          registerTag: 'polite',
+          phraseKindTag: 'New phrase',
+          tipText:
+              '“നമസ്കാരം” (Namaskaram) is the respectful greeting in Malayalam.',
+          audioText: 'നമസ്കാരം',
+          audioLocale: 'ml-IN',
+          correctAnswerText: 'നമസ്കാരം',
+        ),
+        ChooseMeaningExercise(
+          id: 'ml_item_2',
+          prompt: 'What does this mean?',
+          phrase: 'നമസ്കാരം',
+          audioText: 'നമസ്കാരം',
+          audioLocale: 'ml-IN',
+          options: [
+            TextOption(id: 'ml_opt_hello', text: 'Hello'),
+            TextOption(id: 'ml_opt_bye', text: 'Goodbye'),
+            TextOption(id: 'ml_opt_thanks', text: 'Thank you'),
+          ],
+          correctOptionId: 'ml_opt_hello',
+          correctAnswerText: 'Hello',
+          feedbackSuccessText: '“നമസ്കാരം” means Hello',
+          explanationText: '“നമസ്കാരം” is the standard polite greeting in Kerala.',
+        ),
+        NewPhraseCardExercise(
+          id: 'ml_item_3',
+          phrase: 'സുപ്രഭാതം',
+          tokens: [
+            PhraseToken(
+              id: 'ml_tok_2',
+              text: 'സുപ്രഭാതം',
+              meaning: 'Good morning',
+            ),
+          ],
+          meaning: 'Good morning',
+          picture: '🌅',
+          registerTag: 'polite',
+          phraseKindTag: 'New phrase',
+          tipText: '“സുപ്രഭാതം” (Suprabhatham) means Good morning.',
+          audioText: 'സുപ്രഭാതം',
+          audioLocale: 'ml-IN',
+          correctAnswerText: 'സുപ്രഭാതം',
+        ),
+        ChooseMeaningExercise(
+          id: 'ml_item_4',
+          prompt: 'What does this mean?',
+          phrase: 'സുപ്രഭാതം',
+          audioText: 'സുപ്രഭാതം',
+          audioLocale: 'ml-IN',
+          options: [
+            TextOption(id: 'ml_opt_morning', text: 'Good morning'),
+            TextOption(id: 'ml_opt_night', text: 'Good night'),
+            TextOption(id: 'ml_opt_welcome', text: 'Welcome'),
+          ],
+          correctOptionId: 'ml_opt_morning',
+          correctAnswerText: 'Good morning',
+          feedbackSuccessText: '“സുപ്രഭാതം” means Good morning',
+          explanationText: 'Used to wish someone a good morning.',
+        ),
+        NewPhraseCardExercise(
+          id: 'ml_item_5',
+          phrase: 'നന്ദി',
+          tokens: [
+            PhraseToken(id: 'ml_tok_3', text: 'നന്ദി', meaning: 'Thank you'),
+          ],
+          meaning: 'Thank you',
+          picture: '🙏',
+          registerTag: 'polite',
+          phraseKindTag: 'New phrase',
+          tipText: '“നന്ദി” (Nandi) expresses gratitude.',
+          audioText: 'നന്ദി',
+          audioLocale: 'ml-IN',
+          correctAnswerText: 'നന്ദി',
+        ),
+        SpeakExercise(
+          id: 'ml_item_6',
+          prompt: 'Say it out loud',
+          phrase: 'നമസ്കാരം',
+          meaning: 'Hello',
+          helperLine: 'Namaskaram',
+          audioText: 'നമസ്കാരം',
+          audioLocale: 'ml-IN',
+          sttLocale: 'ml-IN',
+          correctAnswerText: 'നമസ്കാരം',
+          feedbackSuccessText: 'Very well said! (നന്നായി പറഞ്ഞു)',
+          explanationText: 'Speak clearly into the microphone.',
         ),
       ],
     );

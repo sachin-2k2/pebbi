@@ -22,10 +22,16 @@ class LanguagePill extends StatelessWidget {
   /// Default script glyph lookup based on language name.
   static String glyphFor(String language) {
     final lower = language.toLowerCase();
+    if (lower.contains('malay') || lower.contains('മലയാള')) return 'മ';
+    if (lower.contains('eng')) return 'A';
     if (lower.contains('fran')) return 'É';
     if (lower.contains('deutsch') || lower.contains('german')) return 'ß';
     if (lower.contains('nihon') || lower.contains('japan')) return 'あ';
     if (lower.contains('arab')) return 'ع';
+    if (lower.contains('hindi') || lower.contains('हिन्दी')) return 'अ';
+    if (lower.contains('tamil') || lower.contains('தமிழ்')) return 'த';
+    if (lower.contains('telugu') || lower.contains('తెలుగు')) return 'తె';
+    if (lower.contains('kannada') || lower.contains('ಕನ್ನಡ')) return 'ಕ';
     return 'Ñ';
   }
 

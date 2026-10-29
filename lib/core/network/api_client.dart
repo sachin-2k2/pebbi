@@ -26,8 +26,8 @@ class ApiClient {
         Dio(
           BaseOptions(
             baseUrl: this.config.baseUrl,
-            connectTimeout: const Duration(seconds: 10),
-            receiveTimeout: const Duration(seconds: 30),
+            connectTimeout: const Duration(seconds: 15),
+            receiveTimeout: const Duration(seconds: 90),
             responseType: ResponseType.json,
             headers: {
               'Accept': 'application/json',
@@ -79,6 +79,23 @@ class ApiClient {
     CancelToken? cancelToken,
   }) {
     return _dio.post<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Shorthand HTTP PATCH
+  Future<Response<T>> patch<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) {
+    return _dio.patch<T>(
       path,
       data: data,
       queryParameters: queryParameters,

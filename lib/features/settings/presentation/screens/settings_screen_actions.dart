@@ -28,6 +28,15 @@ abstract final class SettingsScreenActions {
     }
   }
 
+  static void handleAccent(WidgetRef ref, UserProfile? user, String accentId) {
+    ref.read(appSettingsProvider.notifier).setAccentId(accentId);
+    if (user != null) {
+      ref
+          .read(currentUserProvider.notifier)
+          .saveProfile(user.copyWith(accentId: accentId));
+    }
+  }
+
   static void handleTargetLanguage(
     WidgetRef ref,
     UserProfile? user,

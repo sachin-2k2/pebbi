@@ -116,7 +116,7 @@ class SettingsSections {
             ref.read(appSettingsProvider.notifier).setThemeMode(m),
         selectedAccentId: settings.accentId,
         onAccentChanged: (a) =>
-            ref.read(appSettingsProvider.notifier).setAccentId(a),
+            SettingsScreenActions.handleAccent(ref, user, a),
         textScale: settings.textScale,
         onTextScaleChanged: (s) =>
             ref.read(appSettingsProvider.notifier).setTextScale(s),

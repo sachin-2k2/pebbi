@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -7,7 +8,7 @@ import '../../domain/name_safety_rules.dart';
 
 /// Accessible rounded text input field for the learner's optional first name.
 ///
-/// Follows AGENTS.md §3 & §6: debounced save on done/blur, word capitalization, no logging.
+/// Follows AGENTS.md §3 & §6: debounced save on type/done/blur/back, word capitalization, no logging.
 class NameField extends StatefulWidget {
   const NameField({
     super.key,
@@ -25,10 +26,13 @@ class NameField extends StatefulWidget {
 class _NameFieldState extends State<NameField> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
+  Timer? _debounceTimer;
+  String? _lastSavedName;
 
   @override
   void initState() {
     super.initState();
+    _lastSavedName = widget.initialName;
     _controller = TextEditingController(text: widget.initialName ?? '');
     _focusNode = FocusNode()..addListener(_onFocusChange);
   }
@@ -36,8 +40,11 @@ class _NameFieldState extends State<NameField> {
   @override
   void didUpdateWidget(NameField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialName != widget.initialName && !_focusNode.hasFocus) {
-      _controller.text = widget.initialName ?? '';
+    if (oldWidget.initialName != widget.initialName) {
+      _lastSavedName = widget.initialName;
+      if (!_focusNode.hasFocus) {
+        _controller.text = widget.initialName ?? '';
+      }
     }
   }
 
@@ -47,13 +54,25 @@ class _NameFieldState extends State<NameField> {
     }
   }
 
+  void _onTextChanged(String _) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 600), _commitName);
+  }
+
   void _commitName() {
+    _debounceTimer?.cancel();
     final sanitized = NameSafetyRules.sanitize(_controller.text);
-    widget.onSaved(sanitized.isEmpty ? null : sanitized);
+    final valueToSave = sanitized.isEmpty ? null : sanitized;
+    if (valueToSave != _lastSavedName) {
+      _lastSavedName = valueToSave;
+      widget.onSaved(valueToSave);
+    }
   }
 
   @override
   void dispose() {
+    _commitName();
+    _debounceTimer?.cancel();
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     _controller.dispose();
@@ -81,6 +100,8 @@ class _NameFieldState extends State<NameField> {
         autocorrect: false,
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.done,
+        onChanged: _onTextChanged,
+        onTapOutside: (_) => _focusNode.unfocus(),
         onSubmitted: (_) => _commitName(),
         style: AppTypography.cardTitle.copyWith(
           color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,

@@ -6,6 +6,9 @@ import 'package:peddi/features/auth/domain/user_profile.dart';
 import 'package:peddi/features/auth/presentation/providers/auth_provider.dart';
 import 'package:peddi/features/onboarding/domain/age_band.dart';
 import 'package:peddi/features/onboarding/domain/reminder_time.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:peddi/features/path/data/mock_path_repository.dart';
+import 'package:peddi/features/path/presentation/providers/path_provider.dart';
 import 'package:peddi/features/path/presentation/screens/path_screen.dart';
 import 'package:peddi/features/path/presentation/widgets/continue_card.dart';
 import 'package:peddi/features/path/presentation/widgets/due_strip.dart';
@@ -16,6 +19,10 @@ import 'package:peddi/features/path/presentation/widgets/track_chip_row.dart';
 import 'package:peddi/features/path/presentation/widgets/unit_header.dart';
 
 void main() {
+  setUp(() {
+    FlutterSecureStorage.setMockInitialValues({});
+  });
+
   Widget buildTestSubject({
     UserProfile? currentUser,
     Size? surfaceSize,
@@ -23,6 +30,7 @@ void main() {
   }) {
     return ProviderScope(
       overrides: [
+        pathRepositoryProvider.overrideWithValue(MockPathRepository()),
         if (currentUser != null)
           currentUserProvider.overrideWith(
             (ref) => CurrentUserNotifier(
@@ -53,11 +61,10 @@ void main() {
       await tester.pumpWidget(buildTestSubject());
       await tester.pumpAndSettle();
 
-      // Top Pills
+      // Top Pills (0 streak, 0 stars by default)
       expect(find.byType(TopPills), findsOneWidget);
       expect(find.text('Español'), findsOneWidget);
-      expect(find.text('1'), findsOneWidget);
-      expect(find.text('10'), findsOneWidget);
+      expect(find.text('0'), findsNWidgets(2));
 
       // Track Chips
       expect(find.byType(TrackChipRow), findsOneWidget);

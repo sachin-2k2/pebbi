@@ -103,5 +103,27 @@ void main() {
       await tester.tap(find.byIcon(Icons.menu_book_rounded));
       expect(guideTapped, isTrue);
     });
+
+    testWidgets('renders locked unit header with lock icon and visible details', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: UnitHeader(
+              unitNumber: 2,
+              title: 'Everyday Conversations',
+              stopsDone: 0,
+              totalStops: 7,
+              isLocked: true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('UNIT 2 · 0 OF 7 STOPS DONE'), findsOneWidget);
+      expect(find.text('Everyday Conversations'), findsOneWidget);
+      expect(find.byIcon(Icons.lock_rounded), findsOneWidget);
+    });
   });
 }

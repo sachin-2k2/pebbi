@@ -6,10 +6,17 @@ import 'package:peddi/core/design_system/button_3d.dart';
 import 'package:peddi/core/design_system/pebbi_mascot.dart';
 import 'package:peddi/core/services/audio_feedback_service.dart';
 import 'package:peddi/core/services/text_to_speech_service.dart';
+import 'package:peddi/core/network/api_config.dart';
+import 'package:peddi/core/network/api_mode.dart';
 import 'package:peddi/core/theme/app_colors.dart';
 import 'package:peddi/core/theme/app_theme.dart';
+import 'package:peddi/features/lesson/data/mock_exercise_repository.dart';
+import 'package:peddi/features/lesson/data/mock_lesson_repository.dart';
+import 'package:peddi/features/lesson/presentation/providers/lesson_providers.dart';
 import 'package:peddi/features/lesson/presentation/providers/lesson_settings_provider.dart';
 import 'package:peddi/features/lesson/presentation/screens/exercise_screen.dart';
+import 'package:peddi/features/onboarding/data/mock_placement_repository.dart';
+import 'package:peddi/features/onboarding/presentation/providers/placement_repository_provider.dart';
 import 'package:peddi/features/onboarding/presentation/screens/placement_result_screen.dart';
 import 'package:peddi/features/lesson/presentation/widgets/exercise/answer_option_card.dart';
 import 'package:peddi/features/lesson/presentation/widgets/exercise/audio_play_button.dart';
@@ -38,6 +45,17 @@ import 'package:peddi/features/settings/domain/lesson_settings.dart';
 import 'package:peddi/l10n/app_strings.dart';
 
 void main() {
+  setUp(() {
+    ApiConfig.setTestInstance(ApiConfig(
+      lessonApiMode: ApiMode.mock,
+      placementApiMode: ApiMode.mock,
+      authApiMode: ApiMode.mock,
+    ));
+  });
+
+  tearDown(() {
+    ApiConfig.setTestInstance(null);
+  });
   group('ExerciseScreen Visual States & Flow Tests (Screenshots 1-4)', () {
     late FakeSpeechService fakeSpeech;
     late FakeAudioFeedbackService fakeAudio;
@@ -54,6 +72,9 @@ void main() {
     }) {
       return ProviderScope(
         overrides: [
+          exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+          placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+          lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
           textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
           audioFeedbackServiceProvider.overrideWithValue(fakeAudio),
           if (settings != null)
@@ -440,6 +461,9 @@ void main() {
           await tester.pumpWidget(
             ProviderScope(
               overrides: [
+                exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+                placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+                lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
                 textToSpeechServiceProvider.overrideWithValue(
                   FakeSpeechService(),
                 ),
@@ -471,6 +495,9 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+              placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+              lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
               textToSpeechServiceProvider.overrideWithValue(
                 FakeSpeechService(),
               ),
@@ -513,6 +540,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+            placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+            lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
             textToSpeechServiceProvider.overrideWithValue(FakeSpeechService()),
             audioFeedbackServiceProvider.overrideWithValue(
               FakeAudioFeedbackService(),
@@ -547,6 +577,9 @@ void main() {
     }) {
       return ProviderScope(
         overrides: [
+          exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+          placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+          lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
           textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
           audioFeedbackServiceProvider.overrideWithValue(fakeAudio),
           if (settings != null)
@@ -591,6 +624,7 @@ void main() {
         await tester.pumpWidget(createScreen());
         await tester.pumpAndSettle();
         await advanceToQuestion4(tester);
+        fakeSpeech.spokenHistory.clear();
 
         // Header: counter 4/8
         expect(find.text('4/8'), findsOneWidget);
@@ -706,6 +740,7 @@ void main() {
         await tester.pumpWidget(createScreen());
         await tester.pumpAndSettle();
         await advanceToQuestion4(tester);
+        fakeSpeech.spokenHistory.clear();
 
         // Tap purple audio button
         await tester.tap(find.byType(AudioPlayButton));
@@ -852,6 +887,9 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+              placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+              lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
               textToSpeechServiceProvider.overrideWithValue(
                 FakeSpeechService(),
               ),
@@ -889,6 +927,9 @@ void main() {
     Widget createScreen({ThemeData? theme, VoidCallback? onCompleted}) {
       return ProviderScope(
         overrides: [
+          exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+          placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+          lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
           textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
           audioFeedbackServiceProvider.overrideWithValue(fakeAudio),
         ],
@@ -1127,6 +1168,9 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              exerciseRepositoryProvider.overrideWithValue(const MockExerciseRepository()),
+              placementRepositoryProvider.overrideWithValue(const MockPlacementRepository()),
+              lessonRepositoryProvider.overrideWithValue(const MockLessonRepository()),
               textToSpeechServiceProvider.overrideWithValue(
                 FakeSpeechService(),
               ),

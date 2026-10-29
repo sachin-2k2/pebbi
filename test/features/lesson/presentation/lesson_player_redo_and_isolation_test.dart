@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:peddi/core/network/api_config.dart';
+import 'package:peddi/core/network/api_mode.dart';
 import 'package:peddi/core/services/audio_feedback_service.dart';
 import 'package:peddi/core/services/fake_speech_recognizer_service.dart';
 import 'package:peddi/core/services/text_to_speech_service.dart';
@@ -21,9 +23,18 @@ void main() {
     late FakeSpeechRecognizerService fakeRecognizer;
 
     setUp(() {
+      ApiConfig.setTestInstance(ApiConfig(
+        lessonApiMode: ApiMode.mock,
+        placementApiMode: ApiMode.mock,
+        authApiMode: ApiMode.mock,
+      ));
       fakeSpeech = FakeSpeechService();
       fakeAudio = FakeAudioFeedbackService();
       fakeRecognizer = FakeSpeechRecognizerService();
+    });
+
+    tearDown(() {
+      ApiConfig.setTestInstance(null);
     });
 
     UserProfile createProfile(String id) {

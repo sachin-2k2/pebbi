@@ -7,10 +7,14 @@ class Track {
     required this.title,
     required this.emoji,
     this.hasContent = true,
+    this.isRecommended = false,
+    this.description,
   });
 
   final String id;
   final String title;
   final String emoji;
   final bool hasContent;
+  final bool isRecommended;
+  final String? description;
 }

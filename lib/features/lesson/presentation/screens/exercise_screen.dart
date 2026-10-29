@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/text_to_speech_service.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../domain/exercise.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../onboarding/presentation/providers/onboarding_flow_provider.dart';
 import '../providers/exercise_session_notifier.dart';
 import '../providers/lesson_providers.dart';
@@ -38,14 +39,37 @@ class ExerciseScreen extends ConsumerStatefulWidget {
 
 class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
   bool _isPlayingAudio = false;
+  late final TextToSpeechService _tts;
 
   @override
   void initState() {
     super.initState();
+    _tts = ref.read(textToSpeechServiceProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final notifier = ref.read(exerciseSessionProvider.notifier);
       if (widget.stopId != null) {
-        notifier.loadLesson(widget.stopId!);
+        final user = ref.read(currentUserProvider);
+        final ob = ref.read(onboardingFlowProvider);
+        final native = widget.nativeLanguageCode?.isNotEmpty == true
+            ? widget.nativeLanguageCode!
+            : (user?.explanationLanguageCode.isNotEmpty == true
+                ? user!.explanationLanguageCode
+                : (ob.explanationLanguageCode.isNotEmpty
+                    ? ob.explanationLanguageCode
+                    : 'en'));
+        final target = widget.targetLanguageCode?.isNotEmpty == true
+            ? widget.targetLanguageCode!
+            : (user?.targetLanguageCode.isNotEmpty == true
+                ? user!.targetLanguageCode
+                : (ob.targetLanguageCode.isNotEmpty
+                    ? ob.targetLanguageCode
+                    : 'es'));
+
+        notifier.loadLesson(
+          widget.stopId!,
+          nativeLanguageCode: native,
+          targetLanguageCode: target,
+        );
       } else {
         final ob = ref.read(onboardingFlowProvider);
         final target = (widget.targetLanguageCode?.isNotEmpty ?? false)
@@ -84,7 +108,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
 
   @override
   void dispose() {
-    ref.read(textToSpeechServiceProvider).stop();
+    _tts.stop();
     super.dispose();
   }
 
@@ -112,7 +136,39 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     if (state.isLoading || exercise == null) {
       return Scaffold(
         backgroundColor: palette.background,
-        body: Center(child: CircularProgressIndicator(color: palette.brand)),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.close_rounded, color: palette.textPrimary),
+            onPressed: _handleExit,
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: palette.brand),
+              const SizedBox(height: 20),
+              Text(
+                'Preparing your lesson...',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: palette.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'First time generation may take a moment',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: palette.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
