@@ -60,11 +60,7 @@ class UnitHeader extends StatelessWidget {
           Row(
             children: [
               if (isLocked) ...[
-                Icon(
-                  Icons.lock_rounded,
-                  size: 13.0,
-                  color: overlineColor,
-                ),
+                Icon(Icons.lock_rounded, size: 13.0, color: overlineColor),
                 const SizedBox(width: 4.0),
               ],
               Expanded(

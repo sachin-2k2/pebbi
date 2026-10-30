@@ -39,7 +39,10 @@ class ExerciseProgressBar extends StatelessWidget {
               child: TweenAnimationBuilder<double>(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                tween: Tween<double>(begin: minCapFactor, end: effectiveProgress),
+                tween: Tween<double>(
+                  begin: minCapFactor,
+                  end: effectiveProgress,
+                ),
                 builder: (context, value, _) {
                   return FractionallySizedBox(
                     alignment: AlignmentDirectional.centerStart,
@@ -47,7 +50,9 @@ class ExerciseProgressBar extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: palette.mint,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusPill,
+                        ),
                       ),
                     ),
                   );

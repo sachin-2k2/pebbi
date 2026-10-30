@@ -18,11 +18,9 @@ import 'top_pills.dart';
 import 'track_chip_row.dart';
 import 'unit_guide/unit_guide_sheet.dart';
 import 'unit_header.dart';
-
 /// Single-column scrolling layout for compact and medium window classes.
 class PathCompactLayout extends ConsumerWidget {
   const PathCompactLayout({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summaryAsync = ref.watch(homeSummaryProvider);
@@ -31,8 +29,11 @@ class PathCompactLayout extends ConsumerWidget {
     final unitsAsync = ref.watch(unitsProvider);
     final showAds = ref.watch(shouldShowAdBannerProvider);
     final activeAd = ref.watch(activeAdBannerProvider).valueOrNull;
+    final completedId = ref.watch(completedLessonAnimProvider);
 
     return summaryAsync.when(
+      skipLoadingOnReload: true,
+      skipLoadingOnRefresh: true,
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
       data: (summary) {
@@ -40,11 +41,8 @@ class PathCompactLayout extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
           children: [
             TopPills(
-              language: summary.language,
-              streakCount: summary.streakCount,
-              starsCount: summary.starsCount,
-              onLanguageTap: () =>
-                  _showPlaceholder(context, 'Language switcher'),
+              language: summary.language, streakCount: summary.streakCount, starsCount: summary.starsCount,
+              onLanguageTap: () => _showPlaceholder(context, 'Language switcher'),
               onStreakTap: () => _showPlaceholder(context, 'Streak calendar'),
               onStarsTap: () => _showPlaceholder(context, 'Stars & outfits'),
               onProfileTap: () => context.go('/settings'),
@@ -63,7 +61,8 @@ class PathCompactLayout extends ConsumerWidget {
               child: ContinueCard(
                 title: summary.currentStopTitle,
                 subtitle: AppStrings.continueCaption(summary.estimatedMinutes),
-                onPlayPressed: () => context.push('/lesson/1'),
+                onPlayPressed: () =>
+                    context.push('/lesson/${summary.currentStopId}'),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -75,18 +74,18 @@ class PathCompactLayout extends ConsumerWidget {
                 onReviewTap: () => context.go('/review'),
               ),
             ),
-            if (showAds && activeAd != null) ...[
-              const SizedBox(height: AppSpacing.md),
+            if (showAds && activeAd != null)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md).copyWith(top: AppSpacing.md),
                 child: AdBanner(
                   title: activeAd.title,
                   priceString: activeAd.priceString,
                   onRemoveAdsTap: () => context.push('/premium/options'),
                 ),
               ),
-            ],
             ...unitsAsync.when(
+              skipLoadingOnReload: true,
+              skipLoadingOnRefresh: true,
               loading: () => [
                 const SizedBox(
                   height: 120.0,
@@ -100,9 +99,7 @@ class PathCompactLayout extends ConsumerWidget {
                   children: [
                     const SizedBox(height: AppSpacing.lg),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       child: UnitHeader(
                         unitNumber: unit.unitNumber,
                         title: unit.title,
@@ -115,13 +112,16 @@ class PathCompactLayout extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                     PathRail(
+                      key: ValueKey('path_rail_${unit.id}'),
                       nodes: unit.nodes,
+                      completedStopId: completedId,
+                      onAnimationComplete: () => ref
+                          .read(completedLessonAnimProvider.notifier)
+                          .state = null,
                       onNodeTap: (node) => _handleNodeTap(context, node),
                     ),
                     if (unit.isFreeUnit && unit.isCompleted)
-                      FreeUnitNote(
-                        onUnlockTap: () => context.push('/premium/options'),
-                      ),
+                      FreeUnitNote(onUnlockTap: () => context.push('/premium/options')),
                   ],
                 );
               }),
@@ -144,10 +144,7 @@ class PathCompactLayout extends ConsumerWidget {
 
   void _showPlaceholder(BuildContext context, String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('TODO(question): $feature coming soon!'),
-        duration: const Duration(seconds: 2),
-      ),
+      SnackBar(content: Text('TODO(question): $feature coming soon!')),
     );
   }
 }

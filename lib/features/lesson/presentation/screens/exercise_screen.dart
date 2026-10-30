@@ -3,19 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/text_to_speech_service.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../domain/exercise.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../onboarding/presentation/providers/onboarding_flow_provider.dart';
 import '../providers/exercise_session_notifier.dart';
 import '../providers/lesson_providers.dart';
 import '../providers/lesson_settings_provider.dart';
 import '../widgets/exercise/exercise_footer.dart';
 import '../widgets/exercise/exercise_header.dart';
+import '../widgets/exercise/exercise_loading_view.dart';
 import '../widgets/exercise/exercise_scroll_area.dart';
 import 'exercise_screen_navigation.dart';
 
 /// Primary host screen for interactive exercises (placement check & curriculum lessons).
 ///
-/// Follows AGENTS.md §3 & §4: under 130 lines, build under 45 lines, responsive constraints,
+/// Follows AGENTS.md §3 & §4: under 150 lines, build under 50 lines, responsive constraints,
 /// autoDispose state machine, handles audio, hints, and feedback sheets.
 class ExerciseScreen extends ConsumerStatefulWidget {
   const ExerciseScreen({
@@ -46,42 +45,12 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     super.initState();
     _tts = ref.read(textToSpeechServiceProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final notifier = ref.read(exerciseSessionProvider.notifier);
-      if (widget.stopId != null) {
-        final user = ref.read(currentUserProvider);
-        final ob = ref.read(onboardingFlowProvider);
-        final native = widget.nativeLanguageCode?.isNotEmpty == true
-            ? widget.nativeLanguageCode!
-            : (user?.explanationLanguageCode.isNotEmpty == true
-                ? user!.explanationLanguageCode
-                : (ob.explanationLanguageCode.isNotEmpty
-                    ? ob.explanationLanguageCode
-                    : 'en'));
-        final target = widget.targetLanguageCode?.isNotEmpty == true
-            ? widget.targetLanguageCode!
-            : (user?.targetLanguageCode.isNotEmpty == true
-                ? user!.targetLanguageCode
-                : (ob.targetLanguageCode.isNotEmpty
-                    ? ob.targetLanguageCode
-                    : 'es'));
-
-        notifier.loadLesson(
-          widget.stopId!,
-          nativeLanguageCode: native,
-          targetLanguageCode: target,
-        );
-      } else {
-        final ob = ref.read(onboardingFlowProvider);
-        final target = (widget.targetLanguageCode?.isNotEmpty ?? false)
-            ? widget.targetLanguageCode!
-            : (ob.targetLanguageCode.isNotEmpty ? ob.targetLanguageCode : 'es');
-        final native = (widget.nativeLanguageCode?.isNotEmpty ?? false)
-            ? widget.nativeLanguageCode!
-            : (ob.explanationLanguageCode.isNotEmpty
-                ? ob.explanationLanguageCode
-                : 'en');
-        notifier.loadPlacement(target, nativeLanguageCode: native);
-      }
+      ExerciseScreenNavigation.initializeSession(
+        ref,
+        stopId: widget.stopId,
+        targetLanguageCode: widget.targetLanguageCode,
+        nativeLanguageCode: widget.nativeLanguageCode,
+      );
     });
   }
 
@@ -93,13 +62,15 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     onCompleted: widget.onCompleted,
   );
 
-  void _handleContinue(ExerciseSessionNotifier n) {
-    n.next();
+  Future<void> _handleContinue(ExerciseSessionNotifier n) async {
+    await n.next();
+    if (!mounted) return;
     _checkCompleted();
   }
 
-  void _handleGotIt(ExerciseSessionNotifier n) {
-    n.onGotIt();
+  Future<void> _handleGotIt(ExerciseSessionNotifier n) async {
+    await n.onGotIt();
+    if (!mounted) return;
     _checkCompleted();
   }
 
@@ -134,42 +105,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     final palette = context.palette;
 
     if (state.isLoading || exercise == null) {
-      return Scaffold(
-        backgroundColor: palette.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.close_rounded, color: palette.textPrimary),
-            onPressed: _handleExit,
-          ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(color: palette.brand),
-              const SizedBox(height: 20),
-              Text(
-                'Preparing your lesson...',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: palette.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'First time generation may take a moment',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: palette.textMuted,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      return ExerciseLoadingView(onClose: _handleExit);
     }
 
     return PopScope(
@@ -202,6 +138,10 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                 feedbackKind: state.feedbackKind,
                 exercise: exercise,
                 currentStreak: state.currentStreak,
+                revealedCorrectAnswer: state.revealedCorrectAnswer,
+                serverExplanation:
+                    state.checkedAnswerMap[exercise.id]?.explanation ??
+                    state.lastCheckResult?.explanation,
                 bottomBarMode: state.bottomBarMode,
                 canCheck: state.canCheck,
                 canUseHint: state.canUseHint,

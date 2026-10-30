@@ -12,9 +12,16 @@ import '../../../../settings/presentation/providers/app_settings_provider.dart';
 /// Follows AGENTS.md §3 & §4: under 100 lines, build under 50 lines,
 /// displays excited mascot with user accent color, large header title, and encouraging subtitle.
 class CompleteHero extends ConsumerWidget {
-  const CompleteHero({super.key, required this.starsEarned});
+  const CompleteHero({
+    super.key,
+    required this.starsEarned,
+    this.pebbiSays,
+    this.passed = true,
+  });
 
   final int starsEarned;
+  final String? pebbiSays;
+  final bool passed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +35,14 @@ class CompleteHero extends ConsumerWidget {
         ? AppColors.darkTextMuted
         : const Color(0xFF524F6B); // WCAG AA compliant (5.5:1 on background)
 
-    final subtitle = AppStrings.lessonCompleteSubtitleForStars(starsEarned);
+    final subtitle = (pebbiSays != null && pebbiSays!.isNotEmpty)
+        ? pebbiSays!
+        : (passed
+              ? AppStrings.lessonCompleteSubtitleForStars(starsEarned)
+              : 'Keep practicing! Score 4/6 or higher to pass.');
+
+    final title = passed ? AppStrings.lessonCompleteTitle : 'Keep Practicing!';
+    final expression = passed ? PebbiExpression.excited : PebbiExpression.happy;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -39,14 +53,14 @@ class CompleteHero extends ConsumerWidget {
           child: PebbiMascot(
             size: 92.0,
             accentColor: accentColor,
-            expression: PebbiExpression.excited,
+            expression: expression,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
         Semantics(
           header: true,
           child: Text(
-            AppStrings.lessonCompleteTitle,
+            title,
             style: AppTypography.screenTitle.copyWith(
               color: titleColor,
               fontWeight: FontWeight.w800,

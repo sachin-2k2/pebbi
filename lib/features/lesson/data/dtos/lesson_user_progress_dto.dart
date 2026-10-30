@@ -30,11 +30,11 @@ class LessonUserProgressDto {
   }
 
   Map<String, dynamic> toJson() => {
-        'status': status,
-        if (score != null) 'score': score,
-        'xp_earned': xpEarned,
-        'attempts': attempts,
-        if (completedAt != null) 'completed_at': completedAt,
-        if (nextLessonId != null) 'next_lesson_id': nextLessonId,
-      };
+    'status': status,
+    if (score != null) 'score': score,
+    'xp_earned': xpEarned,
+    'attempts': attempts,
+    if (completedAt != null) 'completed_at': completedAt,
+    if (nextLessonId != null) 'next_lesson_id': nextLessonId,
+  };
 }

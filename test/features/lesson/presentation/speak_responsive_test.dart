@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peddi/core/services/fake_speech_recognizer_service.dart';
 import 'package:peddi/core/services/text_to_speech_service.dart';
+import 'package:peddi/features/lesson/data/mock_lesson_repository.dart';
 import 'package:peddi/features/lesson/domain/exercise.dart';
-import 'package:peddi/features/lesson/domain/lesson_repository.dart';
 import 'package:peddi/features/lesson/domain/lesson_set.dart';
 import 'package:peddi/features/lesson/presentation/providers/lesson_providers.dart';
 import 'package:peddi/features/lesson/presentation/screens/exercise_screen.dart';
@@ -29,7 +29,7 @@ class _NoOpTtsService implements TextToSpeechService {
   void dispose() {}
 }
 
-class _FakeLessonRepository implements LessonRepository {
+class _FakeLessonRepository extends MockLessonRepository {
   _FakeLessonRepository(this.lesson);
   final LessonSet lesson;
   @override

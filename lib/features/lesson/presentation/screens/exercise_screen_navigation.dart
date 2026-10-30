@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../onboarding/domain/placement_answer.dart';
 import '../../../onboarding/domain/placement_result.dart';
 import '../../../onboarding/presentation/providers/onboarding_flow_provider.dart';
@@ -14,6 +15,50 @@ import '../widgets/exercise/exit_confirm_sheet.dart';
 ///
 /// Follows AGENTS.md §3: keeps screen file under 150 lines.
 abstract final class ExerciseScreenNavigation {
+  /// Initializes the exercise session (curriculum lesson or placement).
+  static void initializeSession(
+    WidgetRef ref, {
+    required String? stopId,
+    String? targetLanguageCode,
+    String? nativeLanguageCode,
+  }) {
+    final notifier = ref.read(exerciseSessionProvider.notifier);
+    if (stopId != null) {
+      final user = ref.read(currentUserProvider);
+      final ob = ref.read(onboardingFlowProvider);
+      final native = nativeLanguageCode?.isNotEmpty == true
+          ? nativeLanguageCode!
+          : (user?.explanationLanguageCode.isNotEmpty == true
+                ? user!.explanationLanguageCode
+                : (ob.explanationLanguageCode.isNotEmpty
+                      ? ob.explanationLanguageCode
+                      : 'en'));
+      final target = targetLanguageCode?.isNotEmpty == true
+          ? targetLanguageCode!
+          : (user?.targetLanguageCode.isNotEmpty == true
+                ? user!.targetLanguageCode
+                : (ob.targetLanguageCode.isNotEmpty
+                      ? ob.targetLanguageCode
+                      : 'es'));
+      notifier.loadLesson(
+        stopId,
+        nativeLanguageCode: native,
+        targetLanguageCode: target,
+      );
+    } else {
+      final ob = ref.read(onboardingFlowProvider);
+      final target = (targetLanguageCode?.isNotEmpty ?? false)
+          ? targetLanguageCode!
+          : (ob.targetLanguageCode.isNotEmpty ? ob.targetLanguageCode : 'es');
+      final native = (nativeLanguageCode?.isNotEmpty ?? false)
+          ? nativeLanguageCode!
+          : (ob.explanationLanguageCode.isNotEmpty
+                ? ob.explanationLanguageCode
+                : 'en');
+      notifier.loadPlacement(target, nativeLanguageCode: native);
+    }
+  }
+
   /// Confirms and handles user exit from an active exercise.
   static Future<void> handleExit(
     BuildContext context, {
@@ -81,7 +126,9 @@ abstract final class ExerciseScreenNavigation {
             (o) => o.id == chosenId,
             orElse: () => ex.options.first,
           );
-          answers.add(PlacementAnswer(questionId: ex.id, chosenEmoji: opt.imageRef));
+          answers.add(
+            PlacementAnswer(questionId: ex.id, chosenEmoji: opt.imageRef),
+          );
         }
       }
       if (answers.isNotEmpty) {

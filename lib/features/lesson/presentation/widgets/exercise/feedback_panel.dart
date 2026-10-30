@@ -20,6 +20,7 @@ class FeedbackPanel extends StatelessWidget {
     required this.kind,
     required this.exercise,
     this.currentStreak = 0,
+    this.revealedCorrectAnswer,
     required this.onContinue,
     required this.onWhy,
   });
@@ -27,8 +28,13 @@ class FeedbackPanel extends StatelessWidget {
   final FeedbackKind kind;
   final Exercise exercise;
   final int currentStreak;
+  final String? revealedCorrectAnswer;
   final VoidCallback onContinue;
   final VoidCallback onWhy;
+
+  String get _displayAnswer => (revealedCorrectAnswer?.isNotEmpty == true)
+      ? revealedCorrectAnswer!
+      : exercise.correctAnswerText;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class FeedbackPanel extends StatelessWidget {
         : '';
     final announcement = isCorrect
         ? 'Correct. ${AppStrings.feedbackCorrectTitle}$streakText'
-        : 'Not quite. ${AppStrings.feedbackCorrectAnswer(exercise.correctAnswerText)}';
+        : 'Not quite. ${AppStrings.feedbackCorrectAnswer(_displayAnswer)}';
 
     return Semantics(
       liveRegion: true,
@@ -132,7 +138,7 @@ class FeedbackPanel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          AppStrings.feedbackCorrectAnswer(exercise.correctAnswerText),
+          AppStrings.feedbackCorrectAnswer(_displayAnswer),
           style: AppTypography.bodyLarge.copyWith(
             fontWeight: FontWeight.w800,
             color: AppColors.textPrimary,

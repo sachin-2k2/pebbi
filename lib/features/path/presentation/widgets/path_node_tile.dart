@@ -43,31 +43,20 @@ class PathNodeTile extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 if (isNext) const Positioned(top: -24.0, child: NextTag()),
-                if (node.isCurrent)
-                  CurrentNodeRing(
-                    diameter: 68.0,
-                    child: NodeShape(
-                      shape: visual.shape,
-                      faceColor: visual.faceColor,
-                      depthColor: visual.depthColor,
-                      child: Icon(
-                        visual.icon,
-                        color: visual.iconColor,
-                        size: 28.0,
-                      ),
-                    ),
-                  )
-                else
-                  NodeShape(
-                    shape: visual.shape,
-                    faceColor: visual.faceColor,
-                    depthColor: visual.depthColor,
-                    child: Icon(
-                      visual.icon,
-                      color: visual.iconColor,
-                      size: 28.0,
-                    ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  transitionBuilder: (child, anim) =>
+                      ScaleTransition(scale: anim, child: child),
+                  child: KeyedSubtree(
+                    key: ValueKey('${node.id}_${node.state.name}'),
+                    child: node.isCurrent
+                        ? CurrentNodeRing(
+                            diameter: 68.0,
+                            child: _NodeVisualShape(visual: visual),
+                          )
+                        : _NodeVisualShape(visual: visual),
                   ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -94,30 +83,21 @@ class PathNodeTile extends StatelessWidget {
     );
   }
 
-  static ({
-    NodeShapeType shape,
-    Color faceColor,
-    Color depthColor,
-    Color iconColor,
-    IconData icon,
-  })
-  _resolveVisual(PathNode node, AppPalette palette) {
+  static _Visual _resolveVisual(PathNode node, AppPalette palette) {
     if (node.isLocked) {
-      return (
-        shape: node is ChestNode
-            ? NodeShapeType.roundedSquare
-            : (node is MissionNode
-                  ? NodeShapeType.hexagon
-                  : NodeShapeType.circle),
+      final shape = node is ChestNode
+          ? NodeShapeType.roundedSquare
+          : (node is MissionNode ? NodeShapeType.hexagon : NodeShapeType.circle);
+      return _Visual(
+        shape: shape,
         faceColor: palette.nodeLocked,
         depthColor: palette.nodeLockedDepth,
         iconColor: palette.disabledText,
         icon: Icons.lock_rounded,
       );
     }
-
     if (node is ChestNode) {
-      return (
+      return _Visual(
         shape: NodeShapeType.roundedSquare,
         faceColor: palette.gold,
         depthColor: palette.goldDepth,
@@ -125,32 +105,57 @@ class PathNodeTile extends StatelessWidget {
         icon: Icons.card_giftcard_rounded,
       );
     }
-
     if (node.isDone) {
-      return (
-        shape: node is MissionNode
-            ? NodeShapeType.hexagon
-            : NodeShapeType.circle,
+      return _Visual(
+        shape: node is MissionNode ? NodeShapeType.hexagon : NodeShapeType.circle,
         faceColor: palette.nodeDone,
         depthColor: palette.nodeDoneDepth,
         iconColor: palette.textOnBrand,
         icon: Icons.check_rounded,
       );
     }
-
-    final shape = node is MissionNode
-        ? NodeShapeType.hexagon
-        : NodeShapeType.circle;
+    final shape =
+        node is MissionNode ? NodeShapeType.hexagon : NodeShapeType.circle;
     final icon = node is MissionNode
         ? Icons.forum_rounded
         : (node is ReviewNode ? Icons.sync_rounded : Icons.star_rounded);
-
-    return (
+    return _Visual(
       shape: shape,
       faceColor: palette.nodeCurrent,
       depthColor: palette.nodeCurrentDepth,
       iconColor: palette.textOnBrand,
       icon: icon,
+    );
+  }
+}
+
+class _Visual {
+  const _Visual({
+    required this.shape,
+    required this.faceColor,
+    required this.depthColor,
+    required this.iconColor,
+    required this.icon,
+  });
+  final NodeShapeType shape;
+  final Color faceColor;
+  final Color depthColor;
+  final Color iconColor;
+  final IconData icon;
+}
+
+class _NodeVisualShape extends StatelessWidget {
+  const _NodeVisualShape({required this.visual});
+
+  final _Visual visual;
+
+  @override
+  Widget build(BuildContext context) {
+    return NodeShape(
+      shape: visual.shape,
+      faceColor: visual.faceColor,
+      depthColor: visual.depthColor,
+      child: Icon(visual.icon, color: visual.iconColor, size: 28.0),
     );
   }
 }

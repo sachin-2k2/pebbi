@@ -9,8 +9,10 @@ import '../../../lesson/presentation/providers/lesson_providers.dart';
 import '../../data/mock_path_repository.dart';
 import '../../data/remote_path_repository.dart';
 import '../../domain/path_repository.dart';
+import '../../domain/path_node.dart';
 import '../../domain/track.dart';
 import '../../domain/unit.dart';
+import 'track_stats_provider.dart';
 
 /// Provider for [PathRepository].
 ///
@@ -26,6 +28,11 @@ final pathRepositoryProvider = Provider<PathRepository>((ref) {
     return RemotePathRepository(
       apiClient: client,
       localFallback: local,
+      onTrackStatsReceived: (streak, stars, xp) {
+        ref
+            .read(trackStatsProvider.notifier)
+            .update(streak: streak, stars: stars, xp: xp);
+      },
       onNetworkFailure: () {
         ref.read(isOfflineProvider.notifier).reportNetworkFailure();
       },
@@ -44,14 +51,17 @@ final pathRepositoryProvider = Provider<PathRepository>((ref) {
 /// or selects 'job' if the user's goals include work or interview; otherwise 'daily'.
 final selectedTrackProvider = StateProvider<String>((ref) {
   final tracksAsync = ref.watch(tracksProvider);
-  final recommended = tracksAsync.value?.where((t) => t.isRecommended).firstOrNull;
+  final recommended = tracksAsync.value
+      ?.where((t) => t.isRecommended)
+      .firstOrNull;
   if (recommended != null) {
     return recommended.id;
   }
 
   final user = ref.watch(currentUserProvider);
   if (user != null &&
-      (user.reasonIds.contains('work') || user.reasonIds.contains('interview'))) {
+      (user.reasonIds.contains('work') ||
+          user.reasonIds.contains('interview'))) {
     return 'job';
   }
   return 'daily';
@@ -64,20 +74,58 @@ final tracksProvider = FutureProvider<List<Track>>((ref) async {
   return allTracks.where((t) => t.hasContent).toList();
 });
 
+/// Track stop ID of the lesson just completed, used to animate Pebbi to the next node.
+final completedLessonAnimProvider = StateProvider<String?>((ref) => null);
+
 /// Provider loading the course units and path rail nodes for the selected track.
 ///
 /// Follows AGENTS.md §6: Watches currentUserProvider for strict user isolation.
-final unitsProvider = FutureProvider<List<Unit>>((ref) async {
-  final repository = ref.watch(pathRepositoryProvider);
-  final trackId = ref.watch(selectedTrackProvider);
-  final user = ref.watch(currentUserProvider);
+final unitsProvider =
+    AsyncNotifierProvider<UnitsNotifier, List<Unit>>(UnitsNotifier.new);
 
-  final userId = user?.userId ?? 'guest_default';
-  final isPremium = user?.isPremium ?? false;
+class UnitsNotifier extends AsyncNotifier<List<Unit>> {
+  @override
+  Future<List<Unit>> build() async {
+    final repository = ref.watch(pathRepositoryProvider);
+    final trackId = ref.watch(selectedTrackProvider);
+    final user = ref.watch(currentUserProvider);
 
-  return repository.getUnitsForTrack(
-    trackId,
-    userId: userId,
-    isPremium: isPremium,
-  );
+    final userId = user?.userId ?? 'guest_default';
+    final isPremium = user?.isPremium ?? false;
+
+    return repository.getUnitsForTrack(
+      trackId,
+      userId: userId,
+      isPremium: isPremium,
+    );
+  }
+
+  Future<void> reloadSilently() async {
+    state = const AsyncLoading<List<Unit>>().copyWithPrevious(state);
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(pathRepositoryProvider);
+      final trackId = ref.read(selectedTrackProvider);
+      final user = ref.read(currentUserProvider);
+
+      final userId = user?.userId ?? 'guest_default';
+      final isPremium = user?.isPremium ?? false;
+
+      return repository.getUnitsForTrack(
+        trackId,
+        userId: userId,
+        isPremium: isPremium,
+      );
+    });
+  }
+}
+
+/// Derived provider returning the currently active/current [PathNode] from [unitsProvider].
+final activePathNodeProvider = Provider<PathNode?>((ref) {
+  final units = ref.watch(unitsProvider).valueOrNull ?? const [];
+  for (final unit in units) {
+    for (final node in unit.nodes) {
+      if (node.isCurrent) return node;
+    }
+  }
+  return null;
 });

@@ -78,4 +78,3 @@ class _PickPictureBodyState extends ConsumerState<PickPictureBody> {
     );
   }
 }
-

@@ -27,6 +27,9 @@ class UserProfileDto {
     this.accentColor = 'violet',
     this.firstSticker,
     this.onboardingDone = true,
+    this.currentStreak = 0,
+    this.totalStars = 0,
+    this.totalXp = 0,
   });
 
   final String id;
@@ -47,6 +50,9 @@ class UserProfileDto {
   final String accentColor;
   final String? firstSticker;
   final bool onboardingDone;
+  final int currentStreak;
+  final int totalStars;
+  final int totalXp;
 
   factory UserProfileDto.fromJson(Map<String, dynamic> json) {
     return UserProfileDto(
@@ -71,6 +77,9 @@ class UserProfileDto {
       accentColor: json['accent_color']?.toString() ?? 'violet',
       firstSticker: json['first_sticker']?.toString(),
       onboardingDone: json['onboarding_done'] == true,
+      currentStreak: (json['current_streak'] as num?)?.toInt() ?? 0,
+      totalStars: (json['total_stars'] as num?)?.toInt() ?? 0,
+      totalXp: (json['total_xp'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -92,6 +101,9 @@ class UserProfileDto {
       firstStickerId: firstSticker,
       plan: 'free',
       isOnboarded: onboardingDone,
+      currentStreak: currentStreak,
+      totalStars: totalStars,
+      totalXp: totalXp,
     );
   }
 }

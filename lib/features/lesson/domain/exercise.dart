@@ -18,6 +18,7 @@ sealed class Exercise {
     required this.correctAnswerText,
     required this.feedbackSuccessText,
     this.praisePhrase,
+    this.hint,
   });
 
   /// Unique identifier of the exercise.
@@ -43,6 +44,9 @@ sealed class Exercise {
 
   /// Optional phrase in target language praised upon first-try success.
   final String? praisePhrase;
+
+  /// Optional pre-answer clue or topic context (e.g. "Topic: Shopping, Payment").
+  final String? hint;
 }
 
 /// Common interface for exercises presenting a single selectable correct option.
@@ -284,6 +288,7 @@ class ChooseMeaningExercise extends Exercise implements SingleChoiceExercise {
     required super.correctAnswerText,
     required super.feedbackSuccessText,
     super.praisePhrase,
+    super.hint,
     required this.phrase,
     this.helperLine,
     required this.options,

@@ -64,23 +64,31 @@ class LessonDetailDto {
       icon: json['icon']?.toString(),
       xpReward: (json['xp_reward'] as num?)?.toInt() ?? 10,
       totalPhrases: (json['total_phrases'] as num?)?.toInt() ?? 0,
-      phrases: (json['phrases'] as List?)
+      phrases:
+          (json['phrases'] as List?)
               ?.whereType<Map>()
-              .map((p) => LessonPhraseDto.fromJson(Map<String, dynamic>.from(p)))
+              .map(
+                (p) => LessonPhraseDto.fromJson(Map<String, dynamic>.from(p)),
+              )
               .toList(growable: false) ??
           const [],
       assessmentConfig: json['assessment_config'] is Map
           ? LessonAssessmentConfigDto.fromJson(
-              Map<String, dynamic>.from(json['assessment_config'] as Map))
+              Map<String, dynamic>.from(json['assessment_config'] as Map),
+            )
           : const LessonAssessmentConfigDto(),
-      questions: (json['questions'] as List?)
+      questions:
+          (json['questions'] as List?)
               ?.whereType<Map>()
-              .map((q) => LessonQuestionDto.fromJson(Map<String, dynamic>.from(q)))
+              .map(
+                (q) => LessonQuestionDto.fromJson(Map<String, dynamic>.from(q)),
+              )
               .toList(growable: false) ??
           const [],
       userProgress: json['user_progress'] is Map
           ? LessonUserProgressDto.fromJson(
-              Map<String, dynamic>.from(json['user_progress'] as Map))
+              Map<String, dynamic>.from(json['user_progress'] as Map),
+            )
           : null,
     );
   }
@@ -111,7 +119,9 @@ class LessonDetailDto {
           picture: p.imageEmoji ?? icon ?? '👋',
           registerTag: p.tags.isNotEmpty ? p.tags.first : 'casual',
           phraseKindTag: 'New phrase',
-          tipText: pebbiIntro ?? "Learn it before you're tested on it — take your time.",
+          tipText:
+              pebbiIntro ??
+              "Learn it before you're tested on it — take your time.",
           audioText: p.targetText,
           audioLocale: locale,
           correctAnswerText: p.targetText,
@@ -142,6 +152,7 @@ class LessonDetailDto {
           helperLine: null,
           audioText: phrase?.targetText ?? targetPrompt,
           audioLocale: locale,
+          hint: q.hint,
           explanationText: q.hint ?? (goal ?? ''),
           correctAnswerText: correctOption,
           feedbackSuccessText: 'Great job!',

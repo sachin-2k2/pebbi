@@ -18,6 +18,10 @@ class ChooseMeaningBody extends StatelessWidget {
     required this.selectedOptionId,
     required this.removedOptionIds,
     required this.isLocked,
+    this.isAnswerChecked = false,
+    this.isCorrect,
+    this.revealedCorrectAnswer,
+    this.isHintVisible = false,
     required this.isPlayingAudio,
     required this.showHelperLine,
     required this.onOptionSelected,
@@ -28,6 +32,10 @@ class ChooseMeaningBody extends StatelessWidget {
   final String? selectedOptionId;
   final Set<String> removedOptionIds;
   final bool isLocked;
+  final bool isAnswerChecked;
+  final bool? isCorrect;
+  final String? revealedCorrectAnswer;
+  final bool isHintVisible;
   final bool isPlayingAudio;
   final bool showHelperLine;
   final ValueChanged<String> onOptionSelected;
@@ -37,6 +45,10 @@ class ChooseMeaningBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    final resolvedCorrect = (revealedCorrectAnswer?.isNotEmpty == true)
+        ? revealedCorrectAnswer
+        : exercise.correctOptionId;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
@@ -60,12 +72,48 @@ class ChooseMeaningBody extends StatelessWidget {
             helperLine: exercise.helperLine,
             showHelperLine: showHelperLine,
           ),
+          if (isHintVisible && exercise.hint?.isNotEmpty == true) ...[
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkSurface : const Color(0xFFF3EDFF),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                border: Border.all(
+                  color: isDark
+                      ? AppColors.brandPurpleLight.withValues(alpha: 0.4)
+                      : AppColors.brandPurple.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('💡 ', style: TextStyle(fontSize: 14)),
+                  Text(
+                    exercise.hint!,
+                    style: AppTypography.labelMedium.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? AppColors.brandPurpleLight
+                          : AppColors.brandPurple,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.xl),
           AnswerOptionList(
             options: exercise.options,
             selectedOptionId: selectedOptionId,
             removedOptionIds: removedOptionIds,
             isLocked: isLocked,
+            isAnswerChecked: isAnswerChecked,
+            isCorrect: isCorrect,
+            correctOptionId: resolvedCorrect,
             onOptionSelected: onOptionSelected,
           ),
         ],

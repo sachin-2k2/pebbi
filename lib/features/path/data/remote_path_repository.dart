@@ -19,6 +19,7 @@ class RemotePathRepository implements PathRepository {
     PathRepository? localFallback,
     this.onSessionExpired,
     this.onNetworkFailure,
+    this.onTrackStatsReceived,
   }) : _apiClient = apiClient,
        _localFallback = localFallback ?? MockPathRepository();
 
@@ -26,6 +27,7 @@ class RemotePathRepository implements PathRepository {
   final PathRepository _localFallback;
   final void Function(String userId)? onSessionExpired;
   final VoidCallback? onNetworkFailure;
+  final void Function(int streak, int stars, int xp)? onTrackStatsReceived;
 
   /// Default language-neutral fallback tracks matching backend curriculum.
   static const List<Track> defaultTracks = [
@@ -41,25 +43,33 @@ class RemotePathRepository implements PathRepository {
       title: 'Career & Workplace',
       emoji: '💼',
       hasContent: true,
-      description: 'Professional communication for interviews and career success',
+      description:
+          'Professional communication for interviews and career success',
     ),
   ];
 
   @override
   Future<List<Track>> getTracks() async {
     final session = await _apiClient.tokenStorage.getActiveSession();
-    if (session == null || session.token.isEmpty || session.userId.startsWith('guest_')) {
+    if (session == null ||
+        session.token.isEmpty ||
+        session.userId.startsWith('guest_')) {
       return defaultTracks;
     }
 
     try {
-      debugPrint('[RemotePathRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/tracks');
+      debugPrint(
+        '[RemotePathRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/tracks',
+      );
       final response = await _apiClient.get('/api/tracks');
       final data = response.data;
       if (data is List) {
         final tracks = data
             .whereType<Map>()
-            .map((item) => TrackDto.fromJson(Map<String, dynamic>.from(item)).toDomain())
+            .map(
+              (item) =>
+                  TrackDto.fromJson(Map<String, dynamic>.from(item)).toDomain(),
+            )
             .toList(growable: false);
         if (tracks.isNotEmpty) {
           return tracks;
@@ -67,7 +77,9 @@ class RemotePathRepository implements PathRepository {
       }
       return defaultTracks;
     } catch (e) {
-      debugPrint('[RemotePathRepository] ⚠️ Failed to fetch tracks: $e. Using default tracks.');
+      debugPrint(
+        '[RemotePathRepository] ⚠️ Failed to fetch tracks: $e. Using default tracks.',
+      );
       return defaultTracks;
     }
   }
@@ -80,7 +92,9 @@ class RemotePathRepository implements PathRepository {
   }) async {
     final session = await _apiClient.tokenStorage.getActiveSession();
     // If not authenticated (guest user), load from local cache/fallback
-    if (session == null || session.token.isEmpty || session.userId.startsWith('guest_')) {
+    if (session == null ||
+        session.token.isEmpty ||
+        session.userId.startsWith('guest_')) {
       return _localFallback.getUnitsForTrack(
         trackId,
         userId: userId,
@@ -89,17 +103,24 @@ class RemotePathRepository implements PathRepository {
     }
 
     try {
-      debugPrint('[RemotePathRepository] ════════════════════════════════════════');
-      debugPrint('[RemotePathRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/lessons/track/$trackId');
+      debugPrint(
+        '[RemotePathRepository] ════════════════════════════════════════',
+      );
+      debugPrint(
+        '[RemotePathRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/lessons/track/$trackId',
+      );
       debugPrint('[RemotePathRepository] 🔑 Active User: ${session.userId}');
 
       final response = await _apiClient.get('/api/lessons/track/$trackId');
 
-      debugPrint('[RemotePathRepository] ✅ Response [${response.statusCode}]: ${response.data}');
+      debugPrint(
+        '[RemotePathRepository] ✅ Response [${response.statusCode}]: ${response.data}',
+      );
 
       final data = response.data;
       if (data != null) {
         final dto = TrackResponseDto.fromJson(data, defaultTrackId: trackId);
+        onTrackStatsReceived?.call(dto.userStreak, dto.totalStars, dto.totalXp);
         final units = dto.toUnits(isPremium: isPremium);
         if (units.isNotEmpty) {
           return units;
@@ -112,7 +133,9 @@ class RemotePathRepository implements PathRepository {
         isPremium: isPremium,
       );
     } on DioException catch (e) {
-      debugPrint('[RemotePathRepository] ❌ DioException [${e.response?.statusCode}]: ${e.response?.data}');
+      debugPrint(
+        '[RemotePathRepository] ❌ DioException [${e.response?.statusCode}]: ${e.response?.data}',
+      );
       debugPrint('[RemotePathRepository] ❌ Error details: ${e.message}');
 
       if (e.response?.statusCode == 401) {

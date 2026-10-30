@@ -21,8 +21,8 @@ class LessonAssessmentConfigDto {
   }
 
   Map<String, dynamic> toJson() => {
-        'total_questions': totalQuestions,
-        'pass_score': passScore,
-        'include_speak_attempt': includeSpeakAttempt,
-      };
+    'total_questions': totalQuestions,
+    'pass_score': passScore,
+    'include_speak_attempt': includeSpeakAttempt,
+  };
 }

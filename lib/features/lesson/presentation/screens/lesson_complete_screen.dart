@@ -58,12 +58,9 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
   }
 
   void _onContinue(BuildContext context) {
-    // Invalidate path providers so completed stop and stars reflect immediately
-    ref.invalidate(unitsProvider);
-    ref.invalidate(homeSummaryProvider);
-
-    // TODO(question: Should guest sign-in prompt trigger here after the first completed lesson, or on the Path screen?)
-
+    ref.read(completedLessonAnimProvider.notifier).state = widget.stopId;
+    ref.read(unitsProvider.notifier).reloadSilently();
+    ref.read(homeSummaryProvider.notifier).reloadSilently();
     if (context.canPop()) {
       context.pop();
     } else {
@@ -80,8 +77,7 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _onContinue(context);
+        if (!didPop) _onContinue(context);
       },
       child: Scaffold(
         backgroundColor: isDark
@@ -105,7 +101,11 @@ class _LessonCompleteScreenState extends ConsumerState<LessonCompleteScreen> {
                         ),
                         child: Column(
                           children: [
-                            CompleteHero(starsEarned: completion.starsEarned),
+                            CompleteHero(
+                              starsEarned: completion.starsEarned,
+                              pebbiSays: completion.pebbiSays,
+                              passed: completion.passed,
+                            ),
                             const SizedBox(height: AppSpacing.sm),
                             StarRow(starsEarned: completion.starsEarned),
                             const SizedBox(height: AppSpacing.xs),

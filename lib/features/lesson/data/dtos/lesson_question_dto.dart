@@ -25,7 +25,8 @@ class LessonQuestionDto {
       questionId: json['question_id']?.toString() ?? '',
       questionType: json['question_type']?.toString() ?? 'pick_meaning',
       phraseId: json['phrase_id']?.toString(),
-      answerChoices: (json['answer_choices'] as List?)
+      answerChoices:
+          (json['answer_choices'] as List?)
               ?.map((e) => e.toString())
               .toList(growable: false) ??
           const [],
@@ -36,12 +37,12 @@ class LessonQuestionDto {
   }
 
   Map<String, dynamic> toJson() => {
-        'question_id': questionId,
-        'question_type': questionType,
-        if (phraseId != null) 'phrase_id': phraseId,
-        'answer_choices': answerChoices,
-        if (hint != null) 'hint': hint,
-        'points': points,
-        'order': order,
-      };
+    'question_id': questionId,
+    'question_type': questionType,
+    if (phraseId != null) 'phrase_id': phraseId,
+    'answer_choices': answerChoices,
+    if (hint != null) 'hint': hint,
+    'points': points,
+    'order': order,
+  };
 }

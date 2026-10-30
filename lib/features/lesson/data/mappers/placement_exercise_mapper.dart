@@ -26,11 +26,7 @@ abstract final class PlacementExerciseMapper {
         final opt = q.options[i];
         final id = 'opt_${q.id}_$i';
         options.add(
-          PictureOption(
-            id: id,
-            imageRef: opt.emoji,
-            spokenLabel: opt.label,
-          ),
+          PictureOption(id: id, imageRef: opt.emoji, spokenLabel: opt.label),
         );
         if (opt.isCorrect) {
           correctId = id;
@@ -54,13 +50,15 @@ abstract final class PlacementExerciseMapper {
             : correctOption.label,
       );
 
-      final cleanCorrectLabel = correctOption.label.replaceAll(
-        RegExp(
-          r'\s*[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]',
-          unicode: true,
-        ),
-        '',
-      ).trim();
+      final cleanCorrectLabel = correctOption.label
+          .replaceAll(
+            RegExp(
+              r'\s*[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]',
+              unicode: true,
+            ),
+            '',
+          )
+          .trim();
 
       final meaning = (cleanCorrectLabel != q.targetPhrase)
           ? cleanCorrectLabel
@@ -101,19 +99,23 @@ abstract final class PlacementExerciseMapper {
     if (questionText.trim().isEmpty) return fallback;
 
     // If the question is in the format: Which one means 'Good morning'? -> extract Good morning
-    final quoteMatch = RegExp(r"['\u2018\u2019\u201c\u201d](.*?)['\u2018\u2019\u201c\u201d]").firstMatch(questionText);
+    final quoteMatch = RegExp(
+      r"['\u2018\u2019\u201c\u201d](.*?)['\u2018\u2019\u201c\u201d]",
+    ).firstMatch(questionText);
     if (quoteMatch != null && quoteMatch.group(1)!.trim().isNotEmpty) {
       return quoteMatch.group(1)!.trim();
     }
 
     // Strip trailing/leading emojis
-    final cleaned = questionText.replaceAll(
-      RegExp(
-        r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]',
-        unicode: true,
-      ),
-      '',
-    ).trim();
+    final cleaned = questionText
+        .replaceAll(
+          RegExp(
+            r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]',
+            unicode: true,
+          ),
+          '',
+        )
+        .trim();
 
     if (cleaned.endsWith('!')) {
       return cleaned.substring(0, cleaned.length - 1).trim();
@@ -177,4 +179,3 @@ abstract final class PlacementExerciseMapper {
     return stripped.isNotEmpty ? stripped : text.trim();
   }
 }
-

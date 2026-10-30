@@ -11,9 +11,9 @@ class CheckAnswerRequestDto {
   final String chosenAnswer;
 
   Map<String, dynamic> toJson() => {
-        'question_id': questionId,
-        'chosen_answer': chosenAnswer,
-      };
+    'question_id': questionId,
+    'chosen_answer': chosenAnswer,
+  };
 }
 
 class CheckAnswerResponseDto {
@@ -23,6 +23,7 @@ class CheckAnswerResponseDto {
     required this.correctAnswer,
     required this.chosenAnswer,
     this.pointsEarned = 0,
+    this.explanation,
   });
 
   final String questionId;
@@ -30,6 +31,7 @@ class CheckAnswerResponseDto {
   final String correctAnswer;
   final String chosenAnswer;
   final int pointsEarned;
+  final String? explanation;
 
   factory CheckAnswerResponseDto.fromJson(Map<String, dynamic> json) {
     return CheckAnswerResponseDto(
@@ -38,14 +40,16 @@ class CheckAnswerResponseDto {
       correctAnswer: json['correct_answer']?.toString() ?? '',
       chosenAnswer: json['chosen_answer']?.toString() ?? '',
       pointsEarned: (json['points_earned'] as num?)?.toInt() ?? 0,
+      explanation: json['explanation']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'question_id': questionId,
-        'is_correct': isCorrect,
-        'correct_answer': correctAnswer,
-        'chosen_answer': chosenAnswer,
-        'points_earned': pointsEarned,
-      };
+    'question_id': questionId,
+    'is_correct': isCorrect,
+    'correct_answer': correctAnswer,
+    'chosen_answer': chosenAnswer,
+    'points_earned': pointsEarned,
+    if (explanation != null) 'explanation': explanation,
+  };
 }

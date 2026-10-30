@@ -11,21 +11,19 @@ class SubmitLessonAnswerItemDto {
   final String chosenAnswer;
 
   Map<String, dynamic> toJson() => {
-        'question_id': questionId,
-        'chosen_answer': chosenAnswer,
-      };
+    'question_id': questionId,
+    'chosen_answer': chosenAnswer,
+  };
 }
 
 class SubmitLessonRequestDto {
-  const SubmitLessonRequestDto({
-    required this.answers,
-  });
+  const SubmitLessonRequestDto({required this.answers});
 
   final List<SubmitLessonAnswerItemDto> answers;
 
   Map<String, dynamic> toJson() => {
-        'answers': answers.map((a) => a.toJson()).toList(),
-      };
+    'answers': answers.map((a) => a.toJson()).toList(),
+  };
 }
 
 class SubmitLessonResponseDto {
@@ -35,6 +33,9 @@ class SubmitLessonResponseDto {
     required this.total,
     required this.scorePct,
     this.xpAwarded = 0,
+    this.totalXp,
+    this.totalStars,
+    this.currentStreak,
     this.nextLessonId,
     this.pebbiSays,
   });
@@ -44,6 +45,9 @@ class SubmitLessonResponseDto {
   final int total;
   final int scorePct;
   final int xpAwarded;
+  final int? totalXp;
+  final int? totalStars;
+  final int? currentStreak;
   final String? nextLessonId;
   final String? pebbiSays;
 
@@ -54,18 +58,24 @@ class SubmitLessonResponseDto {
       total: (json['total'] as num?)?.toInt() ?? 0,
       scorePct: (json['score_pct'] as num?)?.toInt() ?? 0,
       xpAwarded: (json['xp_awarded'] as num?)?.toInt() ?? 0,
+      totalXp: (json['total_xp'] as num?)?.toInt(),
+      totalStars: (json['total_stars'] as num?)?.toInt(),
+      currentStreak: (json['current_streak'] as num?)?.toInt(),
       nextLessonId: json['next_lesson_id']?.toString(),
       pebbiSays: json['pebbi_says']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'passed': passed,
-        'score': score,
-        'total': total,
-        'score_pct': scorePct,
-        'xp_awarded': xpAwarded,
-        if (nextLessonId != null) 'next_lesson_id': nextLessonId,
-        if (pebbiSays != null) 'pebbi_says': pebbiSays,
-      };
+    'passed': passed,
+    'score': score,
+    'total': total,
+    'score_pct': scorePct,
+    'xp_awarded': xpAwarded,
+    if (totalXp != null) 'total_xp': totalXp,
+    if (totalStars != null) 'total_stars': totalStars,
+    if (currentStreak != null) 'current_streak': currentStreak,
+    if (nextLessonId != null) 'next_lesson_id': nextLessonId,
+    if (pebbiSays != null) 'pebbi_says': pebbiSays,
+  };
 }

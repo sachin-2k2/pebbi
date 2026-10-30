@@ -27,6 +27,9 @@ class UserProfile {
     this.firstName,
     this.isOnboarded = true,
     this.createdAt,
+    this.currentStreak = 0,
+    this.totalStars = 0,
+    this.totalXp = 0,
   });
 
   /// Distinct user identifier (e.g. `guest_local_user`).
@@ -80,6 +83,15 @@ class UserProfile {
   /// Creation timestamp.
   final DateTime? createdAt;
 
+  /// Current consecutive day learning streak.
+  final int currentStreak;
+
+  /// Total cumulative stars earned across curriculum.
+  final int totalStars;
+
+  /// Total XP earned.
+  final int totalXp;
+
   /// Whether the user has an active premium entitlement.
   bool get isPremium => plan == 'premium';
 
@@ -103,6 +115,9 @@ class UserProfile {
     bool clearFirstName = false,
     bool? isOnboarded,
     DateTime? createdAt,
+    int? currentStreak,
+    int? totalStars,
+    int? totalXp,
   }) {
     return UserProfile(
       userId: userId ?? this.userId,
@@ -124,6 +139,9 @@ class UserProfile {
       firstName: clearFirstName ? null : (firstName ?? this.firstName),
       isOnboarded: isOnboarded ?? this.isOnboarded,
       createdAt: createdAt ?? this.createdAt,
+      currentStreak: currentStreak ?? this.currentStreak,
+      totalStars: totalStars ?? this.totalStars,
+      totalXp: totalXp ?? this.totalXp,
     );
   }
 

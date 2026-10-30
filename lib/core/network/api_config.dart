@@ -20,7 +20,7 @@ class ApiConfig {
              const String.fromEnvironment(
                'API_BASE_URL',
                defaultValue:
-                   'https://antivirus-pretty-nursery-receptors.trycloudflare.com',
+                   'https://player-halo-ancient-speaker.trycloudflare.com',
              ),
        ),
        placementApiMode =

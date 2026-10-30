@@ -65,10 +65,7 @@ class ExercisePrompt extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          HearItButton(
-            onPressed: onHearIt,
-            isPlaying: isPlayingAudio,
-          ),
+          HearItButton(onPressed: onHearIt, isPlaying: isPlayingAudio),
         ],
       ),
     );

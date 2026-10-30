@@ -22,6 +22,10 @@ class ExerciseHost extends StatelessWidget {
     this.placedTileIds = const [],
     required this.removedOptionIds,
     required this.isLocked,
+    this.isAnswerChecked = false,
+    this.isCorrect,
+    this.revealedCorrectAnswer,
+    this.isHintVisible = false,
     required this.isPlayingAudio,
     required this.showHelperLine,
     required this.onOptionSelected,
@@ -45,24 +49,25 @@ class ExerciseHost extends StatelessWidget {
   final String? selectedOptionId;
   final List<String> placedTileIds;
   final Set<String> removedOptionIds;
-  final bool isLocked;
-  final bool isPlayingAudio;
-  final bool showHelperLine;
+  final bool isLocked,
+      isAnswerChecked,
+      isPlayingAudio,
+      showHelperLine,
+      isWrongPairShake,
+      isHintVisible;
+  final bool? isCorrect;
+  final String? revealedCorrectAnswer,
+      selectedTargetMatchId,
+      selectedMeaningMatchId;
   final ValueChanged<String> onOptionSelected;
-  final ValueChanged<String>? onPlaceTile;
-  final ValueChanged<String>? onRemoveTile;
-  final VoidCallback onPlayAudio;
-  final VoidCallback onHearIt;
-  final Set<String> savedTokenIds;
+  final ValueChanged<String>? onPlaceTile,
+      onRemoveTile,
+      onSelectTarget,
+      onSelectMeaning;
+  final VoidCallback onPlayAudio, onHearIt;
+  final Set<String> savedTokenIds, matchedPairIds;
   final ValueChanged<PhraseToken>? onTokenTap;
-  final String? selectedTargetMatchId;
-  final String? selectedMeaningMatchId;
-  final Set<String> matchedPairIds;
-  final bool isWrongPairShake;
-  final ValueChanged<String>? onSelectTarget;
-  final ValueChanged<String>? onSelectMeaning;
-  final VoidCallback? onCantListen;
-  final VoidCallback? onSpeakingContinue;
+  final VoidCallback? onCantListen, onSpeakingContinue;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +97,10 @@ class ExerciseHost extends StatelessWidget {
         selectedOptionId: selectedOptionId,
         removedOptionIds: removedOptionIds,
         isLocked: isLocked,
+        isAnswerChecked: isAnswerChecked,
+        isCorrect: isCorrect,
+        revealedCorrectAnswer: revealedCorrectAnswer,
+        isHintVisible: isHintVisible,
         isPlayingAudio: isPlayingAudio,
         showHelperLine: showHelperLine,
         onOptionSelected: onOptionSelected,

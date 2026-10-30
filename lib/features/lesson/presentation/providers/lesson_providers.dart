@@ -7,6 +7,7 @@ import '../../../../core/services/speech_recognizer_service.dart';
 import '../../../../core/services/speech_to_text_recognizer_service.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../auth/presentation/providers/session_expired_handler.dart';
+import '../../../path/presentation/providers/track_stats_provider.dart';
 import '../../../review/presentation/providers/review_provider.dart';
 import '../../../onboarding/presentation/providers/placement_repository_provider.dart';
 import '../../data/mock_lesson_repository.dart';
@@ -23,7 +24,9 @@ import 'exercise_session_state.dart';
 /// Provider for [ExerciseRepository] (used for placement checks).
 final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
   final placementRepo = ref.watch(placementRepositoryProvider);
-  return PlacementIntegratedExerciseRepository(placementRepository: placementRepo);
+  return PlacementIntegratedExerciseRepository(
+    placementRepository: placementRepo,
+  );
 });
 
 /// Provider for [LessonRepository] (used for curriculum lessons).
@@ -86,5 +89,14 @@ final exerciseSessionProvider =
         userId: currentUser?.userId ?? 'guest_default',
         answerChecker: answerChecker,
         audioFeedback: audioFeedback,
+        onStatsUpdated: (streak, stars, xp) {
+          ref
+              .read(trackStatsProvider.notifier)
+              .update(
+                streak: streak > 0 ? streak : null,
+                stars: stars > 0 ? stars : null,
+                xp: xp > 0 ? xp : null,
+              );
+        },
       );
     });

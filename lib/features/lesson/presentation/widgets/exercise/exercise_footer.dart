@@ -15,6 +15,8 @@ class ExerciseFooter extends StatelessWidget {
     required this.feedbackKind,
     required this.exercise,
     required this.currentStreak,
+    this.revealedCorrectAnswer,
+    this.serverExplanation,
     required this.bottomBarMode,
     required this.canCheck,
     required this.canUseHint,
@@ -28,6 +30,8 @@ class ExerciseFooter extends StatelessWidget {
   final FeedbackKind? feedbackKind;
   final Exercise exercise;
   final int currentStreak;
+  final String? revealedCorrectAnswer;
+  final String? serverExplanation;
   final BottomBarMode bottomBarMode;
   final bool canCheck;
   final bool canUseHint;
@@ -39,12 +43,16 @@ class ExerciseFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (status == ExerciseStatus.checked && feedbackKind != null) {
+      final explanation = (serverExplanation?.trim().isNotEmpty == true)
+          ? serverExplanation!
+          : exercise.explanationText;
       return FeedbackPanel(
         kind: feedbackKind!,
         exercise: exercise,
         currentStreak: currentStreak,
+        revealedCorrectAnswer: revealedCorrectAnswer,
         onContinue: onContinue,
-        onWhy: () => WhySheet.show(context, exercise.explanationText),
+        onWhy: () => WhySheet.show(context, explanation),
       );
     }
 

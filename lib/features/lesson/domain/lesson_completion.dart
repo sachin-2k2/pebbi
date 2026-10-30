@@ -69,6 +69,9 @@ class LessonCompletion {
     this.newBadgeIds = const [],
     this.newStickerIds = const [],
     this.levelUp,
+    this.passed = true,
+    this.xpAwarded = 10,
+    this.pebbiSays,
   });
 
   /// The completed lesson stop ID.
@@ -106,4 +109,13 @@ class LessonCompletion {
 
   /// Level-up milestone reached (e.g. "Level 2: Polyglot Explorer"), if any.
   final String? levelUp;
+
+  /// Whether the learner passed the assessment (score >= pass threshold).
+  final bool passed;
+
+  /// XP awarded by the backend on completion.
+  final int xpAwarded;
+
+  /// Mascot feedback message returned by the backend (e.g. "¡Perfecto! 🎉 You scored 6/6! Keep going!").
+  final String? pebbiSays;
 }

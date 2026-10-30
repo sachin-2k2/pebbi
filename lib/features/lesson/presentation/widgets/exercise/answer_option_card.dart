@@ -17,6 +17,8 @@ class AnswerOptionCard extends StatelessWidget {
     required this.number,
     required this.totalCount,
     required this.isSelected,
+    this.isCorrectAnswer = false,
+    this.isWrongAnswer = false,
     required this.isRemoved,
     required this.isLocked,
     required this.onTap,
@@ -26,6 +28,8 @@ class AnswerOptionCard extends StatelessWidget {
   final int number;
   final int totalCount;
   final bool isSelected;
+  final bool isCorrectAnswer;
+  final bool isWrongAnswer;
   final bool isRemoved;
   final bool isLocked;
   final VoidCallback onTap;
@@ -35,13 +39,42 @@ class AnswerOptionCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bg = isSelected
-        ? (isDark ? AppColors.darkSurfaceVariant : const Color(0xFFF5F3FF))
-        : (isDark ? AppColors.darkSurface : AppColors.surface);
-    final borderColor = isSelected
-        ? AppColors.brandPurple
-        : (isDark ? AppColors.darkBorder : AppColors.borderLight);
-    final borderWidth = isSelected ? 2.5 : 1.5;
+    final Color bg;
+    final Color borderColor;
+    final double borderWidth;
+
+    if (isCorrectAnswer) {
+      bg = isDark ? const Color(0xFF132B20) : AppColors.successSurface;
+      borderColor = AppColors.successBorder;
+      borderWidth = 2.5;
+    } else if (isWrongAnswer) {
+      bg = isDark ? const Color(0xFF2E1515) : AppColors.errorSurface;
+      borderColor = AppColors.errorBorder;
+      borderWidth = 2.5;
+    } else if (isSelected) {
+      bg = isDark ? AppColors.darkSurfaceVariant : const Color(0xFFF5F3FF);
+      borderColor = AppColors.brandPurple;
+      borderWidth = 2.5;
+    } else {
+      bg = isDark ? AppColors.darkSurface : AppColors.surface;
+      borderColor = isDark ? AppColors.darkBorder : AppColors.borderLight;
+      borderWidth = 1.5;
+    }
+
+    Widget? statusIcon;
+    if (isCorrectAnswer) {
+      statusIcon = const Icon(
+        Icons.check_circle_rounded,
+        color: AppColors.successTextHeader,
+        size: 22,
+      );
+    } else if (isWrongAnswer) {
+      statusIcon = const Icon(
+        Icons.cancel_rounded,
+        color: AppColors.errorTextHeader,
+        size: 22,
+      );
+    }
 
     return Semantics(
       button: true,
@@ -77,7 +110,7 @@ class AnswerOptionCard extends StatelessWidget {
                   border: Border.all(color: borderColor, width: borderWidth),
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     NumberBadge(number: number, isSelected: isSelected),
                     const SizedBox(width: AppSpacing.md),
@@ -92,6 +125,10 @@ class AnswerOptionCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (statusIcon != null) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      statusIcon,
+                    ],
                   ],
                 ),
               ),

@@ -10,12 +10,21 @@ class TrackResponseDto {
   const TrackResponseDto({
     required this.trackId,
     required this.lessons,
+    this.userStreak = 0,
+    this.totalStars = 0,
+    this.totalXp = 0,
   });
 
   final String trackId;
   final List<TrackLessonDto> lessons;
+  final int userStreak;
+  final int totalStars;
+  final int totalXp;
 
-  factory TrackResponseDto.fromJson(dynamic json, {String defaultTrackId = 'daily'}) {
+  factory TrackResponseDto.fromJson(
+    dynamic json, {
+    String defaultTrackId = 'daily',
+  }) {
     var raw = json;
     if (raw is String) {
       try {
@@ -26,13 +35,11 @@ class TrackResponseDto {
     }
 
     if (raw is List) {
-      return TrackResponseDto(
-        trackId: defaultTrackId,
-        lessons: raw
-            .whereType<Map>()
-            .map((item) => TrackLessonDto.fromJson(Map<String, dynamic>.from(item)))
-            .toList(growable: false),
-      );
+      final lessons = raw
+          .whereType<Map>()
+          .map((i) => TrackLessonDto.fromJson(Map<String, dynamic>.from(i)))
+          .toList(growable: false);
+      return TrackResponseDto(trackId: defaultTrackId, lessons: lessons);
     }
 
     if (raw is Map) {
@@ -40,12 +47,15 @@ class TrackResponseDto {
       final listRaw = map['lessons'] as List? ?? const [];
       final parsed = listRaw
           .whereType<Map>()
-          .map((item) => TrackLessonDto.fromJson(Map<String, dynamic>.from(item)))
+          .map((i) => TrackLessonDto.fromJson(Map<String, dynamic>.from(i)))
           .toList(growable: false);
 
       return TrackResponseDto(
         trackId: map['track_id']?.toString() ?? defaultTrackId,
         lessons: parsed,
+        userStreak: (map['user_streak'] as num?)?.toInt() ?? 0,
+        totalStars: (map['total_stars'] as num?)?.toInt() ?? 0,
+        totalXp: (map['total_xp'] as num?)?.toInt() ?? 0,
       );
     }
 
@@ -56,43 +66,48 @@ class TrackResponseDto {
   List<Unit> toUnits({bool isPremium = false}) {
     if (lessons.isEmpty) return const [];
 
-    // Group lessons by their level string ('starter', 'know_a_bit', 'expert')
-    final starterLessons = lessons.where((l) => l.level == 'starter').toList();
-    final knowABitLessons = lessons.where((l) => l.level == 'know_a_bit').toList();
-    final expertLessons = lessons.where((l) => l.level == 'expert').toList();
+    final starter = lessons.where((l) => l.level == 'starter').toList();
+    final knowABit = lessons.where((l) => l.level == 'know_a_bit').toList();
+    final expert = lessons.where((l) => l.level == 'expert').toList();
 
-    // If levels are not explicitly matching, chunk into groups of 6
-    if (starterLessons.isEmpty && knowABitLessons.isEmpty && expertLessons.isEmpty) {
+    if (starter.isEmpty && knowABit.isEmpty && expert.isEmpty) {
       return _chunkIntoUnits(lessons, isPremium: isPremium);
     }
 
     final units = <Unit>[];
-
-    if (starterLessons.isNotEmpty) {
-      units.add(_buildUnit(
-        unitNumber: 1,
-        title: trackId == 'job' ? 'Job Starter' : 'Daily Starter',
-        lessons: starterLessons,
-        isFree: true,
-      ));
+    if (starter.isNotEmpty) {
+      units.add(
+        _buildUnit(
+          unitNumber: 1,
+          title: trackId == 'job' ? 'Job Starter' : 'Daily Starter',
+          lessons: starter,
+          isFree: true,
+        ),
+      );
     }
-
-    if (knowABitLessons.isNotEmpty) {
-      units.add(_buildUnit(
-        unitNumber: 2,
-        title: trackId == 'job' ? 'Office & Communication' : 'Everyday Conversations',
-        lessons: knowABitLessons,
-        isFree: isPremium,
-      ));
+    if (knowABit.isNotEmpty) {
+      units.add(
+        _buildUnit(
+          unitNumber: 2,
+          title: trackId == 'job'
+              ? 'Office & Communication'
+              : 'Everyday Conversations',
+          lessons: knowABit,
+          isFree: isPremium,
+        ),
+      );
     }
-
-    if (expertLessons.isNotEmpty) {
-      units.add(_buildUnit(
-        unitNumber: 3,
-        title: trackId == 'job' ? 'Executive & Interviews' : 'Advanced Nuance',
-        lessons: expertLessons,
-        isFree: isPremium,
-      ));
+    if (expert.isNotEmpty) {
+      units.add(
+        _buildUnit(
+          unitNumber: 3,
+          title: trackId == 'job'
+              ? 'Executive & Interviews'
+              : 'Advanced Nuance',
+          lessons: expert,
+          isFree: isPremium,
+        ),
+      );
     }
 
     return List.unmodifiable(units);
@@ -111,13 +126,15 @@ class TrackResponseDto {
 
     // Add rewarding chest node at the end of the unit
     final allComplete = lessons.every((l) => l.status == 'complete');
-    nodes.add(ChestNode(
-      id: 'chest_${trackId}_$unitNumber',
-      title: 'Bonus Chest',
-      state: allComplete ? NodeState.current : NodeState.locked,
-      lockReason: allComplete ? LockReason.none : LockReason.progress,
-      isOpened: allComplete,
-    ));
+    nodes.add(
+      ChestNode(
+        id: 'chest_${trackId}_$unitNumber',
+        title: 'Bonus Chest',
+        state: allComplete ? NodeState.current : NodeState.locked,
+        lockReason: allComplete ? LockReason.none : LockReason.progress,
+        isOpened: allComplete,
+      ),
+    );
 
     return Unit(
       id: 'unit_${trackId}_$unitNumber',
@@ -129,19 +146,24 @@ class TrackResponseDto {
     );
   }
 
-  List<Unit> _chunkIntoUnits(List<TrackLessonDto> all, {required bool isPremium}) {
+  List<Unit> _chunkIntoUnits(
+    List<TrackLessonDto> all, {
+    required bool isPremium,
+  }) {
     final units = <Unit>[];
     const chunkSize = 6;
     for (var i = 0; i < all.length; i += chunkSize) {
       final end = (i + chunkSize < all.length) ? i + chunkSize : all.length;
       final chunk = all.sublist(i, end);
       final unitNum = (i ~/ chunkSize) + 1;
-      units.add(_buildUnit(
-        unitNumber: unitNum,
-        title: 'Unit $unitNum',
-        lessons: chunk,
-        isFree: unitNum == 1 || isPremium,
-      ));
+      units.add(
+        _buildUnit(
+          unitNumber: unitNum,
+          title: 'Unit $unitNum',
+          lessons: chunk,
+          isFree: unitNum == 1 || isPremium,
+        ),
+      );
     }
     return List.unmodifiable(units);
   }

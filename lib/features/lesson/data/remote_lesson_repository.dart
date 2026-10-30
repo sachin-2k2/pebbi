@@ -20,8 +20,8 @@ class RemoteLessonRepository implements LessonRepository {
     required ApiClient apiClient,
     LessonRepository fallbackRepository = const MockLessonRepository(),
     this.onSessionExpired,
-  })  : _apiClient = apiClient,
-        _fallbackRepository = fallbackRepository;
+  }) : _apiClient = apiClient,
+       _fallbackRepository = fallbackRepository;
 
   final ApiClient _apiClient;
   final LessonRepository _fallbackRepository;
@@ -37,8 +37,12 @@ class RemoteLessonRepository implements LessonRepository {
     final target = learningLanguage ?? 'en';
 
     try {
-      debugPrint('[RemoteLessonRepository] ════════════════════════════════════════');
-      debugPrint('[RemoteLessonRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/lessons/$stopId?native_language=$native&learning_language=$target');
+      debugPrint(
+        '[RemoteLessonRepository] ════════════════════════════════════════',
+      );
+      debugPrint(
+        '[RemoteLessonRepository] 🌐 GET ${_apiClient.config.baseUrl}/api/lessons/$stopId?native_language=$native&learning_language=$target',
+      );
 
       final response = await _apiClient.get(
         '/api/lessons/$stopId',
@@ -46,12 +50,12 @@ class RemoteLessonRepository implements LessonRepository {
           'native_language': native,
           'learning_language': target,
         },
-        options: Options(
-          receiveTimeout: const Duration(seconds: 90),
-        ),
+        options: Options(receiveTimeout: const Duration(seconds: 90)),
       );
 
-      debugPrint('[RemoteLessonRepository] ✅ Response [${response.statusCode}]');
+      debugPrint(
+        '[RemoteLessonRepository] ✅ Response [${response.statusCode}]',
+      );
 
       final data = response.data;
       if (data is Map) {
@@ -68,7 +72,9 @@ class RemoteLessonRepository implements LessonRepository {
         learningLanguage: target,
       );
     } on DioException catch (e) {
-      debugPrint('[RemoteLessonRepository] ❌ DioException [${e.response?.statusCode}]: ${e.response?.data}');
+      debugPrint(
+        '[RemoteLessonRepository] ❌ DioException [${e.response?.statusCode}]: ${e.response?.data}',
+      );
       if (e.response?.statusCode == 401) {
         final session = await _apiClient.tokenStorage.getActiveSession();
         if (session != null) onSessionExpired?.call(session.userId);
@@ -80,7 +86,9 @@ class RemoteLessonRepository implements LessonRepository {
         learningLanguage: target,
       );
     } catch (e, stack) {
-      debugPrint('[RemoteLessonRepository] 💥 Unexpected exception: $e\n$stack');
+      debugPrint(
+        '[RemoteLessonRepository] 💥 Unexpected exception: $e\n$stack',
+      );
       return await _fallbackRepository.loadLesson(
         stopId,
         nativeLanguage: native,
@@ -90,6 +98,7 @@ class RemoteLessonRepository implements LessonRepository {
   }
 
   /// Calls `POST /api/lessons/{lesson_id}/check` to evaluate a single answer.
+  @override
   Future<CheckAnswerResponseDto?> checkAnswer({
     required String lessonId,
     required String questionId,
@@ -100,15 +109,26 @@ class RemoteLessonRepository implements LessonRepository {
         questionId: questionId,
         chosenAnswer: chosenAnswer,
       );
+      debugPrint(
+        '[RemoteLessonRepository] 🌐 POST ${_apiClient.config.baseUrl}/api/lessons/$lessonId/check',
+      );
+      debugPrint('[RemoteLessonRepository] 📦 Request Body: ${req.toJson()}');
       final response = await _apiClient.post(
         '/api/lessons/$lessonId/check',
         data: req.toJson(),
+      );
+      debugPrint(
+        '[RemoteLessonRepository] ✅ checkAnswer [${response.statusCode}]: ${response.data}',
       );
       if (response.data is Map) {
         return CheckAnswerResponseDto.fromJson(
           Map<String, dynamic>.from(response.data as Map),
         );
       }
+    } on DioException catch (e) {
+      debugPrint(
+        '[RemoteLessonRepository] ❌ checkAnswer DioException [${e.response?.statusCode}]: ${e.response?.data}',
+      );
     } catch (e) {
       debugPrint('[RemoteLessonRepository] ❌ checkAnswer error: $e');
     }
@@ -116,26 +136,33 @@ class RemoteLessonRepository implements LessonRepository {
   }
 
   /// Calls `POST /api/lessons/{lesson_id}/submit` to submit finished quiz answers.
+  @override
   Future<SubmitLessonResponseDto?> submitLesson({
     required String lessonId,
     required List<SubmitLessonAnswerItemDto> answers,
   }) async {
     try {
       final req = SubmitLessonRequestDto(answers: answers);
-      debugPrint('[RemoteLessonRepository] 🌐 POST ${_apiClient.config.baseUrl}/api/lessons/$lessonId/submit (${answers.length} answers)');
+      debugPrint(
+        '[RemoteLessonRepository] 🌐 POST ${_apiClient.config.baseUrl}/api/lessons/$lessonId/submit (${answers.length} answers)',
+      );
       debugPrint('[RemoteLessonRepository] 📦 Request Body: ${req.toJson()}');
       final response = await _apiClient.post(
         '/api/lessons/$lessonId/submit',
         data: req.toJson(),
       );
-      debugPrint('[RemoteLessonRepository] ✅ submitLesson [${response.statusCode}]: ${response.data}');
+      debugPrint(
+        '[RemoteLessonRepository] ✅ submitLesson [${response.statusCode}]: ${response.data}',
+      );
       if (response.data is Map) {
         return SubmitLessonResponseDto.fromJson(
           Map<String, dynamic>.from(response.data as Map),
         );
       }
     } on DioException catch (e) {
-      debugPrint('[RemoteLessonRepository] ❌ submitLesson DioException [${e.response?.statusCode}]: ${e.response?.data}');
+      debugPrint(
+        '[RemoteLessonRepository] ❌ submitLesson DioException [${e.response?.statusCode}]: ${e.response?.data}',
+      );
     } catch (e) {
       debugPrint('[RemoteLessonRepository] ❌ submitLesson error: $e');
     }

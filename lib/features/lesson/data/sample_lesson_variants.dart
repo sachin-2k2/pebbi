@@ -191,7 +191,8 @@ abstract final class SampleLessonVariants {
           correctOptionId: 'ml_opt_hello',
           correctAnswerText: 'Hello',
           feedbackSuccessText: '“നമസ്കാരം” means Hello',
-          explanationText: '“നമസ്കാരം” is the standard polite greeting in Kerala.',
+          explanationText:
+              '“നമസ്കാരം” is the standard polite greeting in Kerala.',
         ),
         NewPhraseCardExercise(
           id: 'ml_item_3',

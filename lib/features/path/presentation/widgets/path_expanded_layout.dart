@@ -32,8 +32,11 @@ class PathExpandedLayout extends ConsumerWidget {
     final unitsAsync = ref.watch(unitsProvider);
     final showAds = ref.watch(shouldShowAdBannerProvider);
     final activeAd = ref.watch(activeAdBannerProvider).valueOrNull;
+    final completedId = ref.watch(completedLessonAnimProvider);
 
     return summaryAsync.when(
+      skipLoadingOnReload: true,
+      skipLoadingOnRefresh: true,
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
       data: (summary) {
@@ -66,7 +69,8 @@ class PathExpandedLayout extends ConsumerWidget {
               ContinueCard(
                 title: summary.currentStopTitle,
                 subtitle: AppStrings.continueCaption(summary.estimatedMinutes),
-                onPlayPressed: () => context.push('/lesson/1'),
+                onPlayPressed: () =>
+                    context.push('/lesson/${summary.currentStopId}'),
               ),
               const SizedBox(height: AppSpacing.md),
               DueStrip(
@@ -85,6 +89,8 @@ class PathExpandedLayout extends ConsumerWidget {
             ],
           ),
           secondaryPane: unitsAsync.when(
+            skipLoadingOnReload: true,
+            skipLoadingOnRefresh: true,
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, _) => Center(child: Text('Error: $err')),
             data: (units) => ListView(
@@ -104,7 +110,12 @@ class PathExpandedLayout extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                     PathRail(
+                      key: ValueKey('path_rail_exp_${unit.id}'),
                       nodes: unit.nodes,
+                      completedStopId: completedId,
+                      onAnimationComplete: () => ref
+                          .read(completedLessonAnimProvider.notifier)
+                          .state = null,
                       onNodeTap: (node) => _handleNodeTap(context, node),
                     ),
                     if (unit.isFreeUnit && unit.isCompleted)
@@ -133,10 +144,7 @@ class PathExpandedLayout extends ConsumerWidget {
 
   void _showPlaceholder(BuildContext context, String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('TODO(question): $feature coming soon!'),
-        duration: const Duration(seconds: 2),
-      ),
+      SnackBar(content: Text('TODO(question): $feature coming soon!')),
     );
   }
 }

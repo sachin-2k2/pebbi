@@ -67,6 +67,15 @@ class MockProgressRepository implements ProgressRepository {
     required LessonResult result,
     String? clientEventId,
     List<LearnedPhrase>? learnedPhrases,
+    bool? passed,
+    int? xpAwarded,
+    int? backendScore,
+    int? backendTotal,
+    String? nextStopId,
+    String? pebbiSays,
+    int? currentStreak,
+    int? totalStars,
+    int? totalXp,
   }) async {
     final eventId =
         clientEventId ??
@@ -80,16 +89,18 @@ class MockProgressRepository implements ProgressRepository {
 
     await saveLessonProgress(userId: userId, result: result);
 
-    final scored = result.scoredItemCount;
-    final firstTry = result.firstTryCorrectCount;
+    final scored = backendTotal ?? result.scoredItemCount;
+    final firstTry = backendScore ?? result.firstTryCorrectCount;
+    final isPassed = passed ?? true;
     final allSkipped =
         result.itemRecords.isNotEmpty &&
         result.itemRecords.values.every((r) => r.skipped);
 
-    // Mock placeholder star calculation
-    // TODO(question: backend owns real star rules, item weights and thresholds).
+    // Star calculation
     final int stars;
-    if (allSkipped) {
+    if (!isPassed) {
+      stars = 0;
+    } else if (allSkipped) {
       stars = 0;
     } else if (scored == 0) {
       stars = 3;
@@ -104,7 +115,10 @@ class MockProgressRepository implements ProgressRepository {
       }
     }
 
-    final phrases = learnedPhrases ?? customLearnedPhrases ?? _defaultPhrasesForStop(stopId);
+    final phrases =
+        learnedPhrases ??
+        customLearnedPhrases ??
+        _defaultPhrasesForStop(stopId);
     final goal =
         customDailyGoal ??
         const DailyGoalCompletion(status: DailyGoalStatus.done);
@@ -115,13 +129,16 @@ class MockProgressRepository implements ProgressRepository {
       scoredCount: scored,
       firstTryCorrectCount: firstTry,
       learnedPhrases: phrases,
-      streakDays: customStreakDays,
+      streakDays: currentStreak ?? customStreakDays,
       dailyGoal: goal,
-      nextStopId: 'stop_1_2',
+      nextStopId: nextStopId ?? 'stop_1_2',
       unitCompleted: customUnitCompleted,
       newBadgeIds: customBadgeIds,
       newStickerIds: customStickerIds,
       levelUp: customLevelUp,
+      passed: isPassed,
+      xpAwarded: xpAwarded ?? 10,
+      pebbiSays: pebbiSays,
     );
 
     userMap[stopId] = completion;
@@ -216,7 +233,9 @@ class MockProgressRepository implements ProgressRepository {
       ];
     }
 
-    if (stopId.contains('ml') || stopId.contains('malayalam') || stopId.contains('daily-starter')) {
+    if (stopId.contains('ml') ||
+        stopId.contains('malayalam') ||
+        stopId.contains('daily-starter')) {
       return const [
         LearnedPhrase(
           id: 'ml_1',

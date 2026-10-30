@@ -1,3 +1,5 @@
+import '../../data/dtos/check_answer_dto.dart';
+import '../../data/dtos/submit_lesson_dto.dart';
 import '../../domain/exercise.dart';
 import '../../domain/exercise_result.dart';
 import '../../domain/lesson_result.dart';
@@ -60,6 +62,13 @@ class ExerciseSessionState {
     this.matchedPairIds = const {},
     this.isWrongPairShake = false,
     this.matchMistakes = 0,
+    this.isSubmitting = false,
+    this.submitResult,
+    this.isCheckingAnswer = false,
+    this.revealedCorrectAnswer,
+    this.lastCheckResult,
+    this.earnedPoints = 0,
+    this.checkedAnswerMap = const {},
   });
 
   final List<Exercise> mainExercises;
@@ -85,6 +94,13 @@ class ExerciseSessionState {
   final Set<String> matchedPairIds;
   final bool isWrongPairShake;
   final int matchMistakes;
+  final bool isSubmitting;
+  final SubmitLessonResponseDto? submitResult;
+  final bool isCheckingAnswer;
+  final String? revealedCorrectAnswer;
+  final CheckAnswerResponseDto? lastCheckResult;
+  final int earnedPoints;
+  final Map<String, CheckAnswerResponseDto> checkedAnswerMap;
 
   /// Returns the currently active exercise.
   Exercise? get currentExercise {
@@ -142,7 +158,8 @@ class ExerciseSessionState {
 
   /// Whether the Check button can be tapped.
   bool get canCheck {
-    if (status == ExerciseStatus.checked ||
+    if (isCheckingAnswer ||
+        status == ExerciseStatus.checked ||
         status == ExerciseStatus.completed) {
       return false;
     }
@@ -194,6 +211,13 @@ class ExerciseSessionState {
     Set<String>? matchedPairIds,
     bool? isWrongPairShake,
     int? matchMistakes,
+    bool? isSubmitting,
+    SubmitLessonResponseDto? submitResult,
+    bool? isCheckingAnswer,
+    Object? revealedCorrectAnswer = _sentinel,
+    Object? lastCheckResult = _sentinel,
+    int? earnedPoints,
+    Map<String, CheckAnswerResponseDto>? checkedAnswerMap,
   }) {
     return ExerciseSessionState(
       mainExercises: mainExercises ?? this.mainExercises,
@@ -221,6 +245,19 @@ class ExerciseSessionState {
       matchedPairIds: matchedPairIds ?? this.matchedPairIds,
       isWrongPairShake: isWrongPairShake ?? this.isWrongPairShake,
       matchMistakes: matchMistakes ?? this.matchMistakes,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      submitResult: submitResult ?? this.submitResult,
+      isCheckingAnswer: isCheckingAnswer ?? this.isCheckingAnswer,
+      revealedCorrectAnswer: identical(revealedCorrectAnswer, _sentinel)
+          ? this.revealedCorrectAnswer
+          : revealedCorrectAnswer as String?,
+      lastCheckResult: identical(lastCheckResult, _sentinel)
+          ? this.lastCheckResult
+          : lastCheckResult as CheckAnswerResponseDto?,
+      earnedPoints: earnedPoints ?? this.earnedPoints,
+      checkedAnswerMap: checkedAnswerMap ?? this.checkedAnswerMap,
     );
   }
 }
+
+const _sentinel = Object();

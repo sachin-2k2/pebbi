@@ -14,6 +14,9 @@ class AnswerOptionList extends StatelessWidget {
     required this.selectedOptionId,
     required this.removedOptionIds,
     required this.isLocked,
+    this.isAnswerChecked = false,
+    this.isCorrect,
+    this.correctOptionId,
     required this.onOptionSelected,
   });
 
@@ -21,6 +24,9 @@ class AnswerOptionList extends StatelessWidget {
   final String? selectedOptionId;
   final Set<String> removedOptionIds;
   final bool isLocked;
+  final bool isAnswerChecked;
+  final bool? isCorrect;
+  final String? correctOptionId;
   final ValueChanged<String> onOptionSelected;
 
   @override
@@ -37,6 +43,15 @@ class AnswerOptionList extends StatelessWidget {
               number: i + 1,
               totalCount: options.length,
               isSelected: options[i].id == selectedOptionId,
+              isCorrectAnswer:
+                  isAnswerChecked &&
+                  (correctOptionId != null &&
+                      (options[i].id == correctOptionId ||
+                          options[i].text == correctOptionId)),
+              isWrongAnswer:
+                  isAnswerChecked &&
+                  (options[i].id == selectedOptionId) &&
+                  (isCorrect == false),
               isRemoved: removedOptionIds.contains(options[i].id),
               isLocked: isLocked,
               onTap: () => onOptionSelected(options[i].id),

@@ -8,8 +8,8 @@ import 'package:peddi/features/onboarding/domain/reminder_time.dart';
 import 'package:peddi/features/auth/data/mock_profile_repository.dart';
 import 'package:peddi/features/auth/domain/user_profile.dart';
 import 'package:peddi/features/auth/presentation/providers/auth_provider.dart';
+import 'package:peddi/features/lesson/data/mock_lesson_repository.dart';
 import 'package:peddi/features/lesson/domain/exercise.dart';
-import 'package:peddi/features/lesson/domain/lesson_repository.dart';
 import 'package:peddi/features/lesson/domain/lesson_set.dart';
 import 'package:peddi/features/lesson/presentation/providers/lesson_providers.dart';
 import 'package:peddi/features/lesson/presentation/screens/exercise_screen.dart';
@@ -78,7 +78,7 @@ UserProfile _createTestProfile(String id, {AgeBand ageBand = AgeBand.adult}) {
   );
 }
 
-class _FakeLessonRepository implements LessonRepository {
+class _FakeLessonRepository extends MockLessonRepository {
   _FakeLessonRepository(this.lesson);
   final LessonSet lesson;
   @override
