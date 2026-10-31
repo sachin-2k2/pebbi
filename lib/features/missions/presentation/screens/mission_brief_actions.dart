@@ -6,6 +6,7 @@ import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../../domain/start_mission_gate.dart';
 import '../providers/free_talk_provider.dart';
 import '../providers/mission_brief_provider.dart';
+import '../providers/missions_provider.dart';
 
 /// Presentation actions and dialogs for MissionBriefScreen.
 ///
@@ -44,7 +45,11 @@ abstract final class MissionBriefActions {
         break;
       case StartMissionOutcomeType.ready:
         final config = outcome.sessionConfig!;
-        if (GoRouter.maybeOf(context) != null) {
+        await ref.read(missionRepositoryProvider).startMission(
+          missionId: config.missionId,
+        );
+        ref.invalidate(missionsStateProvider);
+        if (context.mounted && GoRouter.maybeOf(context) != null) {
           context.push(
             '/missions/session?topicId=${config.missionId}&style=${config.correctionStyle.id}',
             extra: config,

@@ -235,7 +235,8 @@ class SessionExpandedLayout extends StatelessWidget {
                   isEnabled:
                       state.status == ConversationStatus.userTurn ||
                       state.status == ConversationStatus.failed,
-                  canSend: state.canSend,
+                  canSend:
+                      state.canSend || textController.text.trim().isNotEmpty,
                   onChanged: onTextChanged,
                   onSend: onSend,
                 ),

@@ -138,16 +138,25 @@ class MockMissionRepository implements MissionRepository {
   Future<List<MissionSummary>> getMissions({
     required String targetLanguageCode,
     required String userId,
+    String? category,
   }) async {
     final userOverrides = _userMissionStatuses[userId] ?? const {};
 
-    return _baseMissions.map((mission) {
+    var list = _baseMissions.map((mission) {
       final overrideStatus = userOverrides[mission.id];
       if (overrideStatus != null) {
         return mission.copyWith(status: overrideStatus);
       }
       return mission;
     }).toList();
+
+    if (category != null && category.isNotEmpty && category.toLowerCase() != 'all') {
+      list = list
+          .where((m) => m.categoryIds.contains(category.toLowerCase().trim()))
+          .toList();
+    }
+
+    return list;
   }
 
   @override
@@ -330,13 +339,30 @@ class MockMissionRepository implements MissionRepository {
     required String targetLanguageCode,
     required String explanationLanguageCode,
   }) async {
-    final base = _defaultBriefs[missionId];
+    final base = _defaultBriefs[missionId] ??
+        _defaultBriefs[missionId.replaceAll('-', '_')] ??
+        _defaultBriefs[missionId.replaceAll('_', '-')];
+
     if (base == null) return null;
 
     final userOverrides = _userMissionStatuses[userId] ?? const {};
     final status = userOverrides[missionId] ?? base.status;
 
     return base.copyWith(status: status);
+  }
+
+  @override
+  Future<void> startMission({required String missionId}) async {
+    for (final userMap in _userMissionStatuses.values) {
+      userMap[missionId] = MissionStatus.inProgress;
+    }
+  }
+
+  @override
+  Future<void> completeMission({required String missionId}) async {
+    for (final userMap in _userMissionStatuses.values) {
+      userMap[missionId] = MissionStatus.done;
+    }
   }
 
   @override

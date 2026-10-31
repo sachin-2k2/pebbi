@@ -14,10 +14,12 @@ abstract class MissionRepository {
     required String targetLanguageCode,
   });
 
-  /// Fetches all mission summaries scoped to the given [userId] and [targetLanguageCode].
+  /// Fetches all mission summaries scoped to the given [userId] and [targetLanguageCode],
+  /// optionally filtered by [category].
   Future<List<MissionSummary>> getMissions({
     required String targetLanguageCode,
     required String userId,
+    String? category,
   });
 
   /// Fetches today's featured mission for [userId], or null if none available.
@@ -61,4 +63,10 @@ abstract class MissionRepository {
     required String userId,
     required MissionSupport support,
   });
+
+  /// Starts a role-play mission session on the backend.
+  Future<void> startMission({required String missionId});
+
+  /// Completes a role-play mission session on the backend.
+  Future<void> completeMission({required String missionId});
 }

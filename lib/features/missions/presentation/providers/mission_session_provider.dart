@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/network/api_mode.dart';
 import '../../../../core/services/speech_recognizer_service.dart';
 import '../../../../core/services/text_to_speech_service.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../../auth/domain/user_profile.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/providers/session_expired_handler.dart';
 import '../../../review/presentation/providers/review_provider.dart';
 import '../../../settings/domain/app_settings.dart';
 import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../../data/mock_conversation_repository.dart';
+import '../../data/remote_conversation_repository.dart';
 import '../../domain/chat_message.dart';
 import '../../domain/conversation_repository.dart';
 import '../../domain/conversation_state.dart';
@@ -19,6 +24,17 @@ import '../../domain/suggestion.dart';
 /// Provider for the [ConversationRepository].
 final conversationRepositoryProvider = Provider<ConversationRepository>((ref) {
   final translationRepo = ref.watch(translationRepositoryProvider);
+  final config = ApiConfig.instance;
+  if (config.missionApiMode == ApiMode.real) {
+    final client = ref.watch(apiClientProvider);
+    return RemoteConversationRepository(
+      apiClient: client,
+      translationRepository: translationRepo,
+      onSessionExpired: (userId) {
+        ref.read(sessionExpiredHandlerProvider).handleExpiredSession(userId);
+      },
+    );
+  }
   return MockConversationRepository(translationRepository: translationRepo);
 });
 

@@ -62,15 +62,17 @@ class MissionsExpandedLayout extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               const MissionsSectionTitle(),
-              const SizedBox(height: AppSpacing.xs),
-              CategoryChipRow(
-                categories: visibleCategories,
-                selectedCategoryId: selectedCategory,
-                matchingMissionsCount: filteredMissions.length,
-                onCategorySelected: (id) =>
-                    ref.read(selectedMissionCategoryProvider.notifier).state =
-                        id,
-              ),
+              if (visibleCategories.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.xs),
+                CategoryChipRow(
+                  categories: visibleCategories,
+                  selectedCategoryId: selectedCategory,
+                  matchingMissionsCount: filteredMissions.length,
+                  onCategorySelected: (id) =>
+                      ref.read(selectedMissionCategoryProvider.notifier).state =
+                          id,
+                ),
+              ],
               const SizedBox(height: AppSpacing.sm),
               MissionList(
                 missions: filteredMissions,

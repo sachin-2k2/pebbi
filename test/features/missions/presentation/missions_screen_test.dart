@@ -354,5 +354,21 @@ void main() {
 
       expect(find.text(AppStrings.missionTagDone), findsOneWidget);
     });
+
+    testWidgets('shows empty state message when missions are empty and omits chips', (tester) async {
+      const emptyState = MissionsState(
+        categories: [MissionCategory(id: 'all', title: 'All')],
+        missions: [],
+        todayMission: null,
+      );
+
+      await tester.pumpWidget(buildTestSubject(overrideState: emptyState));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TodayMissionCard), findsNothing);
+      expect(find.byType(CategoryChipRow), findsNothing);
+      expect(find.text(AppStrings.emptyMissionsTitle), findsOneWidget);
+      expect(find.text(AppStrings.emptyMissionsSubtitle), findsOneWidget);
+    });
   });
 }

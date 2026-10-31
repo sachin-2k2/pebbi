@@ -14,13 +14,14 @@ class ApiConfig {
     ApiMode? placementApiMode,
     ApiMode? authApiMode,
     ApiMode? lessonApiMode,
+    ApiMode? missionApiMode,
     bool isRelease = kReleaseMode,
   }) : baseUrl = _sanitizeBaseUrl(
          baseUrl ??
              const String.fromEnvironment(
                'API_BASE_URL',
                defaultValue:
-                   'https://player-halo-ancient-speaker.trycloudflare.com',
+                   'https://applicable-centers-mere-safely.trycloudflare.com',
              ),
        ),
        placementApiMode =
@@ -40,6 +41,11 @@ class ApiConfig {
            lessonApiMode ??
            ApiMode.fromString(
              const String.fromEnvironment('LESSON_API', defaultValue: 'real'),
+           ),
+       missionApiMode =
+           missionApiMode ??
+           ApiMode.fromString(
+             const String.fromEnvironment('MISSION_API', defaultValue: 'real'),
            ) {
     if (isRelease && !this.baseUrl.startsWith('https://')) {
       throw StateError(
@@ -60,6 +66,9 @@ class ApiConfig {
 
   /// Operational API mode for lessons and path tracks.
   final ApiMode lessonApiMode;
+
+  /// Operational API mode for missions.
+  final ApiMode missionApiMode;
 
   /// Global default instance created from active environment definitions.
   static ApiConfig? _instance;

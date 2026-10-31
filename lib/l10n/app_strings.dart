@@ -912,9 +912,9 @@ abstract final class AppStrings {
   static const String offlineMissionBlockedTitle = 'Internet required';
   static const String offlineMissionBlockedMessage =
       'Role-play missions run through an AI service and need an active internet connection. Please reconnect and try again.';
-  static const String emptyMissionsTitle = 'No situations found';
+  static const String emptyMissionsTitle = 'Missions currently not available';
   static const String emptyMissionsSubtitle =
-      'No role-play scenes are currently available for this category or language.';
+      'No role-play scenes are currently available. Please check back soon.';
   static const String selectScenePrompt =
       'Select a situation to view its brief';
   static const String missionBriefPlaceholderTitle = 'Mission Brief';

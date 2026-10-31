@@ -6,6 +6,7 @@ import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../../domain/chat_message.dart';
 import '../../domain/conversation_state.dart';
 import '../providers/mission_session_provider.dart';
+import '../providers/missions_provider.dart';
 import '../widgets/session/ai_disclosure_sheet.dart';
 import '../widgets/session/finish_prompt_sheet.dart';
 import '../widgets/session/help_sheet.dart';
@@ -24,6 +25,7 @@ abstract final class MissionSessionActions {
     required BuildContext context,
     required ConversationState state,
     required MissionSessionNotifier notifier,
+    WidgetRef? ref,
   }) async {
     if (!state.hasUserSpoken) {
       final shouldLeave = await FinishPromptSheet.show(context);
@@ -34,6 +36,14 @@ abstract final class MissionSessionActions {
     }
 
     final debrief = await notifier.finishSession();
+    if (ref != null) {
+      try {
+        await ref.read(missionRepositoryProvider).completeMission(
+          missionId: notifier.config.missionId,
+        );
+        ref.invalidate(missionsStateProvider);
+      } catch (_) {}
+    }
     if (context.mounted) {
       if (GoRouter.maybeOf(context) != null) {
         context.push('/missions/debrief', extra: debrief);

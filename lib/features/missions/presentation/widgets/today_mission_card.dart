@@ -166,7 +166,7 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                           ),
                           const SizedBox(height: 2.0),
                           Text(
-                            mission.title,
+                            mission.title.isNotEmpty ? mission.title : 'Featured Mission',
                             style: AppTypography.cardTitle.copyWith(
                               color: palette.textOnBrand,
                               fontWeight: FontWeight.w800,
@@ -176,7 +176,12 @@ class _TodayMissionCardState extends State<TodayMissionCard> {
                           ),
                           const SizedBox(height: 2.0),
                           Text(
-                            '${mission.characterName}, ${mission.characterRole} · ${AppStrings.todaysMissionAboutMinutes(mission.durationMinutes)}',
+                            [
+                              if (mission.characterName.isNotEmpty) mission.characterName,
+                              if (mission.characterRole.isNotEmpty) mission.characterRole,
+                            ].isNotEmpty
+                                ? '${[if (mission.characterName.isNotEmpty) mission.characterName, if (mission.characterRole.isNotEmpty) mission.characterRole].join(', ')} · ${AppStrings.todaysMissionAboutMinutes(mission.durationMinutes)}'
+                                : AppStrings.todaysMissionAboutMinutes(mission.durationMinutes),
                             style: AppTypography.caption.copyWith(
                               color: palette.coralHeroCardMutedText,
                               fontWeight: FontWeight.w500,

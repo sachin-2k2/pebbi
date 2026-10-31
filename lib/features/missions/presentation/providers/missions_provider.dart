@@ -1,6 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/network/api_mode.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/providers/session_expired_handler.dart';
 import '../../data/mock_mission_repository.dart';
+import '../../data/remote_mission_repository.dart';
 import '../../domain/mission_category.dart';
 import '../../domain/mission_repository.dart';
 import '../../domain/mission_summary.dart';
@@ -8,6 +13,16 @@ import '../../domain/today_mission.dart';
 
 /// Provider for the [MissionRepository] instance.
 final missionRepositoryProvider = Provider<MissionRepository>((ref) {
+  final config = ApiConfig.instance;
+  if (config.missionApiMode == ApiMode.real) {
+    final client = ref.watch(apiClientProvider);
+    return RemoteMissionRepository(
+      apiClient: client,
+      onSessionExpired: (userId) {
+        ref.read(sessionExpiredHandlerProvider).handleExpiredSession(userId);
+      },
+    );
+  }
   return MockMissionRepository();
 });
 
@@ -82,7 +97,7 @@ final filteredMissionsProvider = Provider<List<MissionSummary>>((ref) {
 /// Visible categories: hides categories with zero matching missions.
 final visibleCategoriesProvider = Provider<List<MissionCategory>>((ref) {
   final state = ref.watch(missionsStateProvider).valueOrNull;
-  if (state == null) return const [];
+  if (state == null || state.missions.isEmpty) return const [];
 
   return state.categories.where((cat) {
     if (cat.id == 'all') return true;

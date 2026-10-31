@@ -25,7 +25,6 @@ class ExerciseScreen extends ConsumerStatefulWidget {
     this.finishRoute,
     this.onCompleted,
   });
-
   final String? targetLanguageCode;
   final String? nativeLanguageCode;
   final String? stopId;
@@ -45,6 +44,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     super.initState();
     _tts = ref.read(textToSpeechServiceProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       ExerciseScreenNavigation.initializeSession(
         ref,
         stopId: widget.stopId,
@@ -55,27 +55,21 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
   }
 
   void _checkCompleted() => ExerciseScreenNavigation.handleCompleted(
-    context,
-    ref,
-    stopId: widget.stopId,
-    finishRoute: widget.finishRoute,
-    onCompleted: widget.onCompleted,
+    context, ref,
+    stopId: widget.stopId, finishRoute: widget.finishRoute, onCompleted: widget.onCompleted,
   );
 
   Future<void> _handleContinue(ExerciseSessionNotifier n) async {
     await n.next();
-    if (!mounted) return;
-    _checkCompleted();
+    if (mounted) _checkCompleted();
   }
 
   Future<void> _handleGotIt(ExerciseSessionNotifier n) async {
     await n.onGotIt();
-    if (!mounted) return;
-    _checkCompleted();
+    if (mounted) _checkCompleted();
   }
 
-  void _handleExit() =>
-      ExerciseScreenNavigation.handleExit(context, stopId: widget.stopId);
+  void _handleExit() => ExerciseScreenNavigation.handleExit(context, stopId: widget.stopId);
 
   @override
   void dispose() {
@@ -87,9 +81,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     if (_isPlayingAudio) return;
     setState(() => _isPlayingAudio = true);
     try {
-      await ref
-          .read(textToSpeechServiceProvider)
-          .speak(exercise.audioText, locale: exercise.audioLocale);
+      await ref.read(textToSpeechServiceProvider).speak(exercise.audioText, locale: exercise.audioLocale);
     } finally {
       if (mounted) setState(() => _isPlayingAudio = false);
     }
@@ -102,8 +94,6 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     final settings = ref.watch(lessonSettingsProvider);
     final exercise = state.currentExercise;
 
-    final palette = context.palette;
-
     if (state.isLoading || exercise == null) {
       return ExerciseLoadingView(onClose: _handleExit);
     }
@@ -114,7 +104,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
         if (!didPop) _handleExit();
       },
       child: Scaffold(
-        backgroundColor: palette.background,
+        backgroundColor: context.palette.background,
         body: SafeArea(
           child: Column(
             children: [
@@ -139,8 +129,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                 exercise: exercise,
                 currentStreak: state.currentStreak,
                 revealedCorrectAnswer: state.revealedCorrectAnswer,
-                serverExplanation:
-                    state.checkedAnswerMap[exercise.id]?.explanation ??
+                serverExplanation: state.checkedAnswerMap[exercise.id]?.explanation ??
                     state.lastCheckResult?.explanation,
                 bottomBarMode: state.bottomBarMode,
                 canCheck: state.canCheck,

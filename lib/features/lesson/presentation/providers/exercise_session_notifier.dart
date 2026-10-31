@@ -54,6 +54,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
       targetLanguageCode,
       nativeLanguageCode: nativeLanguageCode,
     );
+    if (!mounted) return;
     state = ExerciseSessionState(
       mainExercises: exerciseSet.exercises,
       currentMainIndex: 0,
@@ -74,6 +75,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
       nativeLanguage: nativeLanguageCode,
       learningLanguage: targetLanguageCode,
     );
+    if (!mounted) return;
     state = ExerciseSessionState(
       mainExercises: lessonSet.items,
       currentMainIndex: 0,
@@ -233,6 +235,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
           matchMistakes: state.matchMistakes + 1,
         );
         await audioFeedback.playWrong();
+        if (!mounted) return;
         state = state.copyWith(
           selectedTargetMatchId: null,
           selectedMeaningMatchId: null,
@@ -370,6 +373,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
         );
       } catch (_) {}
     }
+    if (!mounted) return;
 
     final bool isCorrect;
     final String revealedCorrectAnswer;
@@ -692,6 +696,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
           );
         } catch (_) {}
       }
+      if (!mounted) return;
 
       final lessonResult = LessonResult(
         stopId: state.stopId!,
@@ -739,6 +744,7 @@ class ExerciseSessionNotifier extends StateNotifier<ExerciseSessionState> {
           totalXp: submitResponse?.totalXp,
         );
       }
+      if (!mounted) return;
 
       if (submitResponse != null) {
         onStatsUpdated?.call(

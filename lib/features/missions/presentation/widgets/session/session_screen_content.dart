@@ -83,6 +83,7 @@ class SessionScreenContent extends ConsumerWidget {
           context: context,
           state: state,
           notifier: notifier,
+          ref: ref,
         ),
       ),
       medium: (context) => ContentWidthLimiter(
@@ -176,6 +177,7 @@ class SessionScreenContent extends ConsumerWidget {
           context: context,
           state: state,
           notifier: notifier,
+          ref: ref,
         ),
       ),
     );

@@ -28,17 +28,14 @@ class MissionsCompactLayout extends ConsumerWidget {
   ) {
     final user = ref.read(currentUserProvider);
     final access = MissionAccessRules.missionAccess(user, mission);
-
     if (access == MissionAccessResult.needsPremium) {
       context.push('/premium/options');
       return;
     }
-
     if (isOffline) {
       _showNeedsInternetDialog(context);
       return;
     }
-
     context.push('/missions/brief/${mission.id}');
   }
 
@@ -49,10 +46,7 @@ class MissionsCompactLayout extends ConsumerWidget {
         title: const Text(AppStrings.offlineMissionBlockedTitle),
         content: const Text(AppStrings.offlineMissionBlockedMessage),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogCtx).pop(),
-            child: const Text('OK'),
-          ),
+          TextButton(onPressed: () => Navigator.of(dialogCtx).pop(), child: const Text('OK')),
         ],
       ),
     );
@@ -72,7 +66,7 @@ class MissionsCompactLayout extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('Error loading situations: $err'),
               const SizedBox(height: AppSpacing.md),
@@ -90,22 +84,14 @@ class MissionsCompactLayout extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.only(bottom: AppSpacing.xxl + 48.0),
           children: [
-            if (state.isOffline) ...[
+            if (state.isOffline)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
                 child: NoticeBanner(
                   message: AppStrings.offlineBannerNotice,
-                  icon: Icon(
-                    Icons.wifi_off_rounded,
-                    color: context.palette.warningText,
-                    size: 20.0,
-                  ),
+                  icon: Icon(Icons.wifi_off_rounded, color: context.palette.warningText, size: 20.0),
                 ),
               ),
-            ],
             const MissionsHeader(),
             if (today != null) ...[
               const SizedBox(height: AppSpacing.xs),
@@ -140,14 +126,16 @@ class MissionsCompactLayout extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             const MissionsSectionTitle(),
-            const SizedBox(height: AppSpacing.xs),
-            CategoryChipRow(
-              categories: visibleCategories,
-              selectedCategoryId: selectedCategory,
-              matchingMissionsCount: filteredMissions.length,
-              onCategorySelected: (id) =>
-                  ref.read(selectedMissionCategoryProvider.notifier).state = id,
-            ),
+            if (visibleCategories.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.xs),
+              CategoryChipRow(
+                categories: visibleCategories,
+                selectedCategoryId: selectedCategory,
+                matchingMissionsCount: filteredMissions.length,
+                onCategorySelected: (id) =>
+                    ref.read(selectedMissionCategoryProvider.notifier).state = id,
+              ),
+            ],
             const SizedBox(height: AppSpacing.sm),
             MissionList(
               missions: filteredMissions,
