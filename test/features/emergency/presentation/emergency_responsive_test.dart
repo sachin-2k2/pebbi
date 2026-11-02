@@ -6,6 +6,8 @@ import 'package:peddi/core/services/wakelock_controller.dart';
 import 'package:peddi/features/auth/data/mock_profile_repository.dart';
 import 'package:peddi/features/auth/domain/user_profile.dart';
 import 'package:peddi/features/auth/presentation/providers/auth_provider.dart';
+import 'package:peddi/features/emergency/data/bundled_emergency_repository.dart';
+import 'package:peddi/features/emergency/presentation/providers/emergency_provider.dart';
 import 'package:peddi/features/emergency/presentation/screens/emergency_screen.dart';
 import 'package:peddi/features/onboarding/domain/age_band.dart';
 import 'package:peddi/features/onboarding/domain/reminder_time.dart';
@@ -41,6 +43,9 @@ void main() {
         ),
         wakelockControllerProvider.overrideWithValue(fakeWakelock),
         textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
+        emergencyRepositoryProvider.overrideWithValue(
+          BundledEmergencyRepository(),
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(brightness: brightness, useMaterial3: true),

@@ -14,6 +14,7 @@ class EmergencyPhraseList extends StatelessWidget {
     required this.targetLanguageName,
     required this.targetLanguageCode,
     required this.onPhraseTap,
+    this.onPhraseIndexTap,
     this.showHelperLine = false,
   });
 
@@ -22,6 +23,7 @@ class EmergencyPhraseList extends StatelessWidget {
   final String targetLanguageName;
   final String targetLanguageCode;
   final ValueChanged<EmergencyPhrase> onPhraseTap;
+  final void Function(EmergencyPhrase phrase, int index)? onPhraseIndexTap;
   final bool showHelperLine;
 
   @override
@@ -36,7 +38,13 @@ class EmergencyPhraseList extends StatelessWidget {
             targetLanguageName: targetLanguageName,
             targetLanguageCode: targetLanguageCode,
             showHelperLine: showHelperLine,
-            onTap: () => onPhraseTap(phrases[i]),
+            onTap: () {
+              if (onPhraseIndexTap != null) {
+                onPhraseIndexTap!(phrases[i], i);
+              } else {
+                onPhraseTap(phrases[i]);
+              }
+            },
           ),
         ],
       ],

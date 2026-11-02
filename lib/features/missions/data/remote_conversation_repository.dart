@@ -10,6 +10,7 @@ import '../domain/session_start.dart';
 import '../domain/session_turn_result.dart';
 import 'dtos/mission_detail_dto.dart';
 import 'dtos/mission_message_response_dto.dart';
+import 'dtos/mission_option_parser.dart';
 import 'mock_conversation_repository.dart';
 
 /// Remote implementation of [ConversationRepository] for live role-play missions.
@@ -33,7 +34,7 @@ class RemoteConversationRepository implements ConversationRepository {
   final Map<String, List<SessionGoal>> _sessionGoals = {};
   final Map<String, Set<String>> _completedGoals = {};
   final Map<String, int> _turnCounts = {};
-  final Map<String, String> _sessionMissionIds = {};
+  final Map<String, String> _sessionMissionIds = {}, _sessionCharNames = {};
 
   @override
   Future<SessionStart> startSession(SessionConfig config) async {
@@ -49,24 +50,13 @@ class RemoteConversationRepository implements ConversationRepository {
           [const SessionGoal(id: '1', text: 'Complete conversation')];
 
       final sid = 'session_${DateTime.now().millisecondsSinceEpoch}';
-      _sessionMissionIds[sid] = mId;
-      _sessionGoals[sid] = goals;
-      _completedGoals[sid] = <String>{};
-      _turnCounts[sid] = 0;
+      _sessionMissionIds[sid] = mId; _sessionGoals[sid] = goals; _completedGoals[sid] = <String>{}; _turnCounts[sid] = 0;
+      _sessionCharNames[sid] = detail?.characterName.isNotEmpty == true ? detail!.characterName : 'Lucía';
 
-      final initialMsg = ChatMessage(
-        id: 'msg_init',
-        author: MessageAuthor.character,
-        targetText: charText,
-        translationText: transText,
-        timestamp: DateTime.now(),
-      );
-
+      final initialMsg = ChatMessage(id: 'msg_init', author: MessageAuthor.character, targetText: charText, translationText: transText, timestamp: DateTime.now());
+      final suggestions = parseMissionOptions(startRes.data?['options'] ?? startRes.data?['initial_options'] ?? detailRes.data?['options']);
       return SessionStart(
-        sessionId: sid,
-        initialMessage: initialMsg,
-        suggestions: const [],
-        goals: goals,
+        sessionId: sid, initialMessage: initialMsg, suggestions: suggestions, goals: goals,
         characterName: detail?.characterName.isNotEmpty == true ? detail!.characterName : 'Lucía',
         characterRole: detail?.characterRole.isNotEmpty == true ? detail!.characterRole : 'barista',
         emoji: detail?.icon.isNotEmpty == true ? detail!.icon : '☕',
@@ -102,7 +92,12 @@ class RemoteConversationRepository implements ConversationRepository {
           translationText: dto.translation,
           timestamp: DateTime.now(),
         );
-        return TurnResult(characterMessage: charMsg, completedGoalIds: completedSet.toList(), isFinished: dto.isFinished);
+        return TurnResult(
+          characterMessage: charMsg,
+          suggestions: dto.options,
+          completedGoalIds: completedSet.toList(),
+          isFinished: dto.isFinished,
+        );
       }
     } on DioException catch (e) {
       await _handleAuth(e);
@@ -118,12 +113,18 @@ class RemoteConversationRepository implements ConversationRepository {
     } on DioException catch (e) {
       await _handleAuth(e);
     } catch (_) {}
+    final goals = _sessionGoals[sessionId] ?? const [];
+    final completed = _completedGoals[sessionId]?.toList() ?? const [];
     return DebriefRef(
       sessionId: sessionId,
       missionId: mId,
       turnsCount: _turnCounts[sessionId] ?? 1,
-      completedGoalIds: _completedGoals[sessionId]?.toList() ?? const [],
-      totalGoals: _sessionGoals[sessionId]?.length ?? 3,
+      completedGoalIds: completed,
+      totalGoals: goals.isNotEmpty ? goals.length : 3,
+      characterName: _sessionCharNames[sessionId] ?? 'Lucía',
+      completedGoalTexts: goals.map((g) => g.text).toList(),
+      starsEarned: 25,
+      xpEarned: 20,
     );
   }
 

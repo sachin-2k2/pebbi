@@ -1,12 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/bundled_emergency_repository.dart';
+import '../../data/remote_emergency_repository.dart';
 import '../../domain/emergency_phrasebook.dart';
 import '../../domain/emergency_repository.dart';
 
 /// Provider for the [EmergencyRepository] instance.
 final emergencyRepositoryProvider = Provider<EmergencyRepository>((ref) {
-  return BundledEmergencyRepository();
+  final apiClient = ref.watch(apiClientProvider);
+  final user = ref.watch(currentUserProvider);
+  return RemoteEmergencyRepository(
+    apiClient: apiClient,
+    fallbackRepository: BundledEmergencyRepository(),
+    explanationLanguageCode: user?.explanationLanguageCode ?? 'en',
+  );
 });
 
 /// Target language code for emergency phrases.

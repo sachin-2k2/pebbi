@@ -1513,6 +1513,7 @@ abstract final class AppStrings {
   static const String sessionRetrySend = 'Retry';
   static const String sessionDeleteFailedMessage = 'Delete';
   static const String sessionTypeInstead = 'Type instead';
+  static const String sessionVoiceInstead = 'Speak instead';
   static const String sessionMicListening = 'Listening...';
   static const String sessionMicTapToSpeak = 'Tap to speak';
 

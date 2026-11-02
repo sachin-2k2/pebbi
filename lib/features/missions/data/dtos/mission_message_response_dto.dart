@@ -1,3 +1,6 @@
+import '../../domain/suggestion.dart';
+import 'mission_option_parser.dart';
+
 /// DTO for `/api/missions/{mission_id}/message` response.
 ///
 /// Follows AGENTS.md §2.1 & §3.1 (<150 lines).
@@ -7,6 +10,7 @@ class MissionMessageResponseDto {
     this.translation,
     this.completedGoals = const [],
     this.isFinished = false,
+    this.options = const [],
   });
 
   factory MissionMessageResponseDto.fromJson(Map<String, dynamic> json) {
@@ -15,6 +19,7 @@ class MissionMessageResponseDto {
         : json;
     final rawGoals = data['completed_goals'] as List<dynamic>? ?? const [];
     final goals = rawGoals.map((g) => g.toString()).toList();
+    final rawOptions = data['options'] ?? data['initial_options'];
 
     return MissionMessageResponseDto(
       characterText: (data['character_text'] ??
@@ -25,6 +30,7 @@ class MissionMessageResponseDto {
       translation: (data['translation'] ?? data['translated_text'])?.toString(),
       completedGoals: goals,
       isFinished: data['is_finished'] as bool? ?? false,
+      options: parseMissionOptions(rawOptions),
     );
   }
 
@@ -32,5 +38,6 @@ class MissionMessageResponseDto {
   final String? translation;
   final List<String> completedGoals;
   final bool isFinished;
+  final List<Suggestion> options;
 }
 

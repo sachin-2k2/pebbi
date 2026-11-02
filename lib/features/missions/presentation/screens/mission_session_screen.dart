@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_palette.dart';
+import '../../../../core/utils/language_resolver.dart';
 import '../../domain/conversation_state.dart';
 import '../../domain/session_config.dart';
 import '../providers/mission_session_provider.dart';
@@ -41,23 +42,6 @@ class _MissionSessionScreenState extends ConsumerState<MissionSessionScreen> {
     );
   }
 
-  String _resolveLanguageName(String code) {
-    switch (code) {
-      case 'fr':
-        return 'French';
-      case 'es':
-        return 'Spanish';
-      case 'de':
-        return 'German';
-      case 'ja':
-        return 'Japanese';
-      case 'ar':
-        return 'Arabic';
-      default:
-        return 'French';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -66,7 +50,9 @@ class _MissionSessionScreenState extends ConsumerState<MissionSessionScreen> {
       missionSessionNotifierProvider(widget.config).notifier,
     );
     final isOffline = ref.watch(missionSessionIsOfflineProvider);
-    final languageName = _resolveLanguageName(widget.config.targetLanguageCode);
+    final languageName = LanguageResolver.resolveEnglishName(
+      widget.config.targetLanguageCode,
+    );
 
     ref.listen(missionSessionNotifierProvider(widget.config), (prev, next) {
       if (prev?.messages.length != next.messages.length) {

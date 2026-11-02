@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/speech_recognizer_service.dart';
 import '../../../../core/services/text_to_speech_service.dart';
+import '../../../../core/utils/language_resolver.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../../auth/domain/user_profile.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../lesson/domain/speaking_safety_rules.dart';
-import '../../../onboarding/data/mock_learnable_language_repository.dart';
 import '../../../settings/domain/app_settings.dart';
 import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../../domain/correction_style.dart';
@@ -143,7 +143,7 @@ class MissionBriefNotifier
       }
 
       // Resolve target language name dynamically
-      final languageName = _resolveLanguageName(brief.languageCode);
+      final languageName = LanguageResolver.resolveEnglishName(brief.languageCode);
 
       if (!_isDisposed) {
         state = AsyncValue.data(
@@ -180,30 +180,6 @@ class MissionBriefNotifier
       return (false, AppStrings.voiceDisabledScene);
     }
     return (true, null);
-  }
-
-  String _resolveLanguageName(String code) {
-    const repo = MockLearnableLanguageRepository();
-    final lang = repo
-        .getLearnableLanguages()
-        .where((l) => l.code == code)
-        .firstOrNull;
-    if (lang != null) return lang.englishName;
-
-    switch (code) {
-      case 'es':
-        return 'Spanish';
-      case 'fr':
-        return 'French';
-      case 'de':
-        return 'German';
-      case 'ja':
-        return 'Japanese';
-      case 'ar':
-        return 'Arabic';
-      default:
-        return 'Spanish';
-    }
   }
 
   Future<void> selectMode(MissionMode mode) async {
@@ -251,7 +227,7 @@ class MissionBriefNotifier
     state = AsyncValue.data(current.copyWith(isPlayingAudio: true));
 
     final explanationCode = user?.explanationLanguageCode ?? 'en';
-    final locale = explanationCode == 'es' ? 'es-ES' : 'en-US';
+    final locale = FlutterTtsService.resolveLocale(explanationCode);
 
     for (final goal in current.brief.goals) {
       if (_isDisposed) break;

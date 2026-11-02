@@ -14,11 +14,13 @@ class PhraseDisplayText extends StatelessWidget {
     required this.phrase,
     required this.targetLanguageCode,
     this.showHelperLine = false,
+    this.textColor,
   });
 
   final EmergencyPhrase phrase;
   final String targetLanguageCode;
   final bool showHelperLine;
+  final Color? textColor;
 
   static bool _isRtl(String langCode) =>
       langCode == 'ar' ||
@@ -31,9 +33,8 @@ class PhraseDisplayText extends StatelessWidget {
     final isRtl = _isRtl(targetLanguageCode);
     final textDir = isRtl ? TextDirection.rtl : TextDirection.ltr;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryTextColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.textPrimary;
+    final primaryTextColor = textColor ??
+        (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary);
 
     return Column(
       mainAxisSize: MainAxisSize.min,

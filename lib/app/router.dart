@@ -36,7 +36,7 @@ import '../features/emergency/presentation/screens/emergency_screen.dart';
 import '../features/missions/presentation/screens/free_talk_screen.dart';
 import '../features/missions/domain/debrief_ref.dart';
 import '../features/missions/presentation/screens/mission_session_screen.dart';
-import '../features/missions/presentation/screens/mission_debrief_placeholder_screen.dart';
+import '../features/missions/presentation/screens/mission_debrief_screen.dart';
 import '../features/review/presentation/screens/note_detail_placeholder_screen.dart';
 import '../features/review/presentation/screens/practice_placeholder_screen.dart';
 import '../features/rewards/presentation/screens/sticker_book_placeholder_screen.dart';
@@ -266,7 +266,7 @@ GoRouter createAppRouter({
     ),
     GoRoute(
       path: '/missions/debrief',
-      builder: (context, state) => MissionDebriefPlaceholderScreen(
+      builder: (context, state) => MissionDebriefScreen(
         debriefRef: state.extra as DebriefRef?,
       ),
     ),

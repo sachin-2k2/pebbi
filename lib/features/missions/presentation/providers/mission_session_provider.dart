@@ -18,6 +18,7 @@ import '../../domain/chat_message.dart';
 import '../../domain/conversation_repository.dart';
 import '../../domain/conversation_state.dart';
 import '../../domain/debrief_ref.dart';
+import '../../domain/mission_mode.dart';
 import '../../domain/session_config.dart';
 import '../../domain/suggestion.dart';
 
@@ -81,9 +82,10 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
       if (_isDisposed) return;
 
       _sessionId = start.sessionId;
-      final suggestions = config.support.id == 'guided'
-          ? start.suggestions.take(3).toList()
-          : const <Suggestion>[];
+      final suggestions =
+          (config.mode != MissionMode.voice && config.support.id == 'guided')
+              ? start.suggestions.take(3).toList()
+              : const <Suggestion>[];
 
       state = state.copyWith(
         status: ConversationStatus.userTurn,
@@ -240,9 +242,10 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
         return g;
       }).toList();
 
-      final suggestions = config.support.id == 'guided'
-          ? turnResult.suggestions.take(3).toList()
-          : const <Suggestion>[];
+      final suggestions =
+          (config.mode != MissionMode.voice && config.support.id == 'guided')
+              ? turnResult.suggestions.take(3).toList()
+              : const <Suggestion>[];
 
       final nextStatus = turnResult.isFinished
           ? ConversationStatus.finished
@@ -291,12 +294,106 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
   Future<void> playMessageAudio(ChatMessage message) async {
     final locale =
         message.audioLocale ??
-        (config.targetLanguageCode == 'fr' ? 'fr-FR' : 'es-ES');
+        FlutterTtsService.resolveLocale(config.targetLanguageCode);
     await ttsService.speak(message.targetText, locale: locale);
   }
 
+  String _bufferedSpeech = '';
+
+  /// Switches active input mode to text typing.
+  void switchToTextMode() {
+    if (_isDisposed) return;
+    if (state.isListening) {
+      stopListening();
+    }
+    state = state.copyWith(isVoiceInputMode: false);
+  }
+
+  /// Switches active input mode back to voice.
+  void switchToVoiceMode() {
+    if (_isDisposed) return;
+    state = state.copyWith(isVoiceInputMode: true);
+  }
+
+  /// Toggles speech-to-text recording in Voice mode.
+  Future<void> toggleListening() async {
+    if (_isDisposed) return;
+    if (state.status != ConversationStatus.userTurn &&
+        state.status != ConversationStatus.failed) {
+      return;
+    }
+    if (state.isListening) {
+      await stopListening();
+    } else {
+      await startListening();
+    }
+  }
+
+  /// Starts listening to the microphone for user speech.
+  Future<void> startListening() async {
+    if (_isDisposed) return;
+    await ttsService.stop();
+
+    if (!speechRecognizer.isAvailable || !speechRecognizer.hasPermission) {
+      final initialized = await speechRecognizer.initialize(
+        onError: (err) {
+          if (!_isDisposed && state.isListening) {
+            stopListening();
+          }
+        },
+      );
+      if (!initialized || !speechRecognizer.hasPermission) {
+        if (_isDisposed) return;
+        state = state.copyWith(
+          errorMessage: AppStrings.voicePermissionFallback,
+          isVoiceInputMode: false,
+        );
+        return;
+      }
+    }
+
+    _bufferedSpeech = '';
+    state = state.copyWith(isListening: true, clearErrorMessage: true);
+
+    final localeId = FlutterTtsService.resolveLocale(config.targetLanguageCode);
+    try {
+      await speechRecognizer.listen(
+        localeId: localeId,
+        onResult: (words, isFinal) async {
+          if (_isDisposed) return;
+          _bufferedSpeech = words;
+          if (isFinal) {
+            await stopListening();
+          }
+        },
+      );
+    } catch (_) {
+      if (!_isDisposed) {
+        state = state.copyWith(isListening: false);
+      }
+    }
+  }
+
+  /// Stops speech recognition and sends buffered speech if available.
+  Future<void> stopListening() async {
+    if (_isDisposed) return;
+    try {
+      await speechRecognizer.stop();
+    } catch (_) {}
+    final wordsToSend = _bufferedSpeech.trim();
+    _bufferedSpeech = '';
+    state = state.copyWith(isListening: false);
+
+    if (wordsToSend.isNotEmpty &&
+        state.status != ConversationStatus.sending &&
+        !state.isFinished) {
+      await sendUserMessage(wordsToSend);
+    }
+  }
+
   void _handleAutoplay(ChatMessage message) {
-    if (!settings.autoplay) return;
+    final shouldPlay = config.mode == MissionMode.voice || settings.autoplay;
+    if (!shouldPlay) return;
     if (speechRecognizer.isListening) return;
     if (state.latestSpokenMessageId == message.id) return;
 
@@ -342,6 +439,11 @@ class MissionSessionNotifier extends StateNotifier<ConversationState> {
     _isDisposed = true;
     _cancelTimeout();
     ttsService.stop();
+    try {
+      if (speechRecognizer.isListening) {
+        speechRecognizer.stop();
+      }
+    } catch (_) {}
     super.dispose();
   }
 }

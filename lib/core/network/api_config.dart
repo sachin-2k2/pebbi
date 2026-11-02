@@ -21,7 +21,7 @@ class ApiConfig {
              const String.fromEnvironment(
                'API_BASE_URL',
                defaultValue:
-                   'https://applicable-centers-mere-safely.trycloudflare.com',
+                   'https://scales-marked-acid-chemical.trycloudflare.com',
              ),
        ),
        placementApiMode =

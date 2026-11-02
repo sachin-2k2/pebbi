@@ -46,7 +46,7 @@ abstract final class MissionSessionActions {
     }
     if (context.mounted) {
       if (GoRouter.maybeOf(context) != null) {
-        context.push('/missions/debrief', extra: debrief);
+        context.pushReplacement('/missions/debrief', extra: debrief);
       } else {
         Navigator.of(context).pop();
       }
@@ -74,7 +74,11 @@ abstract final class MissionSessionActions {
         },
         onUseThis: (phrase) {
           textController.text = phrase;
+          textController.selection = TextSelection.collapsed(
+            offset: phrase.length,
+          );
           notifier.updateDraftText(phrase);
+          notifier.switchToTextMode();
         },
       ),
     );

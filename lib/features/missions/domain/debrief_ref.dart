@@ -8,6 +8,11 @@ class DebriefRef {
     required this.turnsCount,
     required this.completedGoalIds,
     required this.totalGoals,
+    this.characterName,
+    this.characterRole,
+    this.completedGoalTexts = const [],
+    this.starsEarned = 25,
+    this.xpEarned = 20,
   });
 
   final String sessionId;
@@ -15,6 +20,11 @@ class DebriefRef {
   final int turnsCount;
   final List<String> completedGoalIds;
   final int totalGoals;
+  final String? characterName;
+  final String? characterRole;
+  final List<String> completedGoalTexts;
+  final int starsEarned;
+  final int xpEarned;
 
   double get completionRatio => totalGoals == 0
       ? 0.0

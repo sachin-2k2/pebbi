@@ -12,7 +12,7 @@ import 'session_expanded_layout.dart';
 
 /// Hosts the responsive view switching between [SessionBody] and [SessionExpandedLayout].
 ///
-/// Follows AGENTS.md §3 & §4: Keeps screen file under 100 lines.
+/// Follows AGENTS.md §3 & §4: Keeps screen file under 150 lines.
 class SessionScreenContent extends ConsumerWidget {
   const SessionScreenContent({
     super.key,
@@ -33,6 +33,55 @@ class SessionScreenContent extends ConsumerWidget {
   final TextEditingController textController;
   final bool isOffline;
 
+  Widget _buildBody(BuildContext context, WidgetRef ref, bool captionsOn) {
+    return SessionBody(
+      state: state,
+      config: config,
+      targetLanguageName: targetLanguageName,
+      scrollController: scrollController,
+      textController: textController,
+      isOffline: isOffline,
+      captionsOn: captionsOn,
+      onHelpTap: () => MissionSessionActions.showHelp(
+        context: context,
+        ref: ref,
+        state: state,
+        notifier: notifier,
+      ),
+      onCharacterTap: () => MissionSessionActions.showAiDisclosure(
+        context: context,
+        characterName: state.characterName,
+      ),
+      onPlayAudio: notifier.playMessageAudio,
+      onReport: (r) => notifier.reportMessage(messageId: 'char_msg', reason: r),
+      onRetry: notifier.retryFailedMessage,
+      onDelete: notifier.deleteFailedMessage,
+      onSelectSuggestion: notifier.sendUserMessage,
+      onTextChanged: notifier.updateDraftText,
+      onSend: () {
+        notifier.sendUserMessage(textController.text);
+        textController.clear();
+      },
+      onMicTap: notifier.toggleListening,
+      onTypeInsteadTap: notifier.switchToTextMode,
+      onVoiceInsteadTap: notifier.switchToVoiceMode,
+      onSayInMyLanguageTap: () => MissionSessionActions.showSayInMyLanguage(
+        context: context,
+        notifier: notifier,
+        textController: textController,
+      ),
+      onCaptionsToggle: () => ref
+          .read(appSettingsProvider.notifier)
+          .setCaptionsAlwaysOn(!captionsOn),
+      onFinishTap: () => MissionSessionActions.handleFinish(
+        context: context,
+        state: state,
+        notifier: notifier,
+        ref: ref,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final captionsOn = ref.watch(
@@ -40,99 +89,10 @@ class SessionScreenContent extends ConsumerWidget {
     );
 
     return ResponsiveBuilder(
-      compact: (context) => SessionBody(
-        state: state,
-        config: config,
-        targetLanguageName: targetLanguageName,
-        scrollController: scrollController,
-        textController: textController,
-        isOffline: isOffline,
-        captionsOn: captionsOn,
-        onHelpTap: () => MissionSessionActions.showHelp(
-          context: context,
-          ref: ref,
-          state: state,
-          notifier: notifier,
-        ),
-        onCharacterTap: () => MissionSessionActions.showAiDisclosure(
-          context: context,
-          characterName: state.characterName,
-        ),
-        onPlayAudio: notifier.playMessageAudio,
-        onReport: (r) =>
-            notifier.reportMessage(messageId: 'char_msg', reason: r),
-        onRetry: notifier.retryFailedMessage,
-        onDelete: notifier.deleteFailedMessage,
-        onSelectSuggestion: notifier.sendUserMessage,
-        onTextChanged: notifier.updateDraftText,
-        onSend: () {
-          notifier.sendUserMessage(textController.text);
-          textController.clear();
-        },
-        onMicTap: () {},
-        onTypeInsteadTap: () {},
-        onSayInMyLanguageTap: () => MissionSessionActions.showSayInMyLanguage(
-          context: context,
-          notifier: notifier,
-          textController: textController,
-        ),
-        onCaptionsToggle: () => ref
-            .read(appSettingsProvider.notifier)
-            .setCaptionsAlwaysOn(!captionsOn),
-        onFinishTap: () => MissionSessionActions.handleFinish(
-          context: context,
-          state: state,
-          notifier: notifier,
-          ref: ref,
-        ),
-      ),
+      compact: (context) => _buildBody(context, ref, captionsOn),
       medium: (context) => ContentWidthLimiter(
         maxWidth: 720.0,
-        child: SessionBody(
-          state: state,
-          config: config,
-          targetLanguageName: targetLanguageName,
-          scrollController: scrollController,
-          textController: textController,
-          isOffline: isOffline,
-          captionsOn: captionsOn,
-          onHelpTap: () => MissionSessionActions.showHelp(
-            context: context,
-            ref: ref,
-            state: state,
-            notifier: notifier,
-          ),
-          onCharacterTap: () => MissionSessionActions.showAiDisclosure(
-            context: context,
-            characterName: state.characterName,
-          ),
-          onPlayAudio: notifier.playMessageAudio,
-          onReport: (r) =>
-              notifier.reportMessage(messageId: 'char_msg', reason: r),
-          onRetry: notifier.retryFailedMessage,
-          onDelete: notifier.deleteFailedMessage,
-          onSelectSuggestion: notifier.sendUserMessage,
-          onTextChanged: notifier.updateDraftText,
-          onSend: () {
-            notifier.sendUserMessage(textController.text);
-            textController.clear();
-          },
-          onMicTap: () {},
-          onTypeInsteadTap: () {},
-          onSayInMyLanguageTap: () => MissionSessionActions.showSayInMyLanguage(
-            context: context,
-            notifier: notifier,
-            textController: textController,
-          ),
-          onCaptionsToggle: () => ref
-              .read(appSettingsProvider.notifier)
-              .setCaptionsAlwaysOn(!captionsOn),
-          onFinishTap: () => MissionSessionActions.handleFinish(
-            context: context,
-            state: state,
-            notifier: notifier,
-          ),
-        ),
+        child: _buildBody(context, ref, captionsOn),
       ),
       expanded: (context) => SessionExpandedLayout(
         state: state,
@@ -163,8 +123,9 @@ class SessionScreenContent extends ConsumerWidget {
           notifier.sendUserMessage(textController.text);
           textController.clear();
         },
-        onMicTap: () {},
-        onTypeInsteadTap: () {},
+        onMicTap: notifier.toggleListening,
+        onTypeInsteadTap: notifier.switchToTextMode,
+        onVoiceInsteadTap: notifier.switchToVoiceMode,
         onSayInMyLanguageTap: () => MissionSessionActions.showSayInMyLanguage(
           context: context,
           notifier: notifier,

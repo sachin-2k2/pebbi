@@ -1,5 +1,7 @@
 import 'chat_message.dart';
 import 'debrief_ref.dart';
+import 'mission_mode.dart';
+import 'session_config.dart';
 import 'session_goal.dart';
 import 'suggestion.dart';
 
@@ -34,6 +36,8 @@ class ConversationState {
     this.isFinished = false,
     this.debriefRef,
     this.latestSpokenMessageId,
+    this.isListening = false,
+    this.isVoiceInputMode,
   });
 
   final ConversationStatus status;
@@ -50,6 +54,12 @@ class ConversationState {
   final bool isFinished;
   final DebriefRef? debriefRef;
   final String? latestSpokenMessageId;
+  final bool isListening;
+  final bool? isVoiceInputMode;
+
+  /// Whether voice input mode is active (defaults to [SessionConfig.mode]).
+  bool isVoice(SessionConfig config) =>
+      isVoiceInputMode ?? (config.mode == MissionMode.voice);
 
   /// True when the user is permitted to type and send.
   bool get canSend =>
@@ -82,6 +92,8 @@ class ConversationState {
     bool? isFinished,
     DebriefRef? debriefRef,
     String? latestSpokenMessageId,
+    bool? isListening,
+    bool? isVoiceInputMode,
   }) {
     return ConversationState(
       status: status ?? this.status,
@@ -101,6 +113,8 @@ class ConversationState {
       debriefRef: debriefRef ?? this.debriefRef,
       latestSpokenMessageId:
           latestSpokenMessageId ?? this.latestSpokenMessageId,
+      isListening: isListening ?? this.isListening,
+      isVoiceInputMode: isVoiceInputMode ?? this.isVoiceInputMode,
     );
   }
 }

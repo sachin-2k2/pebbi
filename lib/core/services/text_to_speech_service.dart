@@ -39,10 +39,46 @@ class FlutterTtsService implements TextToSpeechService {
 
   void _init() {
     if (_initialized) return;
-    _tts.setSpeechRate(0.45);
+    _tts.setSpeechRate(0.50);
     _tts.setPitch(1.0);
     _tts.awaitSpeakCompletion(true);
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      _tts.getEngines.then((engines) {
+        if (engines is List && engines.contains('com.google.android.tts')) {
+          _tts.setEngine('com.google.android.tts');
+        }
+      }).catchError((_) {});
+    }
     _initialized = true;
+  }
+
+  /// Resolves an ISO language code (e.g. 'en', 'es', 'fr', 'ml') to a BCP-47 speech locale tag.
+  static String resolveLocale(String? langCode) {
+    switch (langCode?.toLowerCase().trim()) {
+      case 'ml':
+        return 'ml-IN';
+      case 'hi':
+        return 'hi-IN';
+      case 'ta':
+        return 'ta-IN';
+      case 'te':
+        return 'te-IN';
+      case 'kn':
+        return 'kn-IN';
+      case 'es':
+        return 'es-ES';
+      case 'ar':
+        return 'ar-SA';
+      case 'fr':
+        return 'fr-FR';
+      case 'de':
+        return 'de-DE';
+      case 'ja':
+        return 'ja-JP';
+      case 'en':
+      default:
+        return 'en-US';
+    }
   }
 
   /// Strips emojis and parenthesized transliterations so TTS doesn't read both.
@@ -90,7 +126,7 @@ class FlutterTtsService implements TextToSpeechService {
       if (speechRate != null) {
         await _tts.setSpeechRate(speechRate);
       } else {
-        await _tts.setSpeechRate(0.45);
+        await _tts.setSpeechRate(0.50);
       }
       final cleanText = cleanAudioText(text);
       final result = await _tts.speak(cleanText);

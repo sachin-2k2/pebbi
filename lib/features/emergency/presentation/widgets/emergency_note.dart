@@ -5,16 +5,23 @@ import '../../../../l10n/app_strings.dart';
 
 /// Soft lavender-grey note card with dynamic language parameter and high-contrast text.
 ///
-/// Follows AGENTS.md §3 & WCAG AAA:
+/// Follows AGENTS.md §3 & WCAG AAA (<150 lines):
 /// - Dynamic target language name parameter (never hardcoded).
 /// - Contrast ratio exceeds 10:1.
 class EmergencyNote extends StatelessWidget {
-  const EmergencyNote({super.key, required this.targetLanguageName});
+  const EmergencyNote({
+    super.key,
+    required this.targetLanguageName,
+    this.customMessage,
+  });
 
   final String targetLanguageName;
+  final String? customMessage;
 
   @override
   Widget build(BuildContext context) {
+    final message = customMessage ?? AppStrings.emergencyNoteMessage(targetLanguageName);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -23,7 +30,7 @@ class EmergencyNote extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
       ),
       child: Text(
-        AppStrings.emergencyNoteMessage(targetLanguageName),
+        message,
         style: const TextStyle(
           color: AppColors.emergencyNoteText,
           fontSize: 12.5,

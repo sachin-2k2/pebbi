@@ -8,6 +8,7 @@ import 'package:peddi/core/services/wakelock_controller.dart';
 import 'package:peddi/features/auth/data/mock_profile_repository.dart';
 import 'package:peddi/features/auth/domain/user_profile.dart';
 import 'package:peddi/features/auth/presentation/providers/auth_provider.dart';
+import 'package:peddi/features/emergency/data/bundled_emergency_repository.dart';
 import 'package:peddi/features/emergency/domain/emergency_repository.dart';
 import 'package:peddi/features/emergency/presentation/providers/emergency_provider.dart';
 import 'package:peddi/features/emergency/presentation/screens/emergency_screen.dart';
@@ -55,6 +56,7 @@ void main() {
   }) {
     final fakeWakelock = FakeWakelockController();
     final fakeSpeech = FakeSpeechService();
+    final repo = customRepo ?? BundledEmergencyRepository();
 
     return ProviderScope(
       overrides: [
@@ -63,8 +65,7 @@ void main() {
         ),
         wakelockControllerProvider.overrideWithValue(fakeWakelock),
         textToSpeechServiceProvider.overrideWithValue(fakeSpeech),
-        if (customRepo != null)
-          emergencyRepositoryProvider.overrideWithValue(customRepo),
+        emergencyRepositoryProvider.overrideWithValue(repo),
       ],
       child: const MaterialApp(home: EmergencyScreen()),
     );

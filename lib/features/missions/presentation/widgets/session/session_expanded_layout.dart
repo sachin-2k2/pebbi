@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/design_system/button_3d.dart';
 import '../../../../../core/design_system/notice_banner.dart';
 import '../../../../../core/layout/two_pane_layout.dart';
 import '../../../../../core/theme/app_palette.dart';
@@ -8,13 +7,12 @@ import '../../../../../core/theme/app_typography.dart';
 import '../../../../../l10n/app_strings.dart';
 import '../../../domain/chat_message.dart';
 import '../../../domain/conversation_state.dart';
+import '../../../domain/mission_mode.dart';
 import '../../../domain/session_config.dart';
 import 'character_avatar.dart';
 import 'chat_message_list.dart';
-import 'reply_input_bar.dart';
-import 'session_footer_links.dart';
+import 'session_bottom_bar.dart';
 import 'suggestion_list.dart';
-import 'voice_input_bar.dart';
 
 /// Two-pane adaptive layout for Expanded screen sizes (tablets and desktops).
 ///
@@ -42,6 +40,7 @@ class SessionExpandedLayout extends StatelessWidget {
     required this.onSend,
     required this.onMicTap,
     required this.onTypeInsteadTap,
+    required this.onVoiceInsteadTap,
     required this.onSayInMyLanguageTap,
     required this.onCaptionsToggle,
     required this.onFinishTap,
@@ -65,6 +64,7 @@ class SessionExpandedLayout extends StatelessWidget {
   final VoidCallback onSend;
   final VoidCallback onMicTap;
   final VoidCallback onTypeInsteadTap;
+  final VoidCallback onVoiceInsteadTap;
   final VoidCallback onSayInMyLanguageTap;
   final VoidCallback onCaptionsToggle;
   final VoidCallback onFinishTap;
@@ -78,17 +78,28 @@ class SessionExpandedLayout extends StatelessWidget {
         state.status == ConversationStatus.sending;
 
     final leftPane = Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
       color: palette.surface,
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          InkWell(
-            onTap: onCharacterTap,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: palette.surfaceRaised,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+              border: Border.all(color: palette.outline),
+            ),
             child: Row(
               children: [
-                CharacterAvatar(emoji: state.emoji, size: 56.0),
+                InkWell(
+                  onTap: onCharacterTap,
+                  borderRadius: BorderRadius.circular(24.0),
+                  child: CharacterAvatar(
+                    emoji: state.emoji,
+                    size: 48.0,
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
@@ -96,7 +107,7 @@ class SessionExpandedLayout extends StatelessWidget {
                     children: [
                       Text(
                         state.characterName,
-                        style: AppTypography.screenTitle.copyWith(
+                        style: AppTypography.cardTitle.copyWith(
                           color: palette.textPrimary,
                         ),
                       ),
@@ -159,10 +170,18 @@ class SessionExpandedLayout extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          Button3D.secondary(
-            label: AppStrings.sessionHelpButtonLabel,
+          OutlinedButton.icon(
             onPressed: onHelpTap,
+            icon: const Icon(Icons.help_outline_rounded, size: 18.0),
+            label: const Text(AppStrings.sessionHelpButtonLabel),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size.fromHeight(48.0),
+              foregroundColor: palette.textPrimary,
+              side: BorderSide(color: palette.outline),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusButton),
+              ),
+            ),
           ),
         ],
       ),
@@ -193,62 +212,28 @@ class SessionExpandedLayout extends StatelessWidget {
             onDelete: onDelete,
           ),
         ),
-        if (config.support.id == 'guided' && state.suggestions.isNotEmpty)
+        if (config.mode != MissionMode.voice &&
+            config.support.id == 'guided' &&
+            state.suggestions.isNotEmpty)
           SuggestionList(
             suggestions: state.suggestions,
             onSelect: onSelectSuggestion,
           ),
         const SizedBox(height: AppSpacing.xs),
-        Container(
-          color: palette.surface,
-          padding: const EdgeInsets.only(
-            top: AppSpacing.sm,
-            bottom: AppSpacing.xs,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (state.isFinished)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
-                  child: Button3D(
-                    label: AppStrings.sessionSeeDebrief,
-                    backgroundColor: palette.mint,
-                    depthColor: palette.mintDepth,
-                    textColor: palette.textOnBrand,
-                    onPressed: onFinishTap,
-                  ),
-                )
-              else if (config.mode.id == 'voice')
-                VoiceInputBar(
-                  isListening: false,
-                  onMicTap: onMicTap,
-                  onTypeInsteadTap: onTypeInsteadTap,
-                )
-              else
-                ReplyInputBar(
-                  controller: textController,
-                  targetLanguageCode: config.targetLanguageCode,
-                  targetLanguageName: targetLanguageName,
-                  isEnabled:
-                      state.status == ConversationStatus.userTurn ||
-                      state.status == ConversationStatus.failed,
-                  canSend:
-                      state.canSend || textController.text.trim().isNotEmpty,
-                  onChanged: onTextChanged,
-                  onSend: onSend,
-                ),
-              const SizedBox(height: AppSpacing.xs),
-              SessionFooterLinks(
-                captionsOn: captionsOn,
-                onSayInMyLanguageTap: onSayInMyLanguageTap,
-                onCaptionsToggle: onCaptionsToggle,
-                onFinishTap: onFinishTap,
-              ),
-            ],
-          ),
+        SessionBottomBar(
+          state: state,
+          config: config,
+          targetLanguageName: targetLanguageName,
+          textController: textController,
+          captionsOn: captionsOn,
+          onFinishTap: onFinishTap,
+          onMicTap: onMicTap,
+          onTypeInsteadTap: onTypeInsteadTap,
+          onVoiceInsteadTap: onVoiceInsteadTap,
+          onTextChanged: onTextChanged,
+          onSend: onSend,
+          onSayInMyLanguageTap: onSayInMyLanguageTap,
+          onCaptionsToggle: onCaptionsToggle,
         ),
       ],
     );

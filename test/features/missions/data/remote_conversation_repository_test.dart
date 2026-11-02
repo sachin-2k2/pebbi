@@ -44,6 +44,10 @@ void main() {
             'character_text': '¡Hola! Buenos días.',
             'translation': 'Hello! Good morning.',
           },
+          'options': [
+            {'text': '¡Hola!', 'translation': 'Hello!'},
+            {'text': 'Buenos días.', 'translation': 'Good morning.'},
+          ],
         }),
       );
       fakeAdapter.onJson(
@@ -69,6 +73,8 @@ void main() {
       expect(session.initialMessage.targetText, '¡Hola! Buenos días.');
       expect(session.initialMessage.translationText, 'Hello! Good morning.');
       expect(session.goals.length, 1);
+      expect(session.suggestions.length, 2);
+      expect(session.suggestions[0].text, '¡Hola!');
     });
 
     test('sendTurn calls message endpoint and ticks completed goals', () async {
@@ -102,6 +108,9 @@ void main() {
           'translation': 'A coffee, perfect.',
           'completed_goals': ['Order a drink'],
           'is_finished': false,
+          'options': [
+            {'text': '¿Cuánto cuesta?', 'translation': 'How much is it?'},
+          ],
         }),
       );
 
@@ -116,6 +125,8 @@ void main() {
       expect(turn.characterMessage.translationText, 'A coffee, perfect.');
       expect(turn.completedGoalIds, contains('1'));
       expect(turn.isFinished, isFalse);
+      expect(turn.suggestions.length, 1);
+      expect(turn.suggestions[0].text, '¿Cuánto cuesta?');
     });
 
     test('finishSession calls complete endpoint and returns DebriefRef', () async {

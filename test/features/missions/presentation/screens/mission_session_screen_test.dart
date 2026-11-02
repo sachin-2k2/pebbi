@@ -467,7 +467,7 @@ void main() {
       );
     });
 
-    testWidgets('voice mode renders mic button and level dots', (tester) async {
+    testWidgets('voice mode hides suggestions and handles speech input lifecycle', (tester) async {
       const voiceConfig = SessionConfig(
         missionId: 'order_coffee',
         mode: MissionMode.voice,
@@ -481,10 +481,40 @@ void main() {
       await tester.pumpWidget(createWidget(config: voiceConfig));
       await tester.pumpAndSettle();
 
+      // Suggestions should NOT be visible in voice mode
+      expect(find.byType(SuggestionCard), findsNothing);
+
+      // Voice input controls are rendered
       expect(find.byType(VoiceInputBar), findsOneWidget);
       expect(find.byType(MicButton), findsOneWidget);
       expect(find.byType(LevelDots), findsOneWidget);
       expect(find.text(AppStrings.sessionTypeInstead), findsOneWidget);
+
+      // Tap mic to start listening
+      await tester.tap(find.byType(MicButton));
+      await tester.pump();
+
+      expect(fakeSpeechRecognizer.isListening, isTrue);
+
+      // Simulate final speech input recognized
+      fakeSpeechRecognizer.simulateSpeech("Un café s'il vous plaît", isFinal: true);
+      await tester.pumpAndSettle();
+
+      expect(fakeSpeechRecognizer.isListening, isFalse);
+      expect(find.text("Un café s'il vous plaît"), findsOneWidget);
+
+      // Toggle "Type instead" switches to ReplyInputBar
+      await tester.tap(find.text(AppStrings.sessionTypeInstead));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(VoiceInputBar), findsNothing);
+      expect(find.text(AppStrings.sessionVoiceInstead), findsOneWidget);
+
+      // Toggle "Speak instead" returns to VoiceInputBar
+      await tester.tap(find.text(AppStrings.sessionVoiceInstead));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(VoiceInputBar), findsOneWidget);
     });
   });
 

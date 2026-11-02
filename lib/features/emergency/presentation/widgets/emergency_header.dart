@@ -9,17 +9,30 @@ import '../../../../l10n/app_strings.dart';
 ///
 /// Follows AGENTS.md §3 (under 150 lines) and §4 (responsive).
 class EmergencyHeader extends StatelessWidget {
-  const EmergencyHeader({super.key, this.badgeSlot});
+  const EmergencyHeader({
+    super.key,
+    this.badgeSlot,
+    this.title,
+    this.subtitle,
+  });
 
   /// Optional badge widget placed below the mascot (e.g. green health/safety badge).
   final Widget? badgeSlot;
 
+  /// Optional custom title from the server.
+  final String? title;
+
+  /// Optional custom subtitle from the server.
+  final String? subtitle;
+
   @override
   Widget build(BuildContext context) {
+    final effectiveTitle = title ?? AppStrings.emergencyPhrasebookTitle;
+    final effectiveSubtitle = subtitle ?? AppStrings.emergencyPhrasebookSubtitle;
+
     return Semantics(
       header: true,
-      label:
-          '${AppStrings.emergencyPhrasebookTitle}. ${AppStrings.emergencyPhrasebookSubtitle}',
+      label: '$effectiveTitle. $effectiveSubtitle',
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -28,7 +41,6 @@ class EmergencyHeader extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Mascot with small badge slot below
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -61,14 +73,14 @@ class EmergencyHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Text(
-                    AppStrings.emergencyPhrasebookTitle,
+                    effectiveTitle,
                     style: AppTypography.screenTitle,
                   ),
-                  SizedBox(height: 2.0),
+                  const SizedBox(height: 2.0),
                   Text(
-                    AppStrings.emergencyPhrasebookSubtitle,
+                    effectiveSubtitle,
                     style: AppTypography.caption,
                   ),
                 ],

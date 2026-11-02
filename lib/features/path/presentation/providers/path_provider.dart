@@ -129,3 +129,6 @@ final activePathNodeProvider = Provider<PathNode?>((ref) {
   }
   return null;
 });
+
+/// Whether the Path screen summary cards (Continue, Due, Ad) are collapsed to maximize map space.
+final pathSummaryCollapsedProvider = StateProvider<bool>((ref) => false);

@@ -217,6 +217,10 @@ void main() {
         'translation': 'Hello! A coffee, perfect. Anything else?',
         'completed_goals': ['Order a drink'],
         'is_finished': false,
+        'options': [
+          {'text': 'Eso es todo, gracias.', 'translation': "That's all, thank you."},
+          {'text': '¿Cuánto cuesta?', 'translation': 'How much is it?'},
+        ],
       };
 
       final dto = MissionMessageResponseDto.fromJson(json);
@@ -224,6 +228,23 @@ void main() {
       expect(dto.translation, 'Hello! A coffee, perfect. Anything else?');
       expect(dto.completedGoals, ['Order a drink']);
       expect(dto.isFinished, isFalse);
+      expect(dto.options.length, 2);
+      expect(dto.options[0].text, 'Eso es todo, gracias.');
+      expect(dto.options[0].translation, "That's all, thank you.");
+      expect(dto.options[1].text, '¿Cuánto cuesta?');
+      expect(dto.options[1].translation, 'How much is it?');
+    });
+
+    test('parses initial_options fallback and string array options', () {
+      final json = {
+        'character_text': '¡Hola!',
+        'initial_options': ['Un café, por favor.', 'Un té, por favor.'],
+      };
+
+      final dto = MissionMessageResponseDto.fromJson(json);
+      expect(dto.options.length, 2);
+      expect(dto.options[0].text, 'Un café, por favor.');
+      expect(dto.options[1].text, 'Un té, por favor.');
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/utils/language_resolver.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/mock_free_talk_repository.dart';
 import '../../domain/correction_style.dart';
@@ -16,23 +17,10 @@ final freeTalkTargetLanguageCodeProvider = Provider<String>((ref) {
   return user?.targetLanguageCode ?? 'es';
 });
 
-/// Display name of the active target language (e.g. 'Spanish', 'French').
+/// Display name of the active target language (e.g. 'Spanish', 'French', 'Malayalam').
 final freeTalkTargetLanguageNameProvider = Provider<String>((ref) {
   final langCode = ref.watch(freeTalkTargetLanguageCodeProvider);
-  switch (langCode) {
-    case 'es':
-      return 'Spanish';
-    case 'fr':
-      return 'French';
-    case 'de':
-      return 'German';
-    case 'ja':
-      return 'Japanese';
-    case 'ar':
-      return 'Arabic';
-    default:
-      return 'Spanish';
-  }
+  return LanguageResolver.resolveEnglishName(langCode);
 });
 
 /// Async provider for the active Free Talk topics catalog.

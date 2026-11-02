@@ -5,7 +5,7 @@ import '../../data/mock_invite_repository.dart';
 import '../../data/mock_notes_repository.dart';
 import '../../data/mock_phrase_repository.dart';
 import '../../data/mock_practice_repository.dart';
-import '../../data/mock_translation_repository.dart';
+import '../../data/online_translation_repository.dart';
 import '../../domain/grammar_note.dart';
 import '../../domain/grammar_note_summary.dart';
 import '../../domain/invite_link.dart';
@@ -33,7 +33,7 @@ final inviteRepositoryProvider = Provider<InviteRepository>((ref) {
 
 /// Provider for [TranslationRepository].
 final translationRepositoryProvider = Provider<TranslationRepository>((ref) {
-  return MockTranslationRepository();
+  return OnlineTranslationRepository();
 });
 
 /// Provider for [ShareService].
