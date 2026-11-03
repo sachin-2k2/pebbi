@@ -45,9 +45,14 @@ abstract final class MissionBriefActions {
         break;
       case StartMissionOutcomeType.ready:
         final config = outcome.sessionConfig!;
-        await ref.read(missionRepositoryProvider).startMission(
-          missionId: config.missionId,
-        );
+        notifier.setStarting(true);
+        try {
+          await ref.read(missionRepositoryProvider).startMission(
+            missionId: config.missionId,
+          );
+        } finally {
+          notifier.setStarting(false);
+        }
         ref.invalidate(missionsStateProvider);
         if (context.mounted && GoRouter.maybeOf(context) != null) {
           context.push(

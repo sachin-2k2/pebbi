@@ -42,6 +42,43 @@ void main() {
       expect(find.text('Return to Missions'), findsOneWidget);
     });
 
+    testWidgets('renders Free Talk debrief with praise, corrections, and vocab recap', (tester) async {
+      const debrief = DebriefRef(
+        sessionId: 'freetalk_123',
+        missionId: 'freetalk',
+        turnsCount: 6,
+        completedGoalIds: ['1', '2', '3'],
+        totalGoals: 3,
+        characterName: 'Pebbi',
+        completedGoalTexts: ['Keep the conversation going', 'Ask one question back'],
+        starsEarned: 25,
+        praise: 'Great job! You maintained a smooth conversation about food.',
+        corrections: [
+          DebriefCorrection(
+            userSaid: 'Yo gusta pizza',
+            betterWay: 'Me gusta la pizza',
+            explanation: 'In Spanish, we use "me gusta" instead of "yo gusta".',
+          ),
+        ],
+        vocabularyRecap: ['plato favorito', 'ingredientes', 'deliciosa'],
+      );
+
+      await tester.pumpWidget(buildScreen(debriefRef: debrief));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mission Complete! 🎉'), findsOneWidget);
+      expect(find.text('Great conversation with Pebbi'), findsOneWidget);
+      expect(find.text('Great job! You maintained a smooth conversation about food.'), findsOneWidget);
+      expect(find.text('BETTER PHRASING'), findsOneWidget);
+      expect(find.text('Yo gusta pizza'), findsOneWidget);
+      expect(find.text('Me gusta la pizza'), findsOneWidget);
+      expect(find.text('In Spanish, we use "me gusta" instead of "yo gusta".'), findsOneWidget);
+      expect(find.text('VOCABULARY USED'), findsOneWidget);
+      expect(find.text('plato favorito'), findsOneWidget);
+      expect(find.text('ingredientes'), findsOneWidget);
+      expect(find.text('deliciosa'), findsOneWidget);
+    });
+
     testWidgets('renders gracefully with null debriefRef fallback', (tester) async {
       await tester.pumpWidget(buildScreen());
       await tester.pumpAndSettle();

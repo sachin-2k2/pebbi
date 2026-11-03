@@ -65,8 +65,8 @@ class SplashLogoTile extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               child: Image.asset(
-                'assets/images/splash/pebbi_logo_tile.png',
-                fit: BoxFit.cover,
+                'assets/images/tutotoco_logo.png',
+                fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return const Center(
                     child: PebbiMascot(

@@ -250,16 +250,19 @@ GoRouter createAppRouter({
         final topicId = state.uri.queryParameters['topicId'] ?? '';
         final style = state.uri.queryParameters['style'] ?? 'gentle';
         final config = state.extra as SessionConfig?;
+        final isFreeTalk = topicId.isNotEmpty;
+        final decodedTopic = isFreeTalk ? Uri.decodeComponent(topicId) : null;
         final effectiveConfig =
             config ??
             SessionConfig(
-              missionId: topicId.isEmpty ? 'order_coffee' : topicId,
+              missionId: isFreeTalk ? 'freetalk_$topicId' : 'order_coffee',
               mode: MissionMode.chat,
               support: MissionSupport.guided,
               correctionStyle: CorrectionStyle.fromId(style),
               captionsOn: true,
-              targetLanguageCode: 'fr',
+              targetLanguageCode: 'es',
               explanationLanguageCode: 'en',
+              freeTalkTopic: decodedTopic,
             );
         return MissionSessionScreen(config: effectiveConfig);
       },

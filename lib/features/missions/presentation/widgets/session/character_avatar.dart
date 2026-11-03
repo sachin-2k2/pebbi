@@ -17,6 +17,25 @@ class CharacterAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
 
+    if (emoji == '🐻' || emoji == '🦉') {
+      return IconTile(
+        size: size,
+        borderRadius: size / 2,
+        backgroundColor: palette.coralTint,
+        child: Image.asset(
+          'assets/images/tutotoco_logo.png',
+          width: size * 0.75,
+          height: size * 0.75,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => const Text(
+            '🦉',
+            style: TextStyle(fontSize: 22.0),
+            textScaler: TextScaler.noScaling,
+          ),
+        ),
+      );
+    }
+
     return IconTile(
       size: size,
       borderRadius: size / 2,

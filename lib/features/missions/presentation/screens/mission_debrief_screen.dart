@@ -7,13 +7,16 @@ import '../../../../core/services/audio_feedback_service.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/debrief_ref.dart';
+import '../widgets/debrief/debrief_corrections_card.dart';
 import '../widgets/debrief/debrief_goals_card.dart';
 import '../widgets/debrief/debrief_hero.dart';
+import '../widgets/debrief/debrief_praise_card.dart';
 import '../widgets/debrief/debrief_rewards_row.dart';
+import '../widgets/debrief/debrief_vocab_card.dart';
 
 /// Screen celebrating mission completion with celebration hero, rewards, and goals recap.
 ///
-/// Follows AGENTS.md §3 (< 100 lines target) & §4 (responsive layout).
+/// Follows AGENTS.md §3 (< 150 lines target) & §4 (responsive layout).
 class MissionDebriefScreen extends ConsumerStatefulWidget {
   const MissionDebriefScreen({super.key, this.debriefRef});
 
@@ -85,7 +88,19 @@ class _MissionDebriefScreenState extends ConsumerState<MissionDebriefScreen> {
                             turnsCount: turns,
                           ),
                           const SizedBox(height: AppSpacing.lg),
+                          if (debrief?.praise != null && debrief!.praise!.isNotEmpty) ...[
+                            DebriefPraiseCard(praise: debrief.praise!),
+                            const SizedBox(height: AppSpacing.lg),
+                          ],
                           DebriefGoalsCard(goalTexts: goals, missionId: missionId),
+                          if (debrief?.corrections.isNotEmpty == true) ...[
+                            const SizedBox(height: AppSpacing.lg),
+                            DebriefCorrectionsCard(corrections: debrief!.corrections),
+                          ],
+                          if (debrief?.vocabularyRecap.isNotEmpty == true) ...[
+                            const SizedBox(height: AppSpacing.lg),
+                            DebriefVocabCard(vocabulary: debrief!.vocabularyRecap),
+                          ],
                           const SizedBox(height: AppSpacing.xl),
                         ],
                       ),
@@ -110,4 +125,3 @@ class _MissionDebriefScreenState extends ConsumerState<MissionDebriefScreen> {
 
 /// Backwards-compatible alias for existing router references.
 typedef MissionDebriefPlaceholderScreen = MissionDebriefScreen;
-

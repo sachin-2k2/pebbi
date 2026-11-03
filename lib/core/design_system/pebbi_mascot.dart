@@ -36,11 +36,17 @@ class PebbiMascot extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: _PebbiPainter(
-          bodyColor: accentColor,
-          expression: expression,
-          outfit: outfit,
+      child: Image.asset(
+        'assets/images/tutotoco_logo.png',
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => CustomPaint(
+          painter: _PebbiPainter(
+            bodyColor: accentColor,
+            expression: expression,
+            outfit: outfit,
+          ),
         ),
       ),
     );

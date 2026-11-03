@@ -143,7 +143,9 @@ class MissionBriefNotifier
       }
 
       // Resolve target language name dynamically
-      final languageName = LanguageResolver.resolveEnglishName(brief.languageCode);
+      final languageName = LanguageResolver.resolveEnglishName(
+        brief.languageCode,
+      );
 
       if (!_isDisposed) {
         state = AsyncValue.data(
@@ -319,6 +321,15 @@ class MissionBriefNotifier
     }
 
     return outcome;
+  }
+
+  /// Sets [isStarting] on the current state, used by the action layer to hold
+  /// the loading spinner during the backend `startMission` network call.
+  void setStarting(bool value) {
+    final current = state.valueOrNull;
+    if (current != null && !_isDisposed) {
+      state = AsyncValue.data(current.copyWith(isStarting: value));
+    }
   }
 
   void clearTransientMessage() {

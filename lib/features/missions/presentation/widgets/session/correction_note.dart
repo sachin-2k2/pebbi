@@ -8,7 +8,6 @@ import '../../../../../l10n/app_strings.dart';
 ///
 /// Follows AGENTS.md §7.3 & §11:
 /// - Uses semantic info palette tokens (no shame wording or harsh red)
-/// - TODO(question: correction note styling estimated based on infoSurface tokens)
 class CorrectionNote extends StatelessWidget {
   const CorrectionNote({super.key, required this.correction});
 
@@ -17,6 +16,12 @@ class CorrectionNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
+    final trimmed = correction.trim();
+    final displayText = trimmed.startsWith('💡') ||
+            trimmed.toLowerCase().startsWith('tip:') ||
+            trimmed.toLowerCase().startsWith('better:')
+        ? trimmed
+        : '${AppStrings.sessionLiveCorrectionPrefix}$trimmed';
 
     return Container(
       margin: const EdgeInsets.only(top: AppSpacing.xs),
@@ -30,7 +35,7 @@ class CorrectionNote extends StatelessWidget {
         border: Border.all(color: palette.infoBorder, width: 1.0),
       ),
       child: Text(
-        '${AppStrings.sessionLiveCorrectionPrefix}$correction',
+        displayText,
         style: AppTypography.caption.copyWith(
           color: palette.infoText,
           fontWeight: FontWeight.w700,

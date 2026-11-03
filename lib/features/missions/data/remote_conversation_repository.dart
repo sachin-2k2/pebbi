@@ -12,8 +12,9 @@ import 'dtos/mission_detail_dto.dart';
 import 'dtos/mission_message_response_dto.dart';
 import 'dtos/mission_option_parser.dart';
 import 'mock_conversation_repository.dart';
+import 'remote_free_talk_handler.dart';
 
-/// Remote implementation of [ConversationRepository] for live role-play missions.
+/// Remote implementation of [ConversationRepository] for live role-play and Free Talk.
 ///
 /// Follows AGENTS.md §2.1, §2.2 & §5 (<150 lines).
 class RemoteConversationRepository implements ConversationRepository {
@@ -24,20 +25,44 @@ class RemoteConversationRepository implements ConversationRepository {
     this.onSessionExpired,
   }) : _apiClient = apiClient,
        _translationRepo = translationRepository,
-       _fallback = fallbackRepository ?? MockConversationRepository();
+       _fallback = fallbackRepository ?? MockConversationRepository(),
+       _freeTalk = RemoteFreeTalkHandler(apiClient: apiClient);
 
   final ApiClient _apiClient;
   final TranslationRepository? _translationRepo;
   final ConversationRepository _fallback;
+  final RemoteFreeTalkHandler _freeTalk;
   final void Function(String)? onSessionExpired;
 
   final Map<String, List<SessionGoal>> _sessionGoals = {};
   final Map<String, Set<String>> _completedGoals = {};
   final Map<String, int> _turnCounts = {};
   final Map<String, String> _sessionMissionIds = {}, _sessionCharNames = {};
+  final Map<String, String> _sessionTopics = {};
 
   @override
   Future<SessionStart> startSession(SessionConfig config) async {
+    if (config.isFreeTalk) {
+      try {
+        return await _freeTalk.startSession(
+          config,
+          onSessionRegistered: (sid, goals, topic) {
+            _sessionMissionIds[sid] = 'freetalk';
+            _sessionGoals[sid] = goals;
+            _completedGoals[sid] = <String>{};
+            _turnCounts[sid] = 0;
+            _sessionCharNames[sid] = 'Pebbi';
+            _sessionTopics[sid] = topic;
+          },
+        );
+      } on DioException catch (e) {
+        await _handleAuth(e);
+        return _fallback.startSession(config);
+      } catch (_) {
+        return _fallback.startSession(config);
+      }
+    }
+
     final mId = config.missionId;
     try {
       final startRes = await _apiClient.post<Map<String, dynamic>>('/api/missions/$mId/start');
@@ -71,8 +96,22 @@ class RemoteConversationRepository implements ConversationRepository {
 
   @override
   Future<TurnResult> sendTurn({required String sessionId, required String clientTurnId, required String userText, required SessionConfig config}) async {
-    final mId = _sessionMissionIds[sessionId] ?? config.missionId;
     _turnCounts[sessionId] = (_turnCounts[sessionId] ?? 0) + 1;
+    final isFreeTalk = config.isFreeTalk || _sessionMissionIds[sessionId] == 'freetalk';
+    if (isFreeTalk) {
+      try {
+        final goals = _sessionGoals[sessionId] ?? const [];
+        final completedSet = _completedGoals[sessionId] ??= <String>{};
+        return await _freeTalk.sendTurn(userText: userText, clientTurnId: clientTurnId, goals: goals, completedGoalSet: completedSet);
+      } on DioException catch (e) {
+        await _handleAuth(e);
+        return _fallback.sendTurn(sessionId: sessionId, clientTurnId: clientTurnId, userText: userText, config: config);
+      } catch (_) {
+        return _fallback.sendTurn(sessionId: sessionId, clientTurnId: clientTurnId, userText: userText, config: config);
+      }
+    }
+
+    final mId = _sessionMissionIds[sessionId] ?? config.missionId;
     try {
       final res = await _apiClient.post<Map<String, dynamic>>('/api/missions/$mId/message', data: {'message': userText});
       if (res.data != null) {
@@ -84,20 +123,8 @@ class RemoteConversationRepository implements ConversationRepository {
             if (g.text.toLowerCase().trim() == cg.toLowerCase().trim() || g.id == cg) completedSet.add(g.id);
           }
         }
-        final charMsg = ChatMessage(
-          id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
-          clientTurnId: clientTurnId,
-          author: MessageAuthor.character,
-          targetText: dto.characterText,
-          translationText: dto.translation,
-          timestamp: DateTime.now(),
-        );
-        return TurnResult(
-          characterMessage: charMsg,
-          suggestions: dto.options,
-          completedGoalIds: completedSet.toList(),
-          isFinished: dto.isFinished,
-        );
+        final charMsg = ChatMessage(id: 'msg_${DateTime.now().millisecondsSinceEpoch}', clientTurnId: clientTurnId, author: MessageAuthor.character, targetText: dto.characterText, translationText: dto.translation, timestamp: DateTime.now());
+        return TurnResult(characterMessage: charMsg, suggestions: dto.options, completedGoalIds: completedSet.toList(), isFinished: dto.isFinished);
       }
     } on DioException catch (e) {
       await _handleAuth(e);
@@ -107,6 +134,23 @@ class RemoteConversationRepository implements ConversationRepository {
 
   @override
   Future<DebriefRef> finishSession(String sessionId) async {
+    final isFreeTalk = _sessionMissionIds[sessionId] == 'freetalk';
+    if (isFreeTalk) {
+      try {
+        final goals = _sessionGoals[sessionId] ?? const [];
+        final completed = _completedGoals[sessionId]?.toList() ?? const [];
+        return await _freeTalk.finishSession(
+          sessionId: sessionId,
+          turnCount: _turnCounts[sessionId] ?? 1,
+          goals: goals,
+          completedGoalIds: completed,
+          topic: _sessionTopics[sessionId] ?? 'Food',
+        );
+      } on DioException catch (e) {
+        await _handleAuth(e);
+      } catch (_) {}
+    }
+
     final mId = _sessionMissionIds[sessionId] ?? 'order-a-coffee';
     try {
       await _apiClient.post<Map<String, dynamic>>('/api/missions/$mId/complete');
@@ -116,15 +160,9 @@ class RemoteConversationRepository implements ConversationRepository {
     final goals = _sessionGoals[sessionId] ?? const [];
     final completed = _completedGoals[sessionId]?.toList() ?? const [];
     return DebriefRef(
-      sessionId: sessionId,
-      missionId: mId,
-      turnsCount: _turnCounts[sessionId] ?? 1,
-      completedGoalIds: completed,
-      totalGoals: goals.isNotEmpty ? goals.length : 3,
-      characterName: _sessionCharNames[sessionId] ?? 'Lucía',
-      completedGoalTexts: goals.map((g) => g.text).toList(),
-      starsEarned: 25,
-      xpEarned: 20,
+      sessionId: sessionId, missionId: mId, turnsCount: _turnCounts[sessionId] ?? 1, completedGoalIds: completed,
+      totalGoals: goals.isNotEmpty ? goals.length : 3, characterName: _sessionCharNames[sessionId] ?? 'Lucía',
+      completedGoalTexts: goals.map((g) => g.text).toList(), starsEarned: 25, xpEarned: 20,
     );
   }
 

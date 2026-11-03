@@ -49,6 +49,20 @@ void main() {
     plan: 'free',
   );
 
+  const malayalamUser = UserProfile(
+    userId: 'user_ml',
+    ageBand: AgeBand.adult,
+    explanationLanguageCode: 'en',
+    targetLanguageCode: 'ml',
+    reasonIds: {},
+    dailyGoalId: 'casual',
+    reminderTime: ReminderTime(hour: 9, minute: 0),
+    selectedWeekdayNumbers: {1},
+    remindersEnabled: false,
+    accentId: 'violet',
+    plan: 'free',
+  );
+
   void setTestViewport(WidgetTester tester) {
     tester.view.physicalSize = const Size(390, 1000);
     tester.view.devicePixelRatio = 1.0;
@@ -172,6 +186,25 @@ void main() {
         find.text(AppStrings.freeTalkScreenSubtitle('French')),
         findsOneWidget,
       );
+    },
+  );
+
+  testWidgets(
+    'renders all 8 topic chips dynamically for Malayalam user',
+    (tester) async {
+      setTestViewport(tester);
+      await tester.pumpWidget(buildSubject(currentUser: malayalamUser));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(AppStrings.freeTalkScreenSubtitle('Malayalam')),
+        findsOneWidget,
+      );
+      expect(find.byType(TopicChip), findsNWidgets(8));
+      expect(find.text('Today'), findsOneWidget);
+      expect(find.text('Food'), findsOneWidget);
+      expect(find.text('My own'), findsOneWidget);
     },
   );
 

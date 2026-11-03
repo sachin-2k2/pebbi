@@ -12,6 +12,9 @@ import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../domain/correction_style.dart';
 import '../../domain/free_talk_access_rules.dart';
 import '../../domain/free_talk_topic.dart';
+import '../../domain/mission_mode.dart';
+import '../../domain/mission_support.dart';
+import '../../domain/session_config.dart';
 import '../providers/free_talk_provider.dart';
 import '../widgets/free_talk/correction_style_card.dart';
 import '../widgets/free_talk/custom_topic_sheet.dart';
@@ -26,11 +29,27 @@ class FreeTalkScreen extends ConsumerWidget {
 
   void _startSession(
     BuildContext context,
-    String topicId,
+    WidgetRef ref,
+    String topicName,
     CorrectionStyle style,
   ) {
+    final user = ref.read(currentUserProvider);
+    final targetLang = user?.targetLanguageCode ?? 'es';
+    final explanationLang = user?.explanationLanguageCode ?? 'en';
+    final config = SessionConfig(
+      missionId: 'freetalk_${Uri.encodeComponent(topicName)}',
+      mode: MissionMode.chat,
+      support: MissionSupport.guided,
+      correctionStyle: style,
+      captionsOn: true,
+      targetLanguageCode: targetLang,
+      explanationLanguageCode: explanationLang,
+      freeTalkTopic: topicName,
+    );
+
     context.push(
-      '/missions/session?topicId=${Uri.encodeComponent(topicId)}&style=${style.id}',
+      '/missions/session?topicId=${Uri.encodeComponent(topicName)}&style=${style.id}',
+      extra: config,
     );
   }
 
@@ -53,11 +72,11 @@ class FreeTalkScreen extends ConsumerWidget {
       AdaptiveSheet.show<void>(
         context: context,
         builder: (_) => CustomTopicSheet(
-          onStartTopic: (text) => _startSession(context, text, style),
+          onStartTopic: (text) => _startSession(context, ref, text, style),
         ),
       );
     } else {
-      _startSession(context, topic.id, style);
+      _startSession(context, ref, topic.id, style);
     }
   }
 
@@ -101,10 +120,15 @@ class FreeTalkScreen extends ConsumerWidget {
                   AppStrings.freeTalkLanguageUnsupported,
                   style: TextStyle(color: palette.textMuted),
                 ),
-                data: (topics) => TopicChipWrap(
-                  topics: topics,
-                  onTopicTap: (topic) => _onTopicTap(context, ref, topic),
-                ),
+                data: (topics) => topics.isEmpty
+                    ? Text(
+                        AppStrings.freeTalkLanguageUnsupported,
+                        style: TextStyle(color: palette.textMuted),
+                      )
+                    : TopicChipWrap(
+                        topics: topics,
+                        onTopicTap: (topic) => _onTopicTap(context, ref, topic),
+                      ),
               ),
               const SizedBox(height: AppSpacing.xl),
               CorrectionStyleCard(

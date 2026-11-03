@@ -15,6 +15,7 @@ class SessionConfig {
     required this.targetLanguageCode,
     required this.explanationLanguageCode,
     this.level = 1,
+    this.freeTalkTopic,
   });
 
   final String missionId;
@@ -25,6 +26,13 @@ class SessionConfig {
   final String targetLanguageCode;
   final String explanationLanguageCode;
   final int level;
+  final String? freeTalkTopic;
+
+  /// Whether this session represents an open-ended Free Talk conversation.
+  bool get isFreeTalk =>
+      freeTalkTopic != null ||
+      missionId == 'freetalk' ||
+      missionId.startsWith('freetalk_');
 
   @override
   bool operator ==(Object other) =>
@@ -38,7 +46,8 @@ class SessionConfig {
           captionsOn == other.captionsOn &&
           targetLanguageCode == other.targetLanguageCode &&
           explanationLanguageCode == other.explanationLanguageCode &&
-          level == other.level;
+          level == other.level &&
+          freeTalkTopic == other.freeTalkTopic;
 
   @override
   int get hashCode => Object.hash(
@@ -50,5 +59,6 @@ class SessionConfig {
     targetLanguageCode,
     explanationLanguageCode,
     level,
+    freeTalkTopic,
   );
 }

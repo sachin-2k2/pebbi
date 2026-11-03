@@ -9,11 +9,11 @@ import '../domain/free_talk_topic.dart';
 class MockFreeTalkRepository implements FreeTalkRepository {
   MockFreeTalkRepository({
     this.shouldFail = false,
-    this.supportedLanguages = const {'es', 'fr', 'de', 'ja', 'ar'},
+    this.supportedLanguages,
   });
 
   final bool shouldFail;
-  final Set<String> supportedLanguages;
+  final Set<String>? supportedLanguages;
 
   /// Per-user stored correction style settings for strict user isolation.
   final Map<String, CorrectionStyle> _userStyles = {};
@@ -38,7 +38,8 @@ class MockFreeTalkRepository implements FreeTalkRepository {
       throw StateError('Unable to load Free Talk topics.');
     }
 
-    if (!supportedLanguages.contains(targetLanguageCode)) {
+    if (supportedLanguages != null &&
+        !supportedLanguages!.contains(targetLanguageCode)) {
       return const [];
     }
 

@@ -1,3 +1,28 @@
+/// Individual correction item displayed in the post-mission debrief.
+class DebriefCorrection {
+  const DebriefCorrection({
+    required this.userSaid,
+    required this.betterWay,
+    required this.explanation,
+  });
+
+  final String userSaid;
+  final String betterWay;
+  final String explanation;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DebriefCorrection &&
+          runtimeType == other.runtimeType &&
+          userSaid == other.userSaid &&
+          betterWay == other.betterWay &&
+          explanation == other.explanation;
+
+  @override
+  int get hashCode => Object.hash(userSaid, betterWay, explanation);
+}
+
 /// Immutable reference passed to the debrief route upon finishing a role-play session.
 ///
 /// Follows AGENTS.md §2.2: Pure Dart, zero Flutter imports.
@@ -13,6 +38,9 @@ class DebriefRef {
     this.completedGoalTexts = const [],
     this.starsEarned = 25,
     this.xpEarned = 20,
+    this.praise,
+    this.corrections = const [],
+    this.vocabularyRecap = const [],
   });
 
   final String sessionId;
@@ -25,6 +53,9 @@ class DebriefRef {
   final List<String> completedGoalTexts;
   final int starsEarned;
   final int xpEarned;
+  final String? praise;
+  final List<DebriefCorrection> corrections;
+  final List<String> vocabularyRecap;
 
   double get completionRatio => totalGoals == 0
       ? 0.0
@@ -38,8 +69,10 @@ class DebriefRef {
           sessionId == other.sessionId &&
           missionId == other.missionId &&
           turnsCount == other.turnsCount &&
-          totalGoals == other.totalGoals;
+          totalGoals == other.totalGoals &&
+          praise == other.praise;
 
   @override
-  int get hashCode => Object.hash(sessionId, missionId, turnsCount, totalGoals);
+  int get hashCode =>
+      Object.hash(sessionId, missionId, turnsCount, totalGoals, praise);
 }

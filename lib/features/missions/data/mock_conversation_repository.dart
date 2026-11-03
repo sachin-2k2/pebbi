@@ -68,6 +68,41 @@ class MockConversationRepository implements ConversationRepository {
     _sessionTurnCounters[sessionId] = 0;
     _sessionCompletedGoals[sessionId] = <String>{};
 
+    if (config.isFreeTalk) {
+      final topic = config.freeTalkTopic ?? 'Food';
+      return SessionStart(
+        sessionId: sessionId,
+        characterName: 'Pebbi',
+        characterRole: 'a friendly conversation partner',
+        emoji: '🦉',
+        goals: const [
+          SessionGoal(id: '1', text: 'Keep the conversation going'),
+          SessionGoal(id: '2', text: 'Ask one question back'),
+          SessionGoal(id: '3', text: 'Use a phrase you just learned'),
+        ],
+        initialMessage: ChatMessage(
+          id: 'msg_init_$sessionId',
+          author: MessageAuthor.character,
+          targetText: '¡Hola! Hoy me encantaría hablar de $topic. ¿Cuál es tu plato favorito?',
+          translationText: 'Hello! Today I would love to talk about $topic. What is your favorite dish?',
+          audioLocale: 'es-ES',
+          timestamp: DateTime.now(),
+        ),
+        suggestions: const [
+          Suggestion(
+            id: 's1',
+            text: 'Me encanta la pizza y la pasta.',
+            translation: 'I love pizza and pasta.',
+          ),
+          Suggestion(
+            id: 's2',
+            text: '¿A ti qué te gusta comer?',
+            translation: 'What do you like to eat?',
+          ),
+        ],
+      );
+    }
+
     if (targetLang == 'es') {
       // TODO(question: content team must supply and review all scenes in all languages)
       return SessionStart(
@@ -360,13 +395,34 @@ class MockConversationRepository implements ConversationRepository {
     await Future<void>.delayed(simulatedLatency);
     final turns = _sessionTurnCounters[sessionId] ?? 1;
     final completed = _sessionCompletedGoals[sessionId] ?? <String>{};
+    final isFreeTalk = sessionId.contains('freetalk');
 
     return DebriefRef(
       sessionId: sessionId,
-      missionId: 'order_coffee',
+      missionId: isFreeTalk ? 'freetalk' : 'order_coffee',
       turnsCount: turns,
       completedGoalIds: completed.toList(),
       totalGoals: 3,
+      characterName: isFreeTalk ? 'Pebbi' : 'Lucía',
+      characterRole: isFreeTalk ? 'a friendly conversation partner' : 'barista',
+      completedGoalTexts: isFreeTalk
+          ? const ['Keep the conversation going', 'Ask one question back', 'Use a phrase you just learned']
+          : const ['Order a drink', 'Ask the price', 'Pay and say thank you'],
+      praise: isFreeTalk
+          ? 'Great job! You maintained a smooth conversation about food and asked good follow-up questions.'
+          : null,
+      corrections: isFreeTalk
+          ? const [
+              DebriefCorrection(
+                userSaid: 'Yo gusta pizza',
+                betterWay: 'Me gusta la pizza',
+                explanation: 'In Spanish, we use "me gusta" instead of "yo gusta" to express what we like.',
+              ),
+            ]
+          : const [],
+      vocabularyRecap: isFreeTalk
+          ? const ['plato favorito', 'ingredientes', 'deliciosa']
+          : const [],
     );
   }
 }
