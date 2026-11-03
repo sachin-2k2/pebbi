@@ -21,7 +21,7 @@ class MockInviteRepository implements InviteRepository {
     return InviteLink(
       url: baseUrl,
       code: userId,
-      shareText: 'Join me on Pebbi to speak languages for real! $baseUrl',
+      shareText: 'Join me on Tutotoco to speak languages for real! $baseUrl',
     );
   }
 }

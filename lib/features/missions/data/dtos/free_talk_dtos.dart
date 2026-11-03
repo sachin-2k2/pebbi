@@ -92,7 +92,7 @@ class FreeTalkStartResponseDto {
 
     return FreeTalkStartResponseDto(
       sessionId: json['session_id']?.toString() ?? '',
-      characterName: json['character_name']?.toString() ?? 'Pebbi',
+      characterName: json['character_name']?.toString() ?? 'Tutotoco',
       characterRole: json['character_role']?.toString() ?? 'a friendly conversation partner',
       scene: json['scene']?.toString() ?? 'Anywhere you like',
       topic: json['topic']?.toString() ?? '',

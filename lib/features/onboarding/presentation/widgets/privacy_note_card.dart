@@ -14,7 +14,7 @@ class PrivacyNoteCard extends StatelessWidget {
   final AgeBand? ageBand;
 
   static const String under13BlockedCopy =
-      'Pebbi is designed for learners ages 13 and up. Please ask a parent or check back with us when you turn 13!';
+      'Tutotoco is designed for learners ages 13 and up. Please ask a parent or check back with us when you turn 13!';
 
   @override
   Widget build(BuildContext context) {

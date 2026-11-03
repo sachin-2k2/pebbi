@@ -22,7 +22,7 @@ abstract final class AppStrings {
   // Onboarding Welcome Page 2
   static const String welcome2Title = 'Practise real moments';
   static const String welcome2Subtitle =
-      'Order a coffee, ask for directions, walk into an interview. Pebbi plays the other person.';
+      'Order a coffee, ask for directions, walk into an interview. Tutotoco plays the other person.';
   static const String welcome2Chip1 = 'Café';
   static const String welcome2Chip2 = 'Airport';
   static const String welcome2Chip3 = 'Job interview';
@@ -30,7 +30,7 @@ abstract final class AppStrings {
   // Onboarding Welcome Page 3
   static const String welcome3Title = 'No pressure, just progress';
   static const String welcome3Subtitle =
-      'No hearts, no countdowns, no guilt. Miss a day and Pebbi is right here.';
+      'No hearts, no countdowns, no guilt. Miss a day and Tutotoco is right here.';
   static const String welcome3Chip1 = 'Streak freezes';
   static const String welcome3Chip2 = 'Go at your pace';
   static const String welcome3Chip3 = 'Never shamed';
@@ -56,7 +56,7 @@ abstract final class AppStrings {
   static const String privacyNoteAdult =
       'All set. We store only the age band, never your birthday.';
   static const String privacyNoteChild =
-      'Pebbi is for ages 13 and up. Ask a grown-up to set this up with you — we store only your age band, nothing else.';
+      'Tutotoco is for ages 13 and up. Ask a grown-up to set this up with you — we store only your age band, nothing else.';
   static const String yearPickerTitle = 'Select Year of Birth';
   static const String confirm = 'Confirm';
 
@@ -109,7 +109,7 @@ abstract final class AppStrings {
   static const String whyAreYouLearningTitle = 'Why are you learning?';
   static const String whyAreYouLearningSubtitle =
       'Pick up to three. This sets your first track and missions.';
-  static const String backpackEmpty = "Pebbi's backpack is empty";
+  static const String backpackEmpty = "Tutotoco's backpack is empty";
   static const String maxReasonsReached = 'You can pick up to three';
   static const String reasonsSelectionGroupSemantics =
       'Pick up to three reasons for learning';
@@ -162,7 +162,7 @@ abstract final class AppStrings {
   // Card 2
   static const String placementCard2Title = 'No scores, no shaming';
   static const String placementCard2Body =
-      'You never see a fail. Whatever you answer, Pebbi tunes your lessons to you and your streak starts today.';
+      'You never see a fail. Whatever you answer, Tutotoco tunes your lessons to you and your streak starts today.';
 
   // Chips
   static const String placementChipNoTimer = 'No timer';
@@ -412,7 +412,7 @@ abstract final class AppStrings {
   // Setup Step 7: Daily Goal
   static const String dailyGoalTitle = 'Daily goal';
   static const String dailyGoalSubtitle =
-      'Missed a day? No problem. Pebbi will be right here.';
+      'Missed a day? No problem. Tutotoco will be right here.';
   static const String dailyGoalGroupSemantics = 'Daily goal';
   static const String dailyGoalCasual = 'Casual';
   static const String dailyGoalRegular = 'Regular';
@@ -459,18 +459,18 @@ abstract final class AppStrings {
   // Setup Step 8: Daily Reminder ("A gentle nudge?")
   static const String reminderTitle = 'A gentle nudge?';
   static const String reminderSubtitle =
-      'Pebbi nudges you once a day, never more.';
+      'Tutotoco nudges you once a day, never more.';
   static const String reminderTimeLabel = 'Reminder time';
   static const String saveAndContinue = 'Save and continue';
   static const String reminderNoteActive =
-      'You can change or silence this any time in Settings. Pebbi never nudges twice in a day, and quiet hours are respected.';
+      'You can change or silence this any time in Settings. Tutotoco never nudges twice in a day, and quiet hours are respected.';
   static const String reminderNoteDisabled =
       'Reminders are turned off. You can set a time and choose days whenever you want them.';
   static const String remindersDisabledNotice =
       'Reminders are off in your phone settings';
   static const String openSettings = 'Settings';
   static const String reminderNotificationTitle =
-      'Time for a quick chat with Pebbi!';
+      'Time for a quick chat with Tutotoco!';
   static const String reminderNotificationBody =
       'Just 3 minutes to keep your streak going.';
 
@@ -482,8 +482,8 @@ abstract final class AppStrings {
     required bool isSelected,
   }) => isSelected ? '$dayName, selected' : '$dayName, not selected';
 
-  // Setup Step 9: Meet Pebbi (Accent Colour & First Sticker)
-  static const String meetPebbiTitle = 'Meet Pebbi';
+  // Setup Step 9: Meet Tutotoco (Accent Colour & First Sticker)
+  static const String meetPebbiTitle = 'Meet Tutotoco';
   static const String meetPebbiSubtitle =
       'Nice to meet you! Pick an accent colour and your first sticker.';
   static const String accentColourLabel = 'ACCENT COLOUR';
@@ -507,7 +507,7 @@ abstract final class AppStrings {
     required bool isSelected,
   }) => '$name, option $index of $total${isSelected ? ', selected' : ''}';
 
-  static String accentChangedAnnouncement(String name) => 'Pebbi is now $name';
+  static String accentChangedAnnouncement(String name) => 'Tutotoco is now $name';
 
   static String stickerSemantics({
     required String name,
@@ -612,10 +612,10 @@ abstract final class AppStrings {
     required String statusText,
   }) => '$label, $statusText';
 
-  // Premium Screen: "Unlock all of Pebbi"
-  static const String unlockAllTitle = 'Unlock all of Pebbi';
+  // Premium Screen: "Unlock all of Tutotoco"
+  static const String unlockAllTitle = 'Unlock all of Tutotoco';
   static const String unlockAllSubtitle =
-      'Every unit, every language, every mission. One price, and Pebbi keeps the streak with you.';
+      'Every unit, every language, every mission. One price, and Tutotoco keeps the streak with you.';
 
   // Premium Feature Items (Data-driven keys)
   static const String premiumFeatureUnitsTitle = 'Every unit and stop';
@@ -639,7 +639,7 @@ abstract final class AppStrings {
 
   // Plan Card
   static const String mostPopularPill = 'Most popular';
-  static const String defaultPlanTitle = 'Pebbi Monthly';
+  static const String defaultPlanTitle = 'Tutotoco Monthly';
 
   /// Generates dynamic trial sentence with ICU pluralization.
   ///
@@ -709,7 +709,7 @@ abstract final class AppStrings {
   static const String welcomeBackTitle = 'Welcome back';
   static const String welcomeBackSubtitle =
       'Log in to pick up your streak where you left it';
-  static const String pebbiWordmark = 'Pebbi';
+  static const String pebbiWordmark = 'Tutotoco';
   static const String continueWithGoogle = 'Continue with Google';
   static const String orDivider = 'OR';
   static const String emailLabel = 'Email';
@@ -719,7 +719,7 @@ abstract final class AppStrings {
   static const String forgotPassword = 'Forgot password?';
   static const String logInAction = 'Log in';
   static const String loggingInProcessing = 'Logging in, please wait';
-  static const String newToPebbi = 'New to Pebbi?';
+  static const String newToPebbi = 'New to Tutotoco?';
   static const String createAnAccount = 'Create an account';
 
   // Auth Accessibility Semantics
@@ -826,7 +826,7 @@ abstract final class AppStrings {
   static const String lockedNodeSheetProgressMessage =
       'Pass previous stops to unlock this lesson, or test out now.';
   static const String lockedNodeSheetPremiumMessage =
-      'This unit is part of Pebbi Premium. Unlock all units and languages.';
+      'This unit is part of Tutotoco Premium. Unlock all units and languages.';
   static const String testOutAction = 'Test out (8 questions)';
   static const String goBackAction = 'Go back';
 
@@ -976,7 +976,7 @@ abstract final class AppStrings {
   static const String close = 'Close';
 
   static String emergencyNoteMessage(String languageName) =>
-      "Phrases are for the language you're learning ($languageName). Check your local emergency number for the country you're in — Pebbi doesn't guess numbers.";
+      "Phrases are for the language you're learning ($languageName). Check your local emergency number for the country you're in — Tutotoco doesn't guess numbers.";
 
   static String emergencyPhraseCardSemantics({
     required String meaning,
@@ -988,7 +988,7 @@ abstract final class AppStrings {
   static const String freeTalkScreenTitle =
       'What do you feel like talking about?';
   static String freeTalkScreenSubtitle(String targetLanguageName) =>
-      'Any topic. Pebbi keeps the $targetLanguageName at your level.';
+      'Any topic. Tutotoco keeps the $targetLanguageName at your level.';
   static const String correctionStyleLabel = 'CORRECTION STYLE';
   static const String correctionStyleGentle = 'Gentle';
   static const String correctionStyleLive = 'Live';
@@ -1063,9 +1063,9 @@ abstract final class AppStrings {
   static const String inviteCopiedAnnouncement =
       'Invite link copied to clipboard';
   static const String inviteShareAction = 'Share the invite';
-  static const String inviteShareSubject = 'Learn languages with me on Pebbi!';
+  static const String inviteShareSubject = 'Learn languages with me on Tutotoco!';
   static String inviteDefaultShareText(String url) =>
-      'Join me on Pebbi to speak languages for real! $url';
+      'Join me on Tutotoco to speak languages for real! $url';
   static const String inviteLinkUnavailable = 'Invite link unavailable offline';
 
   // Practise Tricky Phrases
@@ -1119,7 +1119,7 @@ abstract final class AppStrings {
   // Practice Segment Strings
   static const String practiceStartButton = 'Start';
   static String practice2MinTitle(int minutes) => '$minutes-minute practice';
-  static const String practice2MinSubtitle = 'Pebbi picks the best mix for you';
+  static const String practice2MinSubtitle = 'Tutotoco picks the best mix for you';
   static const String practiceFlashcardsTitle = 'Flashcards';
   static String practiceFlashcardsSubtitle(int count) =>
       '$count ${count == 1 ? 'card' : 'cards'} · flipped both ways';
@@ -1239,7 +1239,7 @@ abstract final class AppStrings {
       ? 'Daily goal: 1 lesson'
       : 'Daily goal: $lessonCount lessons';
   static const String rewardsDailyGoalMissed =
-      'Missed a day? No problem. Pebbi will be right here.';
+      'Missed a day? No problem. Tutotoco will be right here.';
   static const String rewardsDailyGoalDone = 'Done today — nicely done!';
   static String rewardsReminderSet(String formattedTime) =>
       'Reminder set for $formattedTime';
@@ -1329,7 +1329,7 @@ abstract final class AppStrings {
       "Switch language, level or the language of explanations. Nothing you've finished is ever lost.";
   static const String settingsExplanationsInTitle = 'Explanations in';
   static const String settingsExplanationsInSubtitle =
-      "Used for Pebbi's notes and mission feedback";
+      "Used for Tutotoco's notes and mission feedback";
   static const String settingsShowHelperLineTitle = 'Show helper line';
   static const String settingsShowHelperLineSubtitle =
       'Romanization, pinyin or transliteration under target text';
@@ -1341,7 +1341,7 @@ abstract final class AppStrings {
   static const String settingsGoalRemindersSubtitle =
       'One nudge a day at most, and quiet hours are respected.';
   static const String settingsReminderTimeTitle = 'Reminder time';
-  static const String settingsPebbiNudgesTitle = 'Pebbi nudges me';
+  static const String settingsPebbiNudgesTitle = 'Tutotoco nudges me';
   static const String settingsPebbiNudgesSubtitle =
       'Turn the daily reminder off entirely';
 
@@ -1422,8 +1422,8 @@ abstract final class AppStrings {
   static const String settingsMoreTitle = 'More';
   static const String settingsPrivacyTitle = 'Privacy and voice data';
   static const String settingsHelpTitle = 'Help and fixes';
-  static const String settingsAboutTitle = 'About Pebbi';
-  static String settingsVersion(String version) => 'Pebbi · version $version';
+  static const String settingsAboutTitle = 'About Tutotoco';
+  static String settingsVersion(String version) => 'Tutotoco · version $version';
 
   // Settings Sub-route Placeholders
   static const String settingsPrivacyPlaceholderTitle =
@@ -1433,9 +1433,9 @@ abstract final class AppStrings {
   static const String settingsHelpPlaceholderTitle = 'Help and fixes';
   static const String settingsHelpPlaceholderSubtitle =
       'Frequently asked questions, diagnostics, and support contact will appear here.';
-  static const String settingsAboutPlaceholderTitle = 'About Pebbi';
+  static const String settingsAboutPlaceholderTitle = 'About Tutotoco';
   static const String settingsAboutPlaceholderSubtitle =
-      'Pebbi app version, credits, and open-source licenses will appear here.';
+      'Tutotoco app version, credits, and open-source licenses will appear here.';
 
   // Mission Brief Strings
   static const String yourGoalSectionLabel = 'YOUR GOAL';
@@ -1448,7 +1448,7 @@ abstract final class AppStrings {
   static const String suggestedRepliesOn = 'Suggested replies on';
   static const String suggestedRepliesOff = 'Suggested replies off';
   static const String missionSafetyNotice =
-      "Pebbi's character stays inside this scene and never asks for personal details. You can leave at any point.";
+      "Tutotoco's character stays inside this scene and never asks for personal details. You can leave at any point.";
   static const String startMission = 'Start';
   static const String tryAgainMission = 'Try again';
   static const String hearGoalOutLoud = 'Hear the goal out loud';
@@ -1544,7 +1544,7 @@ abstract final class AppStrings {
 
   static const String sayInMyLanguageTitle = 'Say it in your language';
   static const String sayInMyLanguageSubtitle =
-      'Type what you want to say and Pebbi will translate it into the target language.';
+      'Type what you want to say and Tutotoco will translate it into the target language.';
   static const String sayInMyLanguageInputPlaceholder =
       'Type in your language...';
   static const String sayInMyLanguageTranslateButton = 'Translate';
@@ -1561,7 +1561,7 @@ abstract final class AppStrings {
 
   static const String aiDisclosureTitle = 'About this conversation';
   static String aiDisclosureBody(String name) =>
-      '$name is an AI character made by Pebbi to practise real-life conversations. Do not share personal details or real sensitive information.';
+      '$name is an AI character made by Tutotoco to practise real-life conversations. Do not share personal details or real sensitive information.';
 
   static const String leaveSessionTitle = 'Leave this mission?';
   static const String leaveSessionBody =
@@ -1575,7 +1575,7 @@ abstract final class AppStrings {
 
   static const String reportMessageTitle = 'Report message';
   static const String reportMessageSubtitle =
-      'Help keep Pebbi safe and helpful for all learners.';
+      'Help keep Tutotoco safe and helpful for all learners.';
   static const String reportReasonInappropriate = 'Inappropriate or offensive';
   static const String reportReasonInaccurate =
       'Grammatically inaccurate or confusing';

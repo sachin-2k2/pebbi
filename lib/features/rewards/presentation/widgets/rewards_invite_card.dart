@@ -23,8 +23,8 @@ class RewardsInviteCard extends ConsumerWidget {
     final invite = inviteAsync.maybeWhen(
       data: (data) => data,
       orElse: () => const InviteLink(
-        url: 'https://pebbi.app/join/guest',
-        shareText: 'Learn languages with me on Pebbi!',
+        url: 'https://tutotoco.app/join/guest',
+        shareText: 'Learn languages with me on Tutotoco!',
       ),
     );
 

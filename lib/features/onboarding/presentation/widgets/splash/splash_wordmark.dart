@@ -22,24 +22,17 @@ class SplashWordmark extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // "Pebbi" Wordmark Image Asset
+        // "Tutotoco" Wordmark
         Semantics(
-          label: 'Pebbi',
-          child: Image.asset(
-            'assets/images/splash/pebbi_wordmark.png',
-            width: 130.0,
-            height: 38.0,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return Text(
-                'Pebbi',
-                style: AppTypography.display.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.5,
-                ),
-              );
-            },
+          label: 'Tutotoco',
+          child: Text(
+            'Tutotoco',
+            style: AppTypography.display.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              fontSize: 32.0,
+              letterSpacing: -0.5,
+            ),
           ),
         ),
 

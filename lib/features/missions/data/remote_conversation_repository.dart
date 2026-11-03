@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import '../../../../core/network/api_client.dart';
 import '../../review/domain/translation_repository.dart';
@@ -51,7 +52,7 @@ class RemoteConversationRepository implements ConversationRepository {
             _sessionGoals[sid] = goals;
             _completedGoals[sid] = <String>{};
             _turnCounts[sid] = 0;
-            _sessionCharNames[sid] = 'Pebbi';
+            _sessionCharNames[sid] = 'Tutotoco';
             _sessionTopics[sid] = topic;
           },
         );
@@ -102,7 +103,13 @@ class RemoteConversationRepository implements ConversationRepository {
       try {
         final goals = _sessionGoals[sessionId] ?? const [];
         final completedSet = _completedGoals[sessionId] ??= <String>{};
-        return await _freeTalk.sendTurn(userText: userText, clientTurnId: clientTurnId, goals: goals, completedGoalSet: completedSet);
+        return await _freeTalk.sendTurn(
+          userText: userText,
+          clientTurnId: clientTurnId,
+          goals: goals,
+          completedGoalSet: completedSet,
+          learningLanguage: config.targetLanguageCode,
+        );
       } on DioException catch (e) {
         await _handleAuth(e);
         return _fallback.sendTurn(sessionId: sessionId, clientTurnId: clientTurnId, userText: userText, config: config);

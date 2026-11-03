@@ -53,6 +53,11 @@ class PebbiMascot extends StatelessWidget {
   }
 }
 
+/// Alias for Tutotoco mascot branding.
+typedef TutotocoMascot = PebbiMascot;
+typedef TutotocoExpression = PebbiExpression;
+typedef TutotocoOutfit = PebbiOutfit;
+
 class _PebbiPainter extends CustomPainter {
   const _PebbiPainter({
     required this.bodyColor,

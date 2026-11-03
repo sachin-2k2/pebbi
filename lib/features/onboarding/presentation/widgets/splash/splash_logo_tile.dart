@@ -20,7 +20,7 @@ class SplashLogoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Pebbi',
+      label: 'Tutotoco',
       image: true,
       child: SizedBox(
         width: SplashConfig.tileLogicalSize,

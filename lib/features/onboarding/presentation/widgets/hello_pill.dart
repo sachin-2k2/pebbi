@@ -7,6 +7,8 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/app_strings.dart';
 import '../../../settings/presentation/providers/app_settings_provider.dart';
 import '../providers/onboarding_flow_provider.dart';
+import '../../data/mock_learnable_language_repository.dart';
+import '../../domain/learnable_language.dart';
 
 /// Small interactive audio preview pill and caption displayed above the bottom action.
 ///
@@ -21,9 +23,13 @@ class HelloPill extends ConsumerWidget {
       onboardingFlowProvider.select((s) => s.targetLanguageCode),
     );
     final languages = ref.watch(learnableLanguagesProvider);
+    final fallbackLanguages = MockLearnableLanguageRepository.defaultLanguages;
     final currentLanguage = languages.firstWhere(
       (l) => l.code == targetCode,
-      orElse: () => languages.first,
+      orElse: () => fallbackLanguages.firstWhere(
+        (l) => l.code == targetCode,
+        orElse: () => fallbackLanguages.first,
+      ),
     );
 
     final isRtl = currentLanguage.code == 'ar' || currentLanguage.code == 'ur';

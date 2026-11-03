@@ -72,7 +72,7 @@ class MockConversationRepository implements ConversationRepository {
       final topic = config.freeTalkTopic ?? 'Food';
       return SessionStart(
         sessionId: sessionId,
-        characterName: 'Pebbi',
+        characterName: 'Tutotoco',
         characterRole: 'a friendly conversation partner',
         emoji: '🦉',
         goals: const [
@@ -403,7 +403,7 @@ class MockConversationRepository implements ConversationRepository {
       turnsCount: turns,
       completedGoalIds: completed.toList(),
       totalGoals: 3,
-      characterName: isFreeTalk ? 'Pebbi' : 'Lucía',
+      characterName: isFreeTalk ? 'Tutotoco' : 'Lucía',
       characterRole: isFreeTalk ? 'a friendly conversation partner' : 'barista',
       completedGoalTexts: isFreeTalk
           ? const ['Keep the conversation going', 'Ask one question back', 'Use a phrase you just learned']

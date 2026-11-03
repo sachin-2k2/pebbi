@@ -7,6 +7,8 @@ import '../domain/learnable_language_repository.dart';
 class MockLearnableLanguageRepository implements LearnableLanguageRepository {
   const MockLearnableLanguageRepository();
 
+  static const List<LearnableLanguage> defaultLanguages = _languages;
+
   static const List<LearnableLanguage> _languages = [
     // --- Available (5) ---
     LearnableLanguage(

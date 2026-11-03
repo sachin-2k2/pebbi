@@ -140,7 +140,7 @@ class MissionPreviewPane extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Practice natural dialogue in real time. Pebbi will guide you through ordering, answering questions, and requesting specifics.',
+            'Practice natural dialogue in real time. Tutotoco will guide you through ordering, answering questions, and requesting specifics.',
             style: AppTypography.caption.copyWith(color: palette.textMuted),
           ),
           const Spacer(),

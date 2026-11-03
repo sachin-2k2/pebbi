@@ -477,7 +477,7 @@ void main() {
 
         await tester.pump(const Duration(milliseconds: 800));
 
-        expect(find.bySemanticsLabel('Pebbi'), findsWidgets);
+        expect(find.bySemanticsLabel('Tutotoco'), findsWidgets);
         expect(find.text('Speak it for real.'), findsOneWidget);
 
         final excludeSemantics = find.descendant(

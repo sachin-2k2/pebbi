@@ -46,7 +46,7 @@ class _PebbiAppState extends ConsumerState<PebbiApp>
     final inAppScale = ref.watch(textScaleProvider);
 
     return MaterialApp.router(
-      title: 'Pebbi',
+      title: 'Tutotoco',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(accentColor),
       darkTheme: AppTheme.dark(accentColor),

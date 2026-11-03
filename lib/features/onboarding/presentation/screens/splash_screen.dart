@@ -81,7 +81,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         if (mounted) {
           SemanticsService.sendAnnouncement(
             View.of(context),
-            'Starting Pebbi',
+            'Starting Tutotoco',
             TextDirection.ltr,
           );
         }

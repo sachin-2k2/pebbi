@@ -53,3 +53,6 @@ class PebbiHero extends StatelessWidget {
     );
   }
 }
+
+/// Alias for Tutotoco hero branding.
+typedef TutotocoHero = PebbiHero;

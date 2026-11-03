@@ -89,7 +89,7 @@ class _PathMascotMarkerState extends State<PathMascotMarker>
         offset: Offset(0, _bounceAnimation.value),
         child: child,
       ),
-      child: Semantics(label: 'Pebbi cheering you on', child: mascot),
+      child: Semantics(label: 'Tutotoco cheering you on', child: mascot),
     );
   }
 }

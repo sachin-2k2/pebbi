@@ -33,10 +33,11 @@ class RemoteFreeTalkHandler {
         (config.missionId.startsWith('freetalk_') ? config.missionId.substring(9) : config.missionId);
     final topic = normalizeTopic(rawTopic.isEmpty ? 'Food' : rawTopic);
 
-    final res = await _apiClient.post<Map<String, dynamic>>(
-      '/api/missions/freetalk/start',
-      data: {'topic': topic, 'correction_style': config.correctionStyle.id},
-    );
+    final res = await _apiClient.post<Map<String, dynamic>>('/api/missions/freetalk/start', data: {
+      'topic': topic,
+      'correction_style': config.correctionStyle.id,
+      'learning_language': config.targetLanguageCode,
+    });
 
     final dto = FreeTalkStartResponseDto.fromJson(res.data ?? const {});
     final sid = dto.sessionId.isNotEmpty ? dto.sessionId : 'freetalk_${DateTime.now().millisecondsSinceEpoch}';
@@ -61,7 +62,7 @@ class RemoteFreeTalkHandler {
       initialMessage: initialMsg,
       suggestions: suggestions,
       goals: goals,
-      characterName: dto.characterName.isNotEmpty ? dto.characterName : 'Pebbi',
+      characterName: dto.characterName.isNotEmpty ? dto.characterName : 'Tutotoco',
       characterRole: dto.characterRole.isNotEmpty ? dto.characterRole : 'a friendly conversation partner',
       emoji: '🦉',
     );
@@ -72,10 +73,15 @@ class RemoteFreeTalkHandler {
     required String clientTurnId,
     required List<SessionGoal> goals,
     required Set<String> completedGoalSet,
+    String? learningLanguage,
   }) async {
+    final payload = <String, dynamic>{'message': userText};
+    if (learningLanguage != null && learningLanguage.isNotEmpty) {
+      payload['learning_language'] = learningLanguage;
+    }
     final res = await _apiClient.post<Map<String, dynamic>>(
       '/api/missions/freetalk/message',
-      data: {'message': userText},
+      data: payload,
     );
 
     final dto = FreeTalkMessageResponseDto.fromJson(res.data ?? const {});
@@ -119,11 +125,7 @@ class RemoteFreeTalkHandler {
     final res = await _apiClient.post<Map<String, dynamic>>('/api/missions/freetalk/debrief', data: const {});
     final dto = FreeTalkDebriefResponseDto.fromJson(res.data ?? const {});
     final corrections = dto.debrief?.corrections
-            .map((c) => DebriefCorrection(
-                  userSaid: c.userSaid,
-                  betterWay: c.betterWay,
-                  explanation: c.explanation,
-                ))
+            .map((c) => DebriefCorrection(userSaid: c.userSaid, betterWay: c.betterWay, explanation: c.explanation))
             .toList() ??
         const [];
 
@@ -133,7 +135,7 @@ class RemoteFreeTalkHandler {
       turnsCount: dto.totalMessages > 0 ? dto.totalMessages : turnCount,
       completedGoalIds: completedGoalIds,
       totalGoals: goals.isNotEmpty ? goals.length : 3,
-      characterName: 'Pebbi',
+      characterName: 'Tutotoco',
       characterRole: 'conversation partner',
       completedGoalTexts: dto.completedGoals.isNotEmpty ? dto.completedGoals : goals.map((g) => g.text).toList(),
       starsEarned: 25,
